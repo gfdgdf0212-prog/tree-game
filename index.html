@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a120d">
 <title>Древо-Хранитель — AFK Tower Defense</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,7 @@
 :root{
   --bg:#0a120d; --ink:#e9f2e6; --muted:#8ba793;
   --gold:#e8b64c; --gold2:#f6d488; --leaf:#8fd68a; --teal:#6fd3c7;
-  --ember:#e0704f; --violet:#b07fd8; --danger:#e0564f; --dew:#7cc9e8;
+  --ember:#e0704f; --violet:#b07fd8; --danger:#e0564f; --dew:#7cc9e8; --amber:#f0a848;
   --line:rgba(150,200,160,.14);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -21,195 +22,226 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 #vignette{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:0;transition:opacity .5s ease-out;
   background:radial-gradient(ellipse at center,transparent 45%,rgba(224,86,70,.5) 100%)}
 
-#hud-top{position:fixed;top:0;left:0;right:0;z-index:4;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
-  padding:calc(10px + env(safe-area-inset-top)) 12px 0;pointer-events:none}
-.hud-group{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
+#hud-top{position:fixed;top:0;left:0;right:0;z-index:4;display:flex;justify-content:space-between;align-items:flex-start;gap:6px;
+  padding:calc(8px + env(safe-area-inset-top)) 10px 0;pointer-events:none}
+.hud-group{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;justify-content:flex-end}
 .hud-group.left{justify-content:flex-start}
-.pill{pointer-events:auto;display:flex;align-items:center;gap:8px;position:relative;
+.pill{pointer-events:auto;display:flex;align-items:center;gap:7px;position:relative;
   background:linear-gradient(180deg,rgba(30,45,35,.92),rgba(17,26,20,.94));
-  border:1px solid var(--line);border-radius:13px;padding:7px 12px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
-.pill>svg{width:16px;height:16px;flex:none}
+  border:1px solid var(--line);border-radius:12px;padding:6px 10px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.pill>svg{width:15px;height:15px;flex:none}
 .pill .col{display:flex;flex-direction:column;gap:1px}
-.pill .lab{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.pill b{font-family:Unbounded;font-weight:700;font-size:14px;line-height:1.1}
+.pill .lab{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.pill b{font-family:Unbounded;font-weight:700;font-size:13px;line-height:1.1}
 #wavePill>svg{color:var(--teal)} #wavePill b{color:#bfe8d2}
-#wavePill.boss-phase>svg{color:var(--violet)}
-#wavePill.boss-phase b{color:#e6d0f7}
+#wavePill.boss-phase>svg{color:var(--violet)} #wavePill.boss-phase b{color:#e6d0f7}
 #wavePill.boss-phase #wprog i{background:linear-gradient(90deg,var(--violet),#e2b8f2)}
-#lvlPill>svg{color:var(--leaf)}  #lvlPill b{color:#d7f0d0}
+#lvlPill>svg{color:var(--leaf)} #lvlPill b{color:#d7f0d0}
 #seedPill b{color:var(--gold2)}
 #seedPill>svg{filter:drop-shadow(0 0 5px rgba(232,182,76,.6));animation:seedPulse 2.4s ease-in-out infinite}
 @keyframes seedPulse{50%{transform:scale(1.14)}}
-#dewPill b{color:#bfe9f5}
-#dewPill>svg{filter:drop-shadow(0 0 5px rgba(124,201,232,.6))}
-#dewPill.bump{animation:dewBump .5s ease}
+#dewPill b{color:#bfe9f5} #dewPill>svg{filter:drop-shadow(0 0 5px rgba(124,201,232,.6))}
+#amberPill b{color:#ffd9a0} #amberPill>svg{filter:drop-shadow(0 0 5px rgba(240,168,72,.6))}
+.pill.bump{animation:dewBump .5s ease}
 @keyframes dewBump{30%{transform:scale(1.12)}}
-#wprog{position:absolute;left:10px;right:10px;bottom:4px;height:2.5px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+#wprog{position:absolute;left:9px;right:9px;bottom:3.5px;height:2.5px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
 #wprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),#a5e8c8);transition:width .35s ease}
-.ico-btn{pointer-events:auto;width:38px;height:38px;display:grid;place-items:center;padding:0;cursor:pointer;
-  background:linear-gradient(180deg,rgba(30,45,35,.92),rgba(17,26,20,.94));border:1px solid var(--line);border-radius:12px;
+.ico-btn{pointer-events:auto;width:36px;height:36px;display:grid;place-items:center;padding:0;cursor:pointer;
+  background:linear-gradient(180deg,rgba(30,45,35,.92),rgba(17,26,20,.94));border:1px solid var(--line);border-radius:11px;
   color:var(--muted);box-shadow:0 6px 18px rgba(0,0,0,.35);transition:color .2s,transform .15s,border-color .2s}
-.ico-btn:hover{color:var(--ink);transform:translateY(-1px);border-color:rgba(150,200,160,.3)}
-.ico-btn svg{width:17px;height:17px}
-#muteBtn .offv{display:none}
-#muteBtn.off .onv{display:none}
-#muteBtn.off .offv{display:block}
+.ico-btn:hover{color:var(--ink);transform:translateY(-1px)}
+.ico-btn svg{width:16px;height:16px}
+#muteBtn .offv{display:none} #muteBtn.off .onv{display:none} #muteBtn.off .offv{display:block}
 
 #waveBanner{position:fixed;left:0;right:0;top:19%;z-index:3;text-align:center;pointer-events:none;opacity:0}
 #waveBanner.show{animation:bannerIn 2.6s ease forwards}
 @keyframes bannerIn{0%{opacity:0;transform:translateY(16px) scale(.92)}12%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-12px)}}
-#waveBanner h2{margin:0;font-family:Unbounded;font-weight:800;font-size:clamp(26px,6vw,46px);letter-spacing:.05em;color:#e2f5e6;
+#waveBanner h2{margin:0;font-family:Unbounded;font-weight:800;font-size:clamp(24px,6vw,46px);letter-spacing:.05em;color:#e2f5e6;
   text-shadow:0 0 26px rgba(130,225,170,.5),0 3px 10px rgba(0,0,0,.65)}
 #waveBanner p{margin:8px 0 0;font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
-#waveBanner.boss h2{color:#ecdffb;text-shadow:0 0 30px rgba(176,127,216,.65),0 3px 10px rgba(0,0,0,.65)}
+#waveBanner.boss h2{color:#ecdffb;text-shadow:0 0 30px rgba(176,127,216,.65)}
 #waveBanner.boss p{color:#c3a5dd}
-#toast{position:fixed;left:50%;top:calc(72px + env(safe-area-inset-top));transform:translate(-50%,-8px);z-index:5;
+#toast{position:fixed;left:50%;top:calc(68px + env(safe-area-inset-top));transform:translate(-50%,-8px);z-index:5;
   background:linear-gradient(180deg,#1d2c23,#131e17);border:1px solid var(--line);border-radius:12px;padding:10px 16px;
   font-size:13px;font-weight:600;max-width:86%;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.45);
   opacity:0;pointer-events:none;transition:opacity .4s,transform .4s}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 #hud-bottom{position:fixed;left:0;right:0;bottom:0;z-index:4;display:flex;justify-content:center;
-  padding:0 10px calc(12px + env(safe-area-inset-bottom));pointer-events:none}
-.bottom-row{display:flex;gap:10px;align-items:stretch;width:100%;max-width:780px;pointer-events:auto}
-.upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-width:0}
+  padding:0 10px calc(10px + env(safe-area-inset-bottom));pointer-events:none}
+.bottom-row{display:flex;gap:8px;align-items:stretch;width:100%;max-width:780px;pointer-events:auto}
+.upgrades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1;min-width:0}
 .upg{--acc:var(--leaf);--accbg:rgba(143,214,138,.13);position:relative;overflow:hidden;cursor:pointer;
-  display:flex;align-items:center;gap:10px;padding:10px 12px;text-align:left;color:var(--ink);font:inherit;
-  background:linear-gradient(180deg,#1d2c23,#131e17);border:1px solid var(--line);border-radius:16px;
+  display:flex;align-items:center;gap:9px;padding:9px 11px;text-align:left;color:var(--ink);font:inherit;
+  background:linear-gradient(180deg,#1d2c23,#131e17);border:1px solid var(--line);border-radius:15px;
   transition:transform .16s ease,border-color .25s,box-shadow .25s}
 .upg-dmg{--acc:var(--ember);--accbg:rgba(224,112,79,.13)}
 .upg-spd{--acc:var(--teal);--accbg:rgba(111,211,199,.13)}
 .upg-hp {--acc:var(--leaf);--accbg:rgba(143,214,138,.13)}
-.upg:hover:not(:disabled){transform:translateY(-2px);border-color:var(--acc);box-shadow:0 10px 24px rgba(0,0,0,.45)}
+.upg:hover:not(:disabled){transform:translateY(-2px);border-color:var(--acc)}
 .upg:active:not(:disabled){transform:scale(.96)}
 .upg:disabled{opacity:.55;filter:saturate(.35);cursor:default}
-.upg-ico{width:38px;height:38px;flex:none;display:grid;place-items:center;border-radius:12px;
-  background:var(--accbg);border:1px solid var(--acc);color:var(--acc);box-shadow:0 0 14px -2px var(--accbg)}
-.upg-ico svg{width:19px;height:19px}
+.upg-ico{width:36px;height:36px;flex:none;display:grid;place-items:center;border-radius:11px;
+  background:var(--accbg);border:1px solid var(--acc);color:var(--acc)}
+.upg-ico svg{width:18px;height:18px}
 .upg-body{display:flex;flex-direction:column;gap:2px;min-width:0}
-.upg-name{font-weight:800;font-size:12.5px;display:flex;align-items:baseline;gap:6px;white-space:nowrap}
+.upg-name{font-weight:800;font-size:12px;display:flex;align-items:baseline;gap:6px;white-space:nowrap}
 .upg-lvl{font-size:10px;color:var(--muted);font-weight:700}
-.upg-stat{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap}
-.upg-cost{margin-left:auto;flex:none;display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:10px;
-  font-family:Unbounded;font-size:11.5px;font-weight:700;color:var(--gold2);
+.upg-stat{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.upg-cost{margin-left:auto;flex:none;display:flex;align-items:center;gap:4px;padding:5px 8px;border-radius:9px;
+  font-family:Unbounded;font-size:11px;font-weight:700;color:var(--gold2);
   background:rgba(232,182,76,.09);border:1px solid rgba(232,182,76,.28)}
-.upg-cost svg{width:12px;height:12px}
+.upg-cost svg{width:11px;height:11px}
 .upg.afford .upg-cost{animation:costGlow 1.8s ease-in-out infinite}
-@keyframes costGlow{50%{box-shadow:0 0 12px rgba(232,182,76,.4);background:rgba(232,182,76,.16)}}
+@keyframes costGlow{50%{box-shadow:0 0 12px rgba(232,182,76,.4)}}
 .upg.bought::after{content:'';position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%);animation:buyFlash .5s ease-out forwards}
 @keyframes buyFlash{to{opacity:0}}
-#shopBtn{flex:none;width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;
-  color:var(--gold2);font-family:Unbounded;font-weight:700;font-size:10px;letter-spacing:.08em;
-  background:linear-gradient(180deg,#2c3a28,#1a2418);border:1px solid rgba(232,182,76,.4);border-radius:16px;
+#shopBtn{flex:none;width:84px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;
+  color:var(--gold2);font-family:Unbounded;font-weight:700;font-size:9.5px;letter-spacing:.08em;
+  background:linear-gradient(180deg,#2c3a28,#1a2418);border:1px solid rgba(232,182,76,.4);border-radius:15px;
   box-shadow:0 6px 18px rgba(0,0,0,.4);transition:transform .16s,border-color .2s,box-shadow .25s}
-#shopBtn svg{width:22px;height:22px}
-#shopBtn:hover{transform:translateY(-2px);border-color:var(--gold)}
+#shopBtn svg{width:21px;height:21px}
 #shopBtn:active{transform:scale(.96)}
 #shopBtn.glow{animation:shopGlow 2s ease-in-out infinite}
 @keyframes shopGlow{50%{box-shadow:0 6px 18px rgba(0,0,0,.4),0 0 18px rgba(124,201,232,.45);border-color:var(--dew)}}
 @media(max-width:620px){
-  .upgrades{gap:7px}
-  .upg{flex-direction:column;gap:6px;padding:10px 6px 9px;text-align:center;border-radius:14px}
-  .upg-body{align-items:center}
-  .upg-name{font-size:11px}
-  .upg-stat{display:none}
-  .upg-ico{width:32px;height:32px;border-radius:10px}
-  #shopBtn{width:64px;font-size:8.5px}
-  #shopBtn svg{width:18px;height:18px}
+  .upg{flex-direction:column;gap:5px;padding:8px 4px;text-align:center;border-radius:13px}
+  .upg-body{align-items:center}.upg-name{font-size:10.5px}.upg-stat{display:none}
+  .upg-ico{width:30px;height:30px;border-radius:9px}
+  #shopBtn{width:60px;font-size:8px}#shopBtn svg{width:17px;height:17px}
 }
 
-.overlay{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:16px;
+.overlay{position:fixed;inset:0;z-index:10;display:grid;place-items:center;padding:14px;
   background:rgba(5,10,7,.72);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .3s}
 .overlay.open{opacity:1;pointer-events:auto}
-.modal{width:100%;max-width:380px;text-align:center;padding:30px 26px 26px;border-radius:22px;position:relative;
+.modal{width:100%;max-width:380px;text-align:center;padding:28px 24px 24px;border-radius:22px;position:relative;
   background:linear-gradient(180deg,#1c2b22,#121c15);border:1px solid rgba(150,200,160,.2);
-  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 6px rgba(150,200,160,.04);
+  box-shadow:0 30px 80px rgba(0,0,0,.6);max-height:94vh;overflow-y:auto;
   transform:translateY(18px) scale(.94);transition:transform .4s cubic-bezier(.2,.9,.25,1.15)}
 .overlay.open .modal{transform:none}
-.m-ico{width:58px;height:58px;margin:0 auto 14px;border-radius:50%;display:grid;place-items:center}
-.m-ico svg{width:26px;height:26px}
-.afk .m-ico{background:rgba(111,211,199,.12);border:1px solid rgba(111,211,199,.4);color:#bfe9df;
-  box-shadow:0 0 24px rgba(111,211,199,.25);animation:moonFloat 3.5s ease-in-out infinite}
+.m-ico{width:56px;height:56px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center}
+.m-ico svg{width:25px;height:25px}
+.afk .m-ico{background:rgba(111,211,199,.12);border:1px solid rgba(111,211,199,.4);color:#bfe9df;animation:moonFloat 3.5s ease-in-out infinite}
 @keyframes moonFloat{50%{transform:translateY(-4px)}}
 .over .m-ico{background:rgba(224,86,79,.1);border:1px solid rgba(224,86,79,.4);color:#e8a49b}
-.modal h2{margin:0 0 6px;font-family:Unbounded;font-weight:800;font-size:21px}
-.modal .sub{margin:0 0 18px;color:var(--muted);font-size:13px;font-weight:600;line-height:1.55}
+.modal h2{margin:0 0 6px;font-family:Unbounded;font-weight:800;font-size:20px}
+.modal .sub{margin:0 0 16px;color:var(--muted);font-size:13px;font-weight:600;line-height:1.55}
 .modal .sub b{color:var(--gold2)}
-.afk-reward{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 12px;padding:14px;border-radius:14px;
+.afk-reward{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 10px;padding:12px;border-radius:14px;
   background:rgba(232,182,76,.07);border:1px solid rgba(232,182,76,.3)}
-.afk-reward.dew-r{background:rgba(124,201,232,.07);border-color:rgba(124,201,232,.3);margin-bottom:18px}
-.afk-reward svg{width:26px;height:26px;filter:drop-shadow(0 0 8px rgba(232,182,76,.7))}
-.afk-reward.dew-r svg{filter:drop-shadow(0 0 8px rgba(124,201,232,.7))}
-.afk-reward b{font-family:Unbounded;font-size:24px;font-weight:800;color:var(--gold2);text-shadow:0 0 16px rgba(232,182,76,.45)}
-.afk-reward.dew-r b{color:#bfe9f5;text-shadow:0 0 16px rgba(124,201,232,.45)}
+.afk-reward.dew-r{background:rgba(124,201,232,.07);border-color:rgba(124,201,232,.3)}
+.afk-reward svg{width:24px;height:24px}
+.afk-reward b{font-family:Unbounded;font-size:22px;font-weight:800;color:var(--gold2)}
+.afk-reward.dew-r b{color:#bfe9f5}
 .afk-reward span{color:var(--muted);font-weight:700;font-size:13px}
-.stats{display:flex;gap:8px;margin-bottom:20px}
+.stats{display:flex;gap:8px;margin-bottom:18px}
 .st{flex:1;background:rgba(255,255,255,.035);border:1px solid rgba(150,200,160,.1);border-radius:12px;padding:10px 6px}
 .st b{display:block;font-family:Unbounded;font-size:15px;font-weight:700;margin-bottom:3px}
 .st span{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}
-.btn-primary{display:block;width:100%;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;
-  font-family:Unbounded;font-weight:700;font-size:13px;letter-spacing:.04em;color:#241a06;
-  background:linear-gradient(180deg,#f4d083,#dfa93c);
-  box-shadow:0 8px 24px rgba(232,182,76,.35),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .15s,filter .2s}
+.btn-primary{display:block;width:100%;border:0;border-radius:14px;padding:13px 20px;cursor:pointer;
+  font-family:Unbounded;font-weight:700;font-size:12.5px;color:#241a06;
+  background:linear-gradient(180deg,#f4d083,#dfa93c);box-shadow:0 8px 24px rgba(232,182,76,.3);transition:transform .15s,filter .2s}
 .btn-primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
 .btn-primary:active{transform:scale(.97)}
-.link-btn{display:inline-block;margin-top:14px;background:none;border:0;padding:0;cursor:pointer;
+.link-btn{display:inline-block;margin-top:12px;background:none;border:0;padding:0;cursor:pointer;
   color:var(--muted);font:600 12px Manrope;text-decoration:underline;text-underline-offset:3px}
-.link-btn:hover{color:var(--ink)}
 
-.modal.shop{max-width:600px;text-align:left;padding:24px 22px 20px}
-.shop-close{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);
-  background:rgba(255,255,255,.04);color:var(--muted);font:700 16px Manrope;cursor:pointer;transition:color .2s,border-color .2s}
-.shop-close:hover{color:var(--ink);border-color:rgba(150,200,160,.35)}
-.shop-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-right:40px}
-.shop-head h2{margin:0;font-size:19px}
-.shop-head h2 small{display:block;font:600 11px Manrope;color:var(--muted);letter-spacing:.04em;margin-top:3px}
-.dew-bal{display:flex;align-items:center;gap:6px;font-family:Unbounded;font-weight:700;font-size:14px;color:#bfe9f5;
-  background:rgba(124,201,232,.1);border:1px solid rgba(124,201,232,.3);padding:7px 12px;border-radius:11px;flex:none}
-.dew-bal svg{width:15px;height:15px}
-.tabs{display:flex;gap:6px;margin:16px 0 14px;background:rgba(0,0,0,.25);padding:4px;border-radius:12px}
-.tab{flex:1;border:0;background:transparent;color:var(--muted);font:800 12px Manrope;padding:9px;border-radius:9px;
-  cursor:pointer;letter-spacing:.03em;transition:color .2s,background .2s}
+.modal.shop{max-width:600px;text-align:left;padding:22px 20px 18px}
+.modal.shop.shake-lg{animation:shakeLg .55s}
+@keyframes shakeLg{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(3px,-1px)}30%,70%{transform:translate(-4px,2px)}40%,60%{transform:translate(4px,-2px)}50%{transform:translate(-3px,2px)}}
+.shop-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);
+  background:rgba(255,255,255,.04);color:var(--muted);font:700 15px Manrope;cursor:pointer}
+.shop-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-right:38px;flex-wrap:wrap}
+.shop-head h2{margin:0;font-size:18px}
+.shop-head h2 small{display:block;font:600 10.5px Manrope;color:var(--muted);margin-top:3px}
+.bal-row{display:flex;gap:6px}
+.dew-bal,.amber-bal{display:flex;align-items:center;gap:5px;font-family:Unbounded;font-weight:700;font-size:12.5px;
+  padding:6px 10px;border-radius:10px}
+.dew-bal{color:#bfe9f5;background:rgba(124,201,232,.1);border:1px solid rgba(124,201,232,.3)}
+.amber-bal{color:#ffd9a0;background:rgba(240,168,72,.1);border:1px solid rgba(240,168,72,.35)}
+.dew-bal svg,.amber-bal svg{width:13px;height:13px}
+.tabs{display:flex;gap:5px;margin:14px 0 12px;background:rgba(0,0,0,.25);padding:4px;border-radius:12px}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);font:800 11.5px Manrope;padding:9px 4px;border-radius:9px;
+  cursor:pointer;transition:color .2s,background .2s}
 .tab.active{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.3)}
-.tabpane{max-height:min(52vh,430px);overflow-y:auto;padding-right:5px}
+.tabpane{max-height:min(56vh,460px);overflow-y:auto;padding-right:4px}
 .tabpane::-webkit-scrollbar{width:6px}
 .tabpane::-webkit-scrollbar-thumb{background:rgba(150,200,160,.22);border-radius:3px}
 .tabpane[hidden]{display:none}
-.mod-row{display:flex;align-items:center;gap:12px;padding:12px;margin-bottom:8px;border-radius:14px;
-  background:rgba(255,255,255,.03);border:1px solid rgba(150,200,160,.1);transition:border-color .2s,background .2s}
-.mod-row:hover{border-color:rgba(150,200,160,.28);background:rgba(255,255,255,.05)}
-.mod-ico{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:11px;
-  background:var(--accbg);border:1px solid var(--acc);color:var(--acc)}
-.mod-ico svg{width:20px;height:20px}
-.mod-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.mod-name{font-weight:800;font-size:13.5px;display:flex;gap:9px;align-items:center}
-.pips{display:flex;gap:3px}
-.pips i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.13)}
-.pips i.on{background:var(--acc);box-shadow:0 0 6px var(--acc)}
-.mod-desc{font-size:11.5px;color:var(--muted);font-weight:600}
-.mod-fx{font-size:11px;color:#bcd8c2;font-weight:700}
-.buy-dew{flex:none;display:flex;align-items:center;gap:5px;font-family:Unbounded;font-size:11.5px;font-weight:700;
-  color:#bfe9f5;background:rgba(124,201,232,.1);border:1px solid rgba(124,201,232,.4);border-radius:10px;
-  padding:8px 12px;cursor:pointer;transition:transform .15s,box-shadow .2s,opacity .2s}
-.buy-dew svg{width:12px;height:12px}
-.buy-dew:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 12px rgba(124,201,232,.35)}
-.buy-dew:active:not(:disabled){transform:scale(.95)}
-.buy-dew:disabled{opacity:.4;cursor:default}
-.buy-dew.max{color:var(--muted);border-color:var(--line);background:rgba(255,255,255,.03);cursor:default}
-.shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600}
-.skin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600;line-height:1.5}
+
+/* рулетка */
+.wheel-wrap{position:relative;width:min(300px,78vw);margin:4px auto 14px}
+#wheelCv{display:block;width:100%;height:auto}
+.reveal{position:absolute;inset:-6px;display:grid;place-items:center;background:rgba(6,10,8,.62);
+  border-radius:16px;overflow:hidden;z-index:2}
+.reveal[hidden]{display:none}
+.reveal.rays::before{content:'';position:absolute;inset:-45%;
+  background:repeating-conic-gradient(rgba(var(--tg),.13) 0 14deg,transparent 14deg 28deg);
+  animation:raysSpin 7s linear infinite}
+@keyframes raysSpin{to{transform:rotate(360deg)}}
+.rv-card{position:relative;width:226px;padding:18px 16px;border-radius:18px;text-align:center;
+  background:linear-gradient(180deg,#1e2d24,#131d16);border:2px solid var(--tc);
+  box-shadow:0 0 30px rgba(var(--tg),.5),0 20px 50px rgba(0,0,0,.6);
+  animation:rvPop .5s cubic-bezier(.2,1.5,.3,1)}
+@keyframes rvPop{from{transform:scale(.55);opacity:0}}
+.t-mythic .rv-card{animation:rvPop .5s cubic-bezier(.2,1.5,.3,1),mythGlow 1.3s ease-in-out .5s infinite}
+@keyframes mythGlow{50%{box-shadow:0 0 46px rgba(255,107,138,.8),0 0 90px rgba(240,168,72,.35)}}
+.rv-tier{display:inline-block;font:800 9.5px Manrope;letter-spacing:.2em;text-transform:uppercase;color:var(--tc);
+  border:1px solid var(--tc);border-radius:20px;padding:4px 12px;margin-bottom:10px}
+.rv-name{display:block;font-family:Unbounded;font-size:17px;font-weight:800;margin-bottom:6px}
+.rv-desc{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:14px;line-height:1.45}
+.t-common{--tc:#9db8a4;--tg:157,184,164}
+.t-rare{--tc:#5aa9e6;--tg:90,169,230}
+.t-epic{--tc:#b07fd8;--tg:176,127,216}
+.t-legendary{--tc:#f0a848;--tg:240,168,72}
+.t-mythic{--tc:#ff6b8a;--tg:255,107,138}
+.btn-spin{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;
+  padding:13px;cursor:pointer;font-family:Unbounded;font-weight:700;font-size:13px;color:#06232c;
+  background:linear-gradient(180deg,#9fe0d4,#54b8a8);box-shadow:0 8px 22px rgba(111,211,199,.3);
+  transition:transform .15s,filter .2s}
+.btn-spin svg{width:15px;height:15px}
+.btn-spin:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.05)}
+.btn-spin:active:not(:disabled){transform:scale(.97)}
+.btn-spin:disabled{opacity:.45;cursor:default}
+.btn-spin.can{animation:spinGlow 1.8s ease-in-out infinite}
+@keyframes spinGlow{50%{box-shadow:0 8px 26px rgba(111,211,199,.55)}}
+
+/* способности */
+.ab-head{display:flex;align-items:baseline;gap:10px;margin:2px 2px 10px}
+.ab-head b{font-family:Unbounded;font-size:14px;color:var(--gold2)}
+.ab-hint{font-size:11px;color:var(--muted);font-weight:600}
+.abil-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(max-width:420px){.abil-grid{grid-template-columns:1fr}}
+.abil{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:13px;cursor:pointer;
+  background:rgba(255,255,255,.03);border:1px solid rgba(150,200,160,.12);
+  transition:border-color .2s,transform .15s,box-shadow .25s}
+.abil:hover{transform:translateY(-1px)}
+.abil.locked{opacity:.42;filter:saturate(.25);cursor:default}
+.abil.eq{border-color:var(--tc);box-shadow:0 0 0 1px var(--tc),0 0 14px rgba(var(--tg),.22)}
+.abil-ico{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;color:var(--tc);
+  background:rgba(var(--tg),.12);border:1px solid rgba(var(--tg),.4)}
+.abil-ico svg{width:17px;height:17px}
+.abil-body{flex:1;min-width:0}
+.abil-body b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abil-body i{font-style:normal;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.abil-lvl{font:700 9.5px Unbounded;color:var(--muted)}
+.abil-eq{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;
+  color:var(--tc);border:1px solid rgba(var(--tg),.5)}
+
+/* облики */
+.skin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
 @media(max-width:520px){.skin-grid{grid-template-columns:repeat(2,1fr)}}
-.skin-card{padding:12px 10px;border-radius:14px;text-align:center;cursor:pointer;
-  background:rgba(255,255,255,.03);border:1px solid rgba(150,200,160,.1);
-  transition:border-color .2s,transform .16s,box-shadow .25s}
+.skin-card{padding:11px 8px 10px;border-radius:14px;text-align:center;cursor:pointer;
+  background:rgba(255,255,255,.03);border:1px solid rgba(150,200,160,.1);transition:border-color .2s,transform .16s,box-shadow .25s}
 .skin-card:hover{transform:translateY(-2px);border-color:rgba(150,200,160,.3)}
 .skin-card.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 20px rgba(232,182,76,.14)}
-.skin-prev{height:62px;display:grid;place-items:center;margin-bottom:8px}
-.skin-prev svg{height:56px;width:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));animation:treeSway 4s ease-in-out infinite}
+.skin-prev{height:58px;display:grid;place-items:center;margin-bottom:7px}
+.skin-prev svg{height:52px;width:auto;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));animation:treeSway 4s ease-in-out infinite}
 @keyframes treeSway{50%{transform:rotate(1.6deg)}}
-.skin-name{font-weight:800;font-size:12px;margin-bottom:5px}
-.skin-state{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:4px}
+.skin-name{font-weight:800;font-size:11.5px;margin-bottom:4px}
+.skin-state{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:4px}
 .skin-state svg{width:11px;height:11px}
 </style>
 </head>
@@ -232,12 +264,16 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
   </div>
   <div class="hud-group">
     <div class="pill" id="seedPill">
-      <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/><path d="M6.2 8.2c-.5 1-.4 2.2.2 3" stroke="#fff3cf" stroke-width="1.1" fill="none" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/></svg>
       <b id="seedNum">0</b>
     </div>
     <div class="pill" id="dewPill">
-      <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/><path d="M6.1 8.6c-.5 1-.4 2.1.2 2.9" stroke="#dcf3fb" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>
       <b id="dewNum">0</b>
+    </div>
+    <div class="pill" id="amberPill">
+      <svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/><path d="M3 6h10M8 1.5 6 6l2 8.5M8 1.5 10 6 8 14.5" stroke="#ffd9a0" stroke-width=".7" fill="none"/></svg>
+      <b id="amberNum">0</b>
     </div>
     <button class="ico-btn" id="muteBtn" title="Звук">
       <svg class="onv" viewBox="0 0 16 16"><path d="M2.5 6v4h2.8L9 13V3L5.3 6H2.5Z" fill="currentColor"/><path d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
@@ -257,26 +293,17 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
     <div class="upgrades">
       <button class="upg upg-dmg" id="upgDmg">
         <span class="upg-ico"><svg viewBox="0 0 16 16"><path d="M4.5 2.5c1.2 3 1.2 6.5-1 9.5M8 2c1.6 3.4 1.6 7.6-1 11.5M11.5 2.5c1.2 3 1.2 6.5-1 9.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="upg-body">
-          <span class="upg-name">Шипы <span class="upg-lvl">ур. 0</span></span>
-          <span class="upg-stat">Урон 6</span>
-        </span>
+        <span class="upg-body"><span class="upg-name">Шипы <span class="upg-lvl">ур. 0</span></span><span class="upg-stat">Урон 6</span></span>
         <span class="upg-cost"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/></svg><b>25</b></span>
       </button>
       <button class="upg upg-spd" id="upgSpd">
         <span class="upg-ico"><svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="upg-body">
-          <span class="upg-name">Свист ветра <span class="upg-lvl">ур. 0</span></span>
-          <span class="upg-stat">Скорость 0.8/с</span>
-        </span>
+        <span class="upg-body"><span class="upg-name">Свист ветра <span class="upg-lvl">ур. 0</span></span><span class="upg-stat">Скорость 0.8/с</span></span>
         <span class="upg-cost"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/></svg><b>45</b></span>
       </button>
       <button class="upg upg-hp" id="upgHp">
         <span class="upg-ico"><svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M8 4.5v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
-        <span class="upg-body">
-          <span class="upg-name">Крепкая кора <span class="upg-lvl">ур. 0</span></span>
-          <span class="upg-stat">Прочность 100</span>
-        </span>
+        <span class="upg-body"><span class="upg-name">Крепкая кора <span class="upg-lvl">ур. 0</span></span><span class="upg-stat">Прочность 100</span></span>
         <span class="upg-cost"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/></svg><b>30</b></span>
       </button>
     </div>
@@ -288,18 +315,40 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 </footer>
 
 <div class="overlay" id="shopOverlay">
-  <div class="modal shop">
+  <div class="modal shop" id="shopModal">
     <button class="shop-close" id="shopClose">✕</button>
     <div class="shop-head">
-      <h2>Лавка рощи<small>росу приносят боссы и големы</small></h2>
-      <div class="dew-bal"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg><b id="shopDew">0</b></div>
+      <h2>Лавка рощи<small>росу приносят боссы · янтарь — за каждые 50 уровней древа</small></h2>
+      <div class="bal-row">
+        <div class="dew-bal"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg><b id="shopDew">0</b></div>
+        <div class="amber-bal"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg><b id="shopAmber">0</b></div>
+      </div>
     </div>
     <div class="tabs">
-      <button class="tab active" id="tabMods">Модификации</button>
-      <button class="tab" id="tabSkins">Облик древа</button>
+      <button class="tab active" id="tabRoulette">Рулетка</button>
+      <button class="tab" id="tabAbils">Способности</button>
+      <button class="tab" id="tabTrees">Облик древа</button>
     </div>
-    <div class="tabpane" id="paneMods"></div>
-    <div class="tabpane" id="paneSkins" hidden></div>
+    <div class="tabpane" id="paneRoulette">
+      <div class="wheel-wrap">
+        <canvas id="wheelCv" width="600" height="600"></canvas>
+        <div class="reveal" id="reveal" hidden>
+          <div class="rv-card">
+            <span class="rv-tier" id="rvTier">Редкая</span>
+            <b class="rv-name" id="rvName">+3 · Мороз</b>
+            <span class="rv-desc" id="rvDesc"></span>
+            <button class="btn-primary" id="rvOk">Забрать</button>
+          </div>
+        </div>
+      </div>
+      <button class="btn-spin" id="spinBtn">Крутить · <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> 6</button>
+      <p class="shop-note">✦ На колесе всегда: 9 секторов «+1», 2 сектора «+3» и 1 сектор «+5». Чем выше волна, тем чаще выпадают редкие, эпические и выше.</p>
+    </div>
+    <div class="tabpane" id="paneAbils" hidden>
+      <div class="ab-head">Экипировано <b id="abCount">0/5</b><span class="ab-hint">коснитесь карточки, чтобы надеть или снять</span></div>
+      <div class="abil-grid" id="abilGrid"></div>
+    </div>
+    <div class="tabpane" id="paneTrees" hidden></div>
   </div>
 </div>
 
@@ -340,7 +389,7 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 'use strict';
 /* ═══════════ утилиты ═══════════ */
 const $=s=>document.querySelector(s);
-const TAU=Math.PI*2, ISO=0.62, KEY='drevo.save.v3';
+const TAU=Math.PI*2, ISO=0.62, KEY='drevo.save.v4';
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const rand=(a,b)=>a+Math.random()*(b-a);
 function fmt(n){n=Math.floor(n);if(n<1e3)return''+n;const u=['K','M','B','T','Qa'];let i=-1,x=n;
@@ -350,106 +399,116 @@ const fmtS=v=>v<10?v.toFixed(1):v<100?''+Math.round(v):fmt(v);
 function fmtTime(s){s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;
   if(h)return h+' ч '+m+' мин';if(m)return m+' мин '+sec+' сек';return sec+' сек';}
 
+/* ═══════════ редкости и способности ═══════════ */
+const TIERS={
+  common:   {name:'Обычная',   c:'#9db8a4',g:'157,184,164',w:100, idx:0},
+  rare:     {name:'Редкая',    c:'#5aa9e6',g:'90,169,230', w:45,  idx:1},
+  epic:     {name:'Эпическая', c:'#b07fd8',g:'176,127,216',w:18,  idx:2},
+  legendary:{name:'Легендарная',c:'#f0a848',g:'240,168,72',w:7,   idx:3},
+  mythic:   {name:'Мифическая',c:'#ff6b8a',g:'255,107,138',w:2.5, idx:4}};
+const ABIL=[
+ {k:'multishot',n:'Разветвление',short:'Веер',tier:'common',desc:'Дополнительные семена летят в ближних врагов',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8 3.5 3M8 8l4.5-5M8 8V2.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'bounce',n:'Отскок',short:'Отскок',tier:'common',desc:'Семя отскакивает к соседям (70% урона за скачок)',
+  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+ {k:'thorns',n:'Острые шипы',short:'Шипы',tier:'common',desc:'+12% урона древа за уровень',
+  svg:'<svg viewBox="0 0 16 16"><path d="M3 14c1-4 1-7 0-10M8 14c1.5-4.5 1.5-8.5 0-12.5M13 14c-1-4-1-7 0-10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'swift',n:'Стремительный ветер',short:'Ветер',tier:'common',desc:'+10% скорости атаки за уровень',
+  svg:'<svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'resonance',n:'Резонанс',short:'Волна',tier:'rare',desc:'Попадание рождает ударную волну по соседям',
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.4" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'frost',n:'Морозная роса',short:'Мороз',tier:'rare',desc:'Попадания сковывают врагов льдом',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v12M2.8 5l10.4 6M13.2 5 2.8 11" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'deeproots',n:'Глубокие корни',short:'Корни',tier:'rare',desc:'Удары корнями чаще и сильнее',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'branch',n:'Живые ветви',short:'Ветви',tier:'epic',desc:'Ветви сметают и отбрасывают врагов вблизи',
+  svg:'<svg viewBox="0 0 16 16"><path d="M3 14C6 9 6.5 5.5 13 2M7.6 7.4c1.6.6 3.1.3 4.2-1M5.9 10.2c1.8.4 3.3 0 4.5-1.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'leafstorm',n:'Листопад',short:'Листья',tier:'epic',desc:'Кольцо листьев разлетается от ствола во все стороны',
+  svg:'<svg viewBox="0 0 16 16"><path d="M4 13C4 7 8 3 13 3c0 5-4 9-9 10Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M4 13C7 9.5 9 7.5 12 4.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'leech',n:'Живительный сок',short:'Сок',tier:'epic',desc:'Каждый убитый враг лечит древо',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'rootnet',n:'Сеть корней',short:'Сеть',tier:'legendary',desc:'+1 корень одновременно за уровень',
+  svg:'<svg viewBox="0 0 16 16"><circle cx="4" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="8" cy="4" r="1.7" fill="currentColor"/><path d="M5 11l2.3-5.3M11 11 8.7 5.7M5.7 12h4.6" stroke="currentColor" stroke-width="1.3"/></svg>'},
+ {k:'harvest',n:'Золотой урожай',short:'Урожай',tier:'legendary',desc:'+12% семян с каждого врага за уровень',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 4C8 4 5.4 6.6 5.4 8.6a2.6 2.6 0 0 0 5.2 0C10.6 6.6 8 4 8 4Z" fill="currentColor"/><path d="M8 .8v1.7M2.5 5.5 4 6.3M13.5 5.5 12 6.3M1.5 9.5h1.8M12.7 9.5h1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'},
+ {k:'avatar',n:'Аватар рощи',short:'Аватар',tier:'mythic',desc:'+8% ко всему урону древа за уровень',
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><path d="M7.3 13V9.5h1.4V13" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="7" r="3" fill="currentColor"/></svg>'},
+ {k:'eternalbark',n:'Вечная кора',short:'Кора',tier:'mythic',desc:'Раз в волну древо переживает смертельный удар',
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="m5.8 8 1.6 1.7 2.9-3.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}];
+
 /* ═══════════ облики дерева ═══════════ */
 const TREE_SKINS={
  oak:{name:'Древо-хранитель',style:'oak',cost:0,
   trunk:['#6b5138','#4a3826'],canopy:['#2c5f41','#3a7a52','#4b9463','#5fae74'],
   glow:'128,224,168',leafC:'142,196,140',leafKind:'leaf',orb:'#a9e8c4',fruit:'#f2cf7e',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#5d452e"/><circle cx="20" cy="18" r="11" fill="#3a7a52"/><circle cx="12" cy="22" r="7" fill="#2c5f41"/><circle cx="28" cy="22" r="7" fill="#2c5f41"/><circle cx="20" cy="12" r="7" fill="#5fae74"/></svg>'},
- willow:{name:'Плакучая ива',style:'willow',cost:8,
+ willow:{name:'Плакучая ива',style:'willow',cost:12,
   trunk:['#5d6b4a','#3f4a33'],canopy:['#2f6b5e','#3f8a74','#57a88b','#79c4a4'],
   glow:'120,220,200',leafC:'126,204,178',leafKind:'leaf',orb:'#b8f0dc',fruit:'#e6f7c9',
   svg:'<svg viewBox="0 0 40 44"><path d="M18.5 42V24h3v18z" fill="#4a5638"/><ellipse cx="20" cy="16" rx="11" ry="8" fill="#3f8a74"/><path d="M10 18q-1 10-3 16M15 21q-1 9-2 15M25 21q1 9 2 15M30 18q1 10 3 16M20 22v14" stroke="#57a88b" stroke-width="2" fill="none" stroke-linecap="round"/></svg>'},
- maple:{name:'Багряный клён',style:'maple',cost:8,
+ maple:{name:'Багряный клён',style:'maple',cost:12,
   trunk:['#6b4632','#4a3022'],canopy:['#7a2f26','#a04430','#c25b38','#e07a48'],
   glow:'232,150,96',leafC:'214,110,70',leafKind:'leaf',orb:'#ffd08a',fruit:'#ff9a5c',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#4a3022"/><circle cx="20" cy="18" r="11" fill="#a04430"/><circle cx="12" cy="22" r="7" fill="#7a2f26"/><circle cx="28" cy="22" r="7" fill="#7a2f26"/><circle cx="20" cy="12" r="7" fill="#e07a48"/></svg>'},
- sakura:{name:'Цветущая сакура',style:'sakura',cost:10,
+ sakura:{name:'Цветущая сакура',style:'sakura',cost:18,
   trunk:['#7a5a4a','#54402f'],canopy:['#a85a74','#c97a92','#e59ab0','#f6bcd0'],
   glow:'240,160,196',leafC:'240,150,180',leafKind:'petal',orb:'#ffd7e4',fruit:'#ff9ec0',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#54402f"/><circle cx="20" cy="17" r="11" fill="#c97a92"/><circle cx="11" cy="21" r="7.5" fill="#a85a74"/><circle cx="29" cy="21" r="7.5" fill="#a85a74"/><circle cx="20" cy="11" r="7.5" fill="#f6bcd0"/><circle cx="16" cy="16" r="1.6" fill="#ffe3ee"/><circle cx="24" cy="13" r="1.6" fill="#ffe3ee"/><circle cx="22" cy="20" r="1.6" fill="#ffe3ee"/></svg>'},
- frost:{name:'Морозный ясень',style:'frost',cost:12,
+ frost:{name:'Морозный ясень',style:'frost',cost:24,
   trunk:['#5f6e78','#414d56'],canopy:['#3e5a6b','#5d8296','#84aec2','#aed6e6'],
   glow:'150,210,240',leafC:'190,225,245',leafKind:'snow',orb:'#cfeaff',fruit:'#9fd4f2',
   svg:'<svg viewBox="0 0 40 44"><path d="M18.5 42V26h3v16z" fill="#414d56"/><path d="M20 4l4 12h-8z" fill="#aed6e6"/><path d="M9 14l7 8-9 4z" fill="#84aec2"/><path d="M31 14l-7 8 9 4z" fill="#84aec2"/><path d="M20 12l6 14H14z" fill="#5d8296"/></svg>'},
- moon:{name:'Лунный кедр',style:'moon',cost:15,
+ moon:{name:'Лунный кедр',style:'moon',cost:32,
   trunk:['#4a4660','#33304a'],canopy:['#2c2f4a','#3c4268','#4d5684','#616da6'],
   glow:'150,160,232',leafC:'150,165,230',leafKind:'spark',orb:'#c3ccff',fruit:'#8fa0ff',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#33304a"/><circle cx="20" cy="18" r="11" fill="#3c4268"/><circle cx="12" cy="22" r="7" fill="#2c2f4a"/><circle cx="28" cy="22" r="7" fill="#2c2f4a"/><circle cx="20" cy="12" r="7" fill="#4d5684"/><circle cx="15" cy="15" r="1.4" fill="#c3ccff"/><circle cx="24" cy="18" r="1.4" fill="#c3ccff"/><circle cx="20" cy="10" r="1.4" fill="#e6ebff"/></svg>'}};
 
-/* ═══════════ модификации ═══════════ */
-const DEW_SVG='<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>';
-const MODS=[
- {k:'roots',name:'Удар корнями',acc:'#c9a06a',accbg:'rgba(201,160,106,.12)',
-  desc:'Корни прокапываются под землёй и бьют врага снизу — главная сила древа',costs:[6,14,28],
-  fx:l=>{const cd=(2.4-.35*l).toFixed(1),d=Math.round((2.2+.8*l)*100);
-    return l<3?`Каждые ${cd} c · ${d}% урона → ${Math.round((2.2+.8*(l+1))*100)}%${l===2?' + 2-й корень':''}`:`Каждые ${cd} c · ${d}% урона · 2 корня`;},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'multishot',name:'Разветвление',acc:'#e8b64c',accbg:'rgba(232,182,76,.12)',
-  desc:'Древо выпускает дополнительные семена по ближним целям',costs:[5,12,26],
-  fx:l=>`Выстрелов сразу: ${1+l}${l<3?' → '+(2+l):''}`,
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8 3.5 3M8 8l4.5-5M8 8V2.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'bounce',name:'Отскок',acc:'#6fd3c7',accbg:'rgba(111,211,199,.12)',
-  desc:'Семя отскакивает к ближайшему врагу (70% урона)',costs:[4,10,22],
-  fx:l=>l?`Отскоков: ${l}${l<3?' → '+(l+1):''} · 70% урона`:'Отскоков: 1 · 70% урона',
-  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
- {k:'splash',name:'Резонанс',acc:'#e0704f',accbg:'rgba(224,112,79,.12)',
-  desc:'При попадании рождается ударная волна по соседям',costs:[6,14,28],
-  fx:l=>l?`${35+10*l}% урона · радиус ${40+15*l}${l<3?' → '+(45+10*l)+'%':''}`:'45% урона · радиус 55',
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.4" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'frost',name:'Морозная роса',acc:'#8fd0f0',accbg:'rgba(124,201,232,.12)',
-  desc:'Ледяная роса замедляет врагов',costs:[4,10,20],
-  fx:l=>l?`Замедление ${25+10*l}%${l<3?' → '+(35+10*l)+'%':''} · ${(1.2+.3*l).toFixed(1)} c`:'Замедление 35% · 1.5 c',
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v12M2.8 5l10.4 6M13.2 5 2.8 11" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'branch',name:'Удар ветками',acc:'#8fd68a',accbg:'rgba(143,214,138,.12)',
-  desc:'Ветки сметают врагов вблизи древа и отбрасывают их',costs:[6,13,26],
-  fx:l=>l?`Каждые ${(2.4-.4*l).toFixed(1)} c · ${Math.round((1.2+.5*l)*100)}% урона${l<3?' → '+Math.round((1.7+.5*l)*100)+'%':''}`:'Каждые 2.0 c · 170% урона',
-  svg:'<svg viewBox="0 0 16 16"><path d="M3 14C6 9 6.5 5.5 13 2M7.6 7.4c1.6.6 3.1.3 4.2-1M5.9 10.2c1.8.4 3.3 0 4.5-1.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'leaf',name:'Удар листвой',acc:'#a5d86f',accbg:'rgba(165,216,111,.12)',
-  desc:'Древо выпускает кольцо листьев во все стороны',costs:[8,17,34],
-  fx:l=>`Листьев: ${10+5*l} · ${Math.round((.7+.35*l)*100)}% урона${l<3?` → ${15+5*l} листьев`:''}`,
-  svg:'<svg viewBox="0 0 16 16"><path d="M4 13C4 7 8 3 13 3c0 5-4 9-9 10Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M4 13C7 9.5 9 7.5 12 4.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>'}];
-
 /* ═══════════ состояние ═══════════ */
 const maxHpOf=o=>Math.round(100*Math.pow(1.16,o.hpLvl));
-const DEF_MODS={multishot:0,bounce:0,splash:0,frost:0,roots:0,branch:0,leaf:0};
 function load(){
   let d=null;
-  for(const k of ['drevo.save.v3','drevo.save.v2','drevo.save.v1']){
+  for(const k of ['drevo.save.v4','drevo.save.v3','drevo.save.v2','drevo.save.v1']){
     try{const p=JSON.parse(localStorage.getItem(k));if(p){d=p;break;}}catch(e){}}
+  const base={v:1,seeds:0,dew:0,amber:0,wave:1,killed:0,totalKills:0,dmgLvl:0,spdLvl:0,hpLvl:0,
+    treeHp:100,muted:false,lastSeen:0,bestWave:1,seen:true,tipShop:false,amberTier:0,
+    abilities:{},equip:[],treeSkins:['oak'],treeSkin:'oak'};
   if(d&&d.v===1){
-    const s=Object.assign({v:1,seeds:0,dew:0,wave:1,killed:0,totalKills:0,dmgLvl:0,spdLvl:0,hpLvl:0,
-      treeHp:100,muted:false,lastSeen:0,bestWave:1,seen:true,tipShop:false},d);
-    s.mods=Object.assign({},DEF_MODS,d.mods||{});
+    const s=Object.assign(base,d);
+    s.abilities=Object.assign({},d.abilities||{});
+    s.equip=Array.isArray(d.equip)?d.equip.slice(0,5):[];
     s.treeSkins=(Array.isArray(d.treeSkins)&&d.treeSkins.length)?d.treeSkins:['oak'];
     s.treeSkin=(d.treeSkin&&TREE_SKINS[d.treeSkin])?d.treeSkin:'oak';
+    if(!d.abilities&&d.mods){ /* миграция с v3 */
+      const map={multishot:'multishot',bounce:'bounce',splash:'resonance',frost:'frost',roots:'deeproots',branch:'branch',leaf:'leafstorm'};
+      for(const m in map)if(d.mods[m])s.abilities[map[m]]=d.mods[m];
+      s.equip=Object.keys(s.abilities).slice(0,5);}
+    const L=s.dmgLvl+s.spdLvl+s.hpLvl;
+    if(d.amber===undefined){s.amberTier=Math.floor(L/50);s.amber=5*s.amberTier;}
     if(s.treeHp<=0)s.treeHp=maxHpOf(s);
     s.treeHp=Math.min(s.treeHp,maxHpOf(s));
     return s;}
-  return {v:1,seeds:0,dew:0,wave:1,killed:0,totalKills:0,dmgLvl:0,spdLvl:0,hpLvl:0,treeHp:100,
-    muted:false,lastSeen:0,bestWave:1,seen:false,tipShop:false,
-    mods:Object.assign({},DEF_MODS),treeSkins:['oak'],treeSkin:'oak'};
+  base.seen=false;return base;
 }
 const S=load();
-function save(){try{localStorage.setItem(KEY,JSON.stringify({v:1,seeds:S.seeds,dew:S.dew,wave:S.wave,killed:S.killed,
-  totalKills:S.totalKills,dmgLvl:S.dmgLvl,spdLvl:S.spdLvl,hpLvl:S.hpLvl,treeHp:S.treeHp,muted:S.muted,
-  lastSeen:Date.now(),bestWave:S.bestWave,seen:true,tipShop:S.tipShop,
-  mods:S.mods,treeSkins:S.treeSkins,treeSkin:S.treeSkin}));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({v:1,seeds:S.seeds,dew:S.dew,amber:S.amber,
+  wave:S.wave,killed:S.killed,totalKills:S.totalKills,dmgLvl:S.dmgLvl,spdLvl:S.spdLvl,hpLvl:S.hpLvl,
+  treeHp:S.treeHp,muted:S.muted,lastSeen:Date.now(),bestWave:S.bestWave,seen:true,tipShop:S.tipShop,
+  amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,treeSkin:S.treeSkin}));}catch(e){}}
 
-/* ═══════════ статы (мягкие кривые) ═══════════ */
-const treeDmg   =()=>6*Math.pow(1.10,S.dmgLvl);
-const treeAspd  =()=>Math.min(4.5,.8*Math.pow(1.08,S.spdLvl));
-const treeMaxHp =()=>maxHpOf(S);
+/* ═══════════ статы ═══════════ */
+const ab=k=>S.equip.includes(k)?(S.abilities[k]||0):0;
+const treeDmg  =()=>6*Math.pow(1.10,S.dmgLvl)*(1+.12*ab('thorns'))*(1+.08*ab('avatar'));
+const treeAspd =()=>Math.min(5,.8*Math.pow(1.08,S.spdLvl)*(1+.10*ab('swift')));
+const treeMaxHp=()=>maxHpOf(S);
 const COST={dmg:[25,1.27],spd:[45,1.30],hp:[30,1.27]};
 const costOf=k=>Math.ceil(COST[k][0]*Math.pow(COST[k][1],S[k+'Lvl']));
 function treeGeom(){const L=S.dmgLvl+S.spdLvl+S.hpLvl;
-  return {h:50+72*(1-Math.exp(-L/18)), R:24+48*(1-Math.exp(-L/16)),
-    stage:Math.min(6,Math.floor(L/5)), L};}
-function afkRate(){const dps=treeDmg()*treeAspd();
-  const avgHp=16*Math.pow(1.13,S.wave-1)*1.8, avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
+  return {h:50+72*(1-Math.exp(-L/18)),R:24+48*(1-Math.exp(-L/16)),stage:Math.min(6,Math.floor(L/5)),L};}
+function afkRate(){const dps=6*Math.pow(1.10,S.dmgLvl)*Math.min(5,.8*Math.pow(1.08,S.spdLvl));
+  const avgHp=16*Math.pow(1.13,S.wave-1)*1.8,avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
   return dps/avgHp*avgRw*.35;}
 
-let afkReward=0, afkDew=0, afkSec=0;
+let afkReward=0,afkDew=0,afkSec=0;
 if(S.seen&&S.lastSeen){const el=(Date.now()-S.lastSeen)/1000;
   if(el>90){afkSec=Math.min(el,8*3600);afkReward=Math.floor(afkRate()*afkSec);
     afkDew=Math.min(10,Math.floor(afkSec/1800));}}
@@ -457,6 +516,7 @@ if(S.seen&&S.lastSeen){const el=(Date.now()-S.lastSeen)/1000;
 /* ═══════════ канвас ═══════════ */
 const cv=$('#game'),ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1,cx=0,cy=0,ground=null;
+const spawnR=()=>Math.min(W*.46,H*.40/ISO,520)+20;
 function makeGround(){
   ground=document.createElement('canvas');ground.width=cv.width;ground.height=cv.height;
   const g=ground.getContext('2d');g.setTransform(DPR,0,0,DPR,0,0);
@@ -464,22 +524,22 @@ function makeGround(){
   bg.addColorStop(0,'#152219');bg.addColorStop(.55,'#0d1611');bg.addColorStop(1,'#070c09');
   g.fillStyle=bg;g.fillRect(0,0,W,H);
   const maxR=Math.hypot(W,H)/2;
-  for(let r=78;r<maxR;r+=64){const a=clamp(.14-(r/maxR)*.12,.02,.14);
+  for(let r=70;r<maxR;r+=58){const a=clamp(.14-(r/maxR)*.12,.02,.14);
     g.strokeStyle='rgba(146,196,158,'+a+')';g.lineWidth=1;
     g.beginPath();g.ellipse(cx,cy,r,r*ISO,0,0,TAU);g.stroke();}
   const ig=g.createRadialGradient(cx,cy-10,6,cx,cy,96);
   ig.addColorStop(0,'rgba(96,150,105,.34)');ig.addColorStop(.7,'rgba(64,104,74,.16)');ig.addColorStop(1,'rgba(64,104,74,0)');
   g.fillStyle=ig;g.beginPath();g.ellipse(cx,cy,96,96*ISO,0,0,TAU);g.fill();
-  for(let i=0;i<260;i++){const a=rand(0,TAU),d=Math.pow(Math.random(),.6)*maxR;
+  for(let i=0;i<240;i++){const a=rand(0,TAU),d=Math.pow(Math.random(),.6)*maxR;
     g.fillStyle='rgba('+(Math.random()<.5?'122,168,128':'86,120,94')+','+rand(.05,.16).toFixed(2)+')';
     g.beginPath();g.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d*ISO,rand(.7,2.1),0,TAU);g.fill();}
   g.lineWidth=1;
-  for(let i=0;i<70;i++){const a=rand(0,TAU),d=rand(70,maxR*.8);
+  for(let i=0;i<64;i++){const a=rand(0,TAU),d=rand(70,maxR*.8);
     const x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d*ISO;
     g.strokeStyle='rgba(128,178,134,'+rand(.12,.3).toFixed(2)+')';
     for(let k=-1;k<=1;k++){g.beginPath();g.moveTo(x,y);
       g.quadraticCurveTo(x+k*2,y-rand(3,5),x+k*3.2,y-rand(5,8));g.stroke();}}
-  for(let i=0;i<16;i++){const a=rand(0,TAU),d=rand(110,maxR*.75);
+  for(let i=0;i<14;i++){const a=rand(0,TAU),d=rand(110,maxR*.75);
     const x=cx+Math.cos(a)*d,y=cy+Math.sin(a)*d*ISO,r=rand(2.5,5.5);
     g.fillStyle='rgba(90,104,92,.5)';g.beginPath();g.ellipse(x,y,r,r*.62,0,0,TAU);g.fill();
     g.fillStyle='rgba(140,156,140,.25)';g.beginPath();g.ellipse(x-r*.25,y-r*.3,r*.55,r*.3,0,0,TAU);g.fill();}
@@ -487,37 +547,33 @@ function makeGround(){
 function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
   cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
   cv.style.width=W+'px';cv.style.height=H+'px';
-  ctx.setTransform(DPR,0,0,DPR,0,0);cx=W/2;cy=H*.53;makeGround();}
+  ctx.setTransform(DPR,0,0,DPR,0,0);cx=W/2;cy=H*.5;makeGround();}
 addEventListener('resize',resize);
 
 /* ═══════════ сущности ═══════════ */
 const enemies=[],shots=[],parts=[],floats=[],rootProj=[];
-const flies=[];for(let i=0;i<16;i++)flies.push({x:Math.random(),y:Math.random(),p:rand(0,TAU),s:rand(.4,1),
+const flies=[];for(let i=0;i<14;i++)flies.push({x:Math.random(),y:Math.random(),p:rand(0,TAU),s:rand(.4,1),
   c:['232,214,138','138,222,196','158,224,152'][i%3]});
 let T=0,atkT=0,spawnT=1.4,betweenT=2.4;
-let spawned=0,bossActive=false;
+let spawned=0,bossActive=false,barkUsed=false;
 let rootCd=1.2,branchCd=2,leafCd=6,branchFx=0,branchAng=0,branchDir=1;
 let shakeM=0,flinch=0,pulse=0,leafT=1;
 let runKills=0,runSeeds=0,dispSeeds=S.seeds,lastStr='';
 
 const quota=w=>15+Math.floor((w-1)/5)*5;
 const spawnInt=w=>Math.max(.38,1.7*Math.pow(.94,w-1));
-const ET={
-  beetle:{hp:14,sp:34,rw:5,dmg:4,r:11},
-  wolf:  {hp:27,sp:62,rw:9,dmg:7,r:13},
-  golem: {hp:95,sp:20,rw:22,dmg:13,r:17},
-  boss:  {hp:150,sp:16,rw:45,dmg:22,r:30}};
+const ET={beetle:{hp:14,sp:34,rw:5,dmg:4,r:11},wolf:{hp:27,sp:62,rw:9,dmg:7,r:13},
+  golem:{hp:95,sp:20,rw:22,dmg:13,r:17},boss:{hp:150,sp:16,rw:45,dmg:22,r:30}};
 function pickType(w){const r=Math.random();
   if(w>=6)return r<.15?'golem':r<.45?'wolf':'beetle';
   if(w>=3)return r<.32?'wolf':'beetle';
   return 'beetle';}
-function spawn(type){const t=ET[type],w=S.wave,a=rand(0,TAU),R=Math.max(W,H/ISO)/2+70;
+function spawn(type){const t=ET[type],w=S.wave,a=rand(0,TAU),R=spawnR();
   const boss=type==='boss';
-  const hp=t.hp*(boss?Math.pow(1.13,w-1):Math.pow(1.13,w-1)*rand(.9,1.1));
+  const hp=t.hp*Math.pow(1.13,w-1)*(boss?1:rand(.9,1.1));
   enemies.push({type,x:Math.cos(a)*R,y:Math.sin(a)*R,hp,maxHp:hp,
-    sp:t.sp*rand(.92,1.08),dmg:t.dmg*Math.pow(1.07,w-1),
-    rw:Math.round(t.rw*Math.pow(1.12,w-1)),
-    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1});}
+    sp:t.sp*rand(.92,1.08),dmg:t.dmg*Math.pow(1.07,w-1),rw:Math.round(t.rw*Math.pow(1.12,w-1)),
+    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1,born:0});}
 
 /* ═══════════ звук ═══════════ */
 let AC=null;const lastSnd={};
@@ -538,12 +594,16 @@ const sfx={
   wave(){tone(196,.25,'sine',.07);tone(262,.3,'sine',.06,0,.12);},
   hurt(){if(th('hr',150))tone(98,.14,'sawtooth',.05,-30);},
   upgrade(){tone(392,.1,'sine',.08);tone(523,.12,'sine',.07,0,.08);tone(659,.16,'sine',.07,0,.16);},
-  buy(){tone(740,.09,'sine',.08);tone(988,.14,'sine',.07,0,.07);},
   dig(){if(th('dg',120))tone(90,.22,'sine',.06,30);},
   roots(){tone(70,.25,'sine',.1,-20);tone(150,.1,'triangle',.05,-40,.06);},
   branch(){if(th('br',200))tone(320,.12,'sawtooth',.04,-200);},
   leaf(){for(let i=0;i<3;i++)tone(880+i*140,.06,'triangle',.03,-260,i*.05);},
+  tick(){tone(1150,.03,'square',.025);},
+  spin(){tone(300,.5,'triangle',.06,500);},
   claim(){tone(523,.1,'triangle',.08);tone(784,.18,'triangle',.07,0,.09);},
+  reveal(t){const seq={common:[440],rare:[440,587],epic:[440,587,740],legendary:[392,523,659,880],mythic:[392,523,659,880,1175]}[t]||[440];
+    seq.forEach((f,i)=>tone(f,.18,'triangle',.08,0,i*.09));
+    if(t==='legendary'||t==='mythic')tone(80,.5,'sine',.12,-20);},
   over(){tone(220,.4,'sine',.09,-120);tone(110,.7,'sine',.08,-40,.25);}};
 document.addEventListener('pointerdown',()=>ac());
 
@@ -555,85 +615,195 @@ function banner(title,sub,boss){const b=$('#waveBanner');
   b.classList.toggle('boss',!!boss);b.classList.remove('show');void b.offsetWidth;b.classList.add('show');}
 let toastT=0;function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');
   clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),4500);}
-const open=s=>$(s).classList.add('open'), close=s=>$(s).classList.remove('open');
+const open=s=>$(s).classList.add('open'),close=s=>$(s).classList.remove('open');
 const SUBS=['тьма сгущается…','лес шепчет…','они всё ближе…','стойте до конца…','корни помнят…'];
-function dewBump(){const p=$('#dewPill');p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump');}
+function bump(id){const p=$(id);p.classList.remove('bump');void p.offsetWidth;p.classList.add('bump');}
 
-const el={wave:$('#waveNum'),lvl:$('#treeLvl'),seeds:$('#seedNum'),dew:$('#dewNum'),prog:$('#wprog i'),
-  ud:$('#upgDmg'),us:$('#upgSpd'),uh:$('#upgHp')};
+const el={wave:$('#waveNum'),lvl:$('#treeLvl'),seeds:$('#seedNum'),dew:$('#dewNum'),amber:$('#amberNum'),
+  prog:$('#wprog i'),ud:$('#upgDmg'),us:$('#upgSpd'),uh:$('#upgHp')};
 function setUpg(btn,k,stat){const c=costOf(k);
   btn.querySelector('.upg-lvl').textContent='ур. '+S[k+'Lvl'];
   btn.querySelector('.upg-stat').textContent=stat;
   btn.querySelector('.upg-cost b').textContent=fmt(c);
   const ok=S.seeds>=c&&!S.over;btn.disabled=!ok;btn.classList.toggle('afford',ok);}
-function cheapestShop(){let m=Infinity;
-  for(const mod of MODS){const l=S.mods[mod.k];if(l<mod.costs.length)m=Math.min(m,mod.costs[l]);}
-  for(const k in TREE_SKINS)if(!S.treeSkins.includes(k))m=Math.min(m,TREE_SKINS[k].cost);
-  return m;}
 function updateHUD(){
   el.wave.textContent=S.wave;
   el.lvl.textContent=1+S.dmgLvl+S.spdLvl+S.hpLvl;
-  el.dew.textContent=S.dew;
+  el.dew.textContent=S.dew;el.amber.textContent=S.amber;
   el.prog.style.width=clamp(100*S.killed/quota(S.wave),0,100)+'%';
   $('#waveLab').textContent=bossActive?'Босс':'Волна';
   $('#wavePill').classList.toggle('boss-phase',bossActive);
-  $('#shopBtn').classList.toggle('glow',S.dew>=cheapestShop());
-  setUpg(el.ud,'dmg','Урон '+fmtS(treeDmg()));
-  setUpg(el.us,'spd','Скорость '+treeAspd().toFixed(1)+'/с');
+  $('#shopBtn').classList.toggle('glow',S.dew>=SPIN_COST||S.amber>=12);
+  setUpg(el.ud,'dmg','Урон '+fmtS(6*Math.pow(1.10,S.dmgLvl)));
+  setUpg(el.us,'spd','Скорость '+Math.min(5,.8*Math.pow(1.08,S.spdLvl)).toFixed(1)+'/с');
   setUpg(el.uh,'hp','Прочность '+fmt(treeMaxHp()));
   updateShopLive();}
+function checkAmber(){const L=S.dmgLvl+S.spdLvl+S.hpLvl,t=Math.floor(L/50);
+  if(t>S.amberTier){const n=(t-S.amberTier)*5;S.amberTier=t;S.amber+=n;
+    bump('#amberPill');toast('+'+n+' янтаря — древо достигло '+t*50+' уровня!');
+    sfx.claim();save();updateHUD();}}
+
+/* ═══════════ рулетка ═══════════ */
+const SPIN_COST=6,SEGN=12,SEG=TAU/SEGN;
+let wheelSegs=[],wheelAng=0,spinning=false,spinFrom=0,spinTo=0,spinStart=0,spinDur=4.2;
+let winner=-1,lastSeg=-1,pointerKick=0;
+const wheelParts=[];
+const wCv=$('#wheelCv'),wCtx=wCv.getContext('2d');
+function luck(){return 1+S.wave*.02;}
+function pickAbility(){
+  const lk=luck();let tot=0;const tw={};
+  for(const t in TIERS){tw[t]=TIERS[t].w*Math.pow(lk,TIERS[t].idx);tot+=tw[t];}
+  let r=Math.random()*tot,tier='common';
+  for(const t in TIERS){if(r<tw[t]){tier=t;break;}r-=tw[t];}
+  const list=ABIL.filter(a=>a.tier===tier);
+  return list[Math.floor(Math.random()*list.length)];}
+function genWheel(){
+  const segs=[];
+  for(let i=0;i<9;i++)segs.push({a:pickAbility(),plus:1});
+  for(let i=0;i<2;i++)segs.push({a:pickAbility(),plus:3});
+  segs.push({a:pickAbility(),plus:5});
+  for(let i=segs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[segs[i],segs[j]]=[segs[j],segs[i]];}
+  wheelSegs=segs;}
+function segAtPointer(){return Math.floor((((-Math.PI/2-wheelAng)%TAU)+TAU)%TAU/SEG)%SEGN;}
+function startSpin(){
+  if(spinning||S.dew<SPIN_COST||!$('#reveal').hidden)return;
+  S.dew-=SPIN_COST;save();updateHUD();
+  if(!wheelSegs.length)genWheel();
+  $('#reveal').hidden=true;
+  winner=Math.floor(Math.random()*SEGN);
+  const center=winner*SEG+SEG/2;
+  let target=-Math.PI/2-center,delta=target-(wheelAng%TAU);
+  while(delta<TAU*5)delta+=TAU;
+  spinFrom=wheelAng;spinTo=wheelAng+delta;spinStart=T;spinning=true;lastSeg=-1;
+  sfx.spin();}
+function applyReward(seg){
+  const a=seg.a,k=a.k,plus=seg.plus,t=TIERS[a.tier];
+  const isNew=!S.abilities[k];
+  S.abilities[k]=(S.abilities[k]||0)+plus;
+  if(isNew&&S.equip.length<5){S.equip.push(k);setTimeout(()=>toast('Надето: '+a.n),1200);}
+  const n={common:18,rare:30,epic:46,legendary:70,mythic:100}[a.tier];
+  for(let i=0;i<n;i++){const an=rand(0,TAU),v=rand(60,340);
+    wheelParts.push({x:300,y:300,vx:Math.cos(an)*v,vy:Math.sin(an)*v,l:rand(.5,1),ml:1,c:t.g,sz:rand(2,4.5)});}
+  if(a.tier==='legendary'||a.tier==='mythic'){
+    $('#shopModal').classList.add('shake-lg');setTimeout(()=>$('#shopModal').classList.remove('shake-lg'),600);}
+  sfx.reveal(a.tier);
+  const rv=$('#reveal');
+  rv.className='reveal t-'+a.tier+((a.tier==='legendary'||a.tier==='mythic')?' rays':'');
+  $('#rvTier').textContent=t.name;
+  $('#rvName').textContent='+'+plus+' · '+a.n;
+  $('#rvDesc').textContent=a.desc+(isNew?' — новая способность!':'');
+  rv.hidden=false;
+  save();updateHUD();renderAbilities();}
+function drawWheel(dt){
+  const g=wCtx,r=300;
+  g.clearRect(0,0,600,600);
+  g.save();g.translate(r,r);
+  g.rotate(wheelAng);
+  for(let i=0;i<SEGN;i++){
+    const s=wheelSegs[i],t=TIERS[s.a.tier],a0=i*SEG;
+    g.beginPath();g.moveTo(0,0);g.arc(0,0,r-10,a0,a0+SEG);g.closePath();
+    g.fillStyle='rgba('+t.g+','+(i%2?.17:.11)+')';g.fill();
+    g.strokeStyle='rgba(233,242,230,.14)';g.lineWidth=2;g.stroke();
+    if(!$('#reveal').hidden&&i===winner){
+      g.fillStyle='rgba('+t.g+',.3)';g.beginPath();g.moveTo(0,0);g.arc(0,0,r-10,a0,a0+SEG);g.closePath();g.fill();}
+    g.save();g.rotate(a0+SEG/2);g.textAlign='right';
+    g.fillStyle=t.c;g.font='800 30px Unbounded';g.fillText('+'+s.plus,r-26,11);
+    g.fillStyle='rgba(233,242,230,.85)';g.font='700 17px Manrope';g.fillText(s.a.short,r-26,-14);
+    g.fillStyle=t.c;g.beginPath();g.arc(r-40,16,4,0,TAU);g.fill();
+    g.restore();}
+  g.rotate(-wheelAng);
+  const hg=g.createRadialGradient(0,0,4,0,0,52);
+  hg.addColorStop(0,'#2c4234');hg.addColorStop(1,'#152019');
+  g.fillStyle=hg;g.beginPath();g.arc(0,0,50,0,TAU);g.fill();
+  g.strokeStyle='rgba(232,182,76,.5)';g.lineWidth=3;g.stroke();
+  g.fillStyle='#e8b64c';g.beginPath();
+  g.moveTo(0,-20);g.bezierCurveTo(14,-6,14,8,0,20);g.bezierCurveTo(-14,8,-14,-6,0,-20);g.fill();
+  g.restore();
+  g.strokeStyle='rgba(150,200,160,.3)';g.lineWidth=5;
+  g.beginPath();g.arc(r,r,r-6,0,TAU);g.stroke();
+  const pk=1+pointerKick*.25;
+  g.save();g.translate(r,10);g.scale(pk,pk);
+  g.fillStyle='#f6d488';g.strokeStyle='#0a120d';g.lineWidth=3;
+  g.beginPath();g.moveTo(0,20);g.lineTo(-11,0);g.lineTo(11,0);g.closePath();g.fill();g.stroke();
+  g.restore();
+  g.save();g.globalCompositeOperation='lighter';
+  for(let i=wheelParts.length-1;i>=0;i--){const p=wheelParts[i];
+    p.l-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.96;p.vy*=.96;
+    if(p.l<=0){wheelParts.splice(i,1);continue;}
+    g.fillStyle='rgba('+p.c+','+clamp(p.l/p.ml,0,1).toFixed(2)+')';
+    g.beginPath();g.arc(p.x,p.y,p.sz,0,TAU);g.fill();}
+  g.restore();}
+function wheelFrame(dt){
+  pointerKick=Math.max(0,pointerKick-dt*5);
+  if(spinning){
+    const t=clamp((T-spinStart)/spinDur,0,1);
+    const e=1-Math.pow(1-t,4);
+    wheelAng=spinFrom+(spinTo-spinFrom)*e;
+    const idx=segAtPointer();
+    if(idx!==lastSeg){lastSeg=idx;pointerKick=1;if(t<.92)sfx.tick();}
+    if(t>=1){spinning=false;wheelAng=spinTo;applyReward(wheelSegs[winner]);}
+    drawWheel(dt);}
+  else if((shopOpen&&curTab==='roulette')||wheelParts.length)drawWheel(dt);}
 
 /* ═══════════ лавка ═══════════ */
-let shopOpen=false;
-function renderShop(){
-  $('#shopDew').textContent=S.dew;
-  $('#paneMods').innerHTML=MODS.map(m=>{
-    const l=S.mods[m.k],max=m.costs.length,cost=l<max?m.costs[l]:null;
-    const pips='<span class="pips">'+'<i class="on"></i>'.repeat(l)+'<i></i>'.repeat(max-l)+'</span>';
-    const buy=cost!=null
-      ?`<button class="buy-dew" data-mod="${m.k}" ${S.dew>=cost?'':'disabled'}>${DEW_SVG}<b>${cost}</b></button>`
-      :`<span class="buy-dew max">МАКС</span>`;
-    return `<div class="mod-row" style="--acc:${m.acc};--accbg:${m.accbg}">
-      <span class="mod-ico">${m.svg}</span>
-      <span class="mod-info">
-        <span class="mod-name">${m.name}${pips}</span>
-        <span class="mod-desc">${m.desc}</span>
-        <span class="mod-fx">${m.fx(l)}</span>
-      </span>${buy}</div>`;}).join('')
-    +'<p class="shop-note">✦ Модификации действуют автоматически и сохраняются после возрождения.</p>';
-  $('#paneSkins').innerHTML=Object.entries(TREE_SKINS).map(([k,ts])=>{
+let shopOpen=false,curTab='roulette';
+function renderAbilities(){
+  $('#abCount').textContent=S.equip.length+'/5';
+  $('#abilGrid').innerHTML=ABIL.map(a=>{
+    const l=S.abilities[a.k]||0,eq=S.equip.includes(a.k),t=TIERS[a.tier];
+    return `<div class="abil t-${a.tier} ${l?'':'locked'} ${eq?'eq':''}" data-abil="${a.k}">
+      <span class="abil-ico">${a.svg}</span>
+      <span class="abil-body"><b>${a.n}</b><i style="color:${t.c}">${t.name}</i>
+      <span class="abil-lvl">${l?'ур. '+l:'не найдена'}</span></span>
+      <span class="abil-eq">${eq?'✓':l?'＋':''}</span></div>`;}).join('');}
+function renderTrees(){
+  $('#paneTrees').innerHTML='<div class="skin-grid">'+Object.entries(TREE_SKINS).map(([k,ts])=>{
     const owned=S.treeSkins.includes(k),active=S.treeSkin===k;
     const state=active?'<span style="color:var(--gold2)">Используется ✓</span>'
       :owned?'<span style="color:var(--teal)">Выбрать</span>'
-      :`<span style="color:#bfe9f5">${DEW_SVG} ${ts.cost}</span>`;
+      :`<span style="color:#ffd9a0"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg> ${ts.cost}</span>`;
     return `<div class="skin-card ${active?'active':''}" data-tree="${k}">
       <div class="skin-prev">${ts.svg}</div>
       <div class="skin-name">${ts.name}</div>
-      <div class="skin-state">${state}</div></div>`;}).join('');}
+      <div class="skin-state">${state}</div></div>`;}).join('')+'</div>'
+    +'<p class="shop-note">✦ Янтарь начисляется за каждые 50 уровней древа: +5.</p>';}
+function renderShop(){
+  $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
+  if(!wheelSegs.length)genWheel();
+  renderAbilities();renderTrees();}
 function updateShopLive(){if(!shopOpen)return;
-  $('#shopDew').textContent=S.dew;
-  document.querySelectorAll('[data-mod]').forEach(b=>{
-    const m=MODS.find(x=>x.k===b.dataset.mod);const cost=m.costs[S.mods[m.k]];
-    b.disabled=!(cost!=null&&S.dew>=cost);});}
-function buyMod(k){const m=MODS.find(x=>x.k===k),l=S.mods[k];
-  if(l>=m.costs.length||S.dew<m.costs[l])return;
-  S.dew-=m.costs[l];S.mods[k]++;sfx.buy();pulse=.6;
-  save();renderShop();updateHUD();}
+  $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
+  const sb=$('#spinBtn');
+  sb.disabled=spinning||S.dew<SPIN_COST||!$('#reveal').hidden;
+  sb.classList.toggle('can',S.dew>=SPIN_COST&&!spinning);}
 function pickTree(k){const ts=TREE_SKINS[k];
-  if(!S.treeSkins.includes(k)){if(S.dew<ts.cost)return;S.dew-=ts.cost;S.treeSkins.push(k);}
-  S.treeSkin=k;sfx.buy();pulse=1;leafBurst();
-  save();renderShop();updateHUD();}
-$('#shopBtn').addEventListener('click',()=>{shopOpen=true;renderShop();open('#shopOverlay');});
+  if(!S.treeSkins.includes(k)){if(S.amber<ts.cost)return;S.amber-=ts.cost;S.treeSkins.push(k);}
+  S.treeSkin=k;sfx.claim();pulse=1;leafBurst();
+  save();renderTrees();updateHUD();}
+function setTab(t){curTab=t;
+  for(const [id,pane] of [['#tabRoulette','#paneRoulette'],['#tabAbils','#paneAbils'],['#tabTrees','#paneTrees']]){
+    $(id).classList.toggle('active',id==='#tab'+t[0].toUpperCase()+t.slice(1)||
+      (t==='roulette'&&id==='#tabRoulette')||(t==='abils'&&id==='#tabAbils')||(t==='trees'&&id==='#tabTrees'));
+    $(pane).hidden=!((t==='roulette'&&id==='#paneRoulette')||(t==='abils'&&id==='#paneAbils')||(t==='trees'&&id==='#paneTrees'));}}
+$('#shopBtn').addEventListener('click',()=>{shopOpen=true;renderShop();updateShopLive();open('#shopOverlay');});
 $('#shopClose').addEventListener('click',()=>{shopOpen=false;close('#shopOverlay');});
 $('#shopOverlay').addEventListener('click',e=>{if(e.target.id==='shopOverlay'){shopOpen=false;close('#shopOverlay');}});
-$('#tabMods').addEventListener('click',()=>{$('#tabMods').classList.add('active');$('#tabSkins').classList.remove('active');
-  $('#paneMods').hidden=false;$('#paneSkins').hidden=true;});
-$('#tabSkins').addEventListener('click',()=>{$('#tabSkins').classList.add('active');$('#tabMods').classList.remove('active');
-  $('#paneSkins').hidden=false;$('#paneMods').hidden=true;});
-$('#paneMods').addEventListener('click',e=>{const b=e.target.closest('[data-mod]');if(b&&!b.disabled)buyMod(b.dataset.mod);});
-$('#paneSkins').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
+$('#tabRoulette').addEventListener('click',()=>setTab('roulette'));
+$('#tabAbils').addEventListener('click',()=>setTab('abils'));
+$('#tabTrees').addEventListener('click',()=>setTab('trees'));
+$('#spinBtn').addEventListener('click',startSpin);
+$('#rvOk').addEventListener('click',()=>{$('#reveal').hidden=true;updateShopLive();});
+$('#abilGrid').addEventListener('click',e=>{
+  const c=e.target.closest('[data-abil]');if(!c)return;
+  const k=c.dataset.abil;
+  if(!S.abilities[k]){toast('Способность выпадает в рулетке');return;}
+  if(S.equip.includes(k))S.equip=S.equip.filter(x=>x!==k);
+  else if(S.equip.length<5)S.equip.push(k);
+  else{toast('Экипировано максимум 5 способностей');return;}
+  sfx.tick();save();renderAbilities();updateHUD();});
+$('#paneTrees').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
 
-/* ═══════════ боевая логика ═══════════ */
+/* ═══════════ бой ═══════════ */
 function burst(x,y,r,c){const n=Math.min(26,8+r);
   for(let i=0;i<n;i++){const a=rand(0,TAU),v=rand(20,90+r*3);
     parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,l:rand(.35,.7),ml:.7,sz:rand(1.5,3.2),c});}
@@ -641,34 +811,45 @@ function burst(x,y,r,c){const n=Math.min(26,8+r);
 function puff(x,y){for(let i=0;i<4;i++)parts.push({x,y,vx:rand(-20,20),vy:rand(-20,20),l:.25,ml:.25,sz:1.6,c:'255,217,138'});}
 function leafBurst(){const g=treeGeom(),ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
   for(let i=0;i<14;i++)parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),
-    x:rand(-g.R,g.R)*.9,y:-g.h+rand(-g.R*.4,g.R*.3),
-    vy:rand(16,28),l:rand(1,1.8),ml:1.8,c:ts.leafC});
+    x:rand(-g.R,g.R)*.9,y:-g.h+rand(-g.R*.4,g.R*.3),vy:rand(16,28),l:rand(1,1.8),ml:1.8,c:ts.leafC});
   parts.push({ring:true,x:0,y:-g.h,l:.45,ml:.45,r0:g.R*.5,r1:g.R*2.4,c:ts.glow});}
-function gainDew(n,x,y){S.dew+=n;dewBump();
+function gainDew(n,x,y){S.dew+=n;bump('#dewPill');
   floats.push({x,y,txt:'+'+n+' росы',l:1.3,ml:1.3,c:'#a5e8f0',sz:13});
-  if(!S.tipShop){S.tipShop=true;toast('Роса! Загляните в лавку рощи 💧');}
+  if(!S.tipShop){S.tipShop=true;toast('Роса! Испытайте рулетку в лавке 🎡');}
   updateHUD();}
 
 function kill(e){
-  S.seeds+=e.rw;runSeeds+=e.rw;S.killed++;S.totalKills++;runKills++;
-  floats.push({x:e.x,y:e.y*ISO-e.r-16,txt:'+'+fmt(e.rw),l:1,ml:1,c:'#f6d488',sz:e.type==='boss'?16:14});
+  const harvest=ab('harvest');
+  const rw=Math.round(e.rw*(1+.12*harvest));
+  S.seeds+=rw;runSeeds+=rw;S.killed++;S.totalKills++;runKills++;
+  floats.push({x:e.x,y:e.y*ISO-e.r-16,txt:'+'+fmt(rw),l:1,ml:1,c:'#f6d488',sz:e.type==='boss'?16:14});
   burst(e.x,e.y*ISO-e.r*.5,e.r,e.type==='boss'?'214,110,170':'224,124,94');
+  if(harvest>0)for(let i=0;i<3;i++)parts.push({x:e.x+rand(-8,8),y:e.y*ISO-e.r*.5,vx:rand(-12,12),vy:rand(-40,-16),l:.6,ml:.6,sz:2,c:'246,212,136'});
+  const leech=ab('leech');
+  if(leech>0&&S.treeHp>0){
+    S.treeHp=Math.min(treeMaxHp(),S.treeHp+treeMaxHp()*(.01+.005*leech));
+    parts.push({x:rand(-14,14),y:-20,vx:rand(-6,6),vy:rand(-30,-14),l:.7,ml:.7,sz:2.4,c:'143,214,138'});}
   if(e.type==='boss'){gainDew(2+Math.floor(S.wave/5),e.x,e.y*ISO-e.r-36);nextWave();}
-  else{if(e.type==='golem'&&Math.random()<.12)gainDew(1,e.x,e.y*ISO-e.r-30);sfx.kill();}
-  updateHUD();}
+  else{if(e.type==='golem'&&Math.random()<.12)gainDew(1,e.x,e.y*ISO-e.r-30);sfx.kill();}}
 function hit(e,dmg){if(S.over||e.dead)return;
   e.hp-=dmg;e.flash=1;
   parts.push({x:e.x+rand(-4,4),y:e.y*ISO-e.r*.5,vx:rand(-14,14),vy:rand(-24,-6),l:.3,ml:.3,sz:2,c:'255,236,190'});
   floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-8,txt:''+Math.round(dmg),l:.65,ml:.65,c:'#ffe9b8',sz:11.5});
   sfx.hit();
-  if(e.hp<=0){e.dead=true;kill(e);}}
+  if(e.hp<=0)e.dead=true;}
 function damageTree(d){if(S.over)return;
+  if(S.treeHp-d<=0){
+    const eb=ab('eternalbark');
+    if(eb>0&&!barkUsed){
+      barkUsed=true;S.treeHp=treeMaxHp()*(.2+.08*eb);
+      parts.push({ring:true,x:0,y:-30,l:.6,ml:.6,r0:20,r1:120,c:'246,212,136'});
+      toast('Вечная кора спасла древо!');sfx.reveal('legendary');updateHUD();return;}}
   S.treeHp-=d;flinch=1;shakeM=Math.max(shakeM,4.5);vig();sfx.hurt();
   if(S.treeHp<=0){S.treeHp=0;gameOver();}
   updateHUD();}
 function nextWave(){
   S.wave++;S.bestWave=Math.max(S.bestWave,S.wave);
-  S.killed=0;spawned=0;bossActive=false;betweenT=2.6;
+  S.killed=0;spawned=0;bossActive=false;barkUsed=false;betweenT=2.6;
   const bonus=Math.round(6+S.wave*3*Math.pow(1.06,S.wave-1));
   S.seeds+=bonus;runSeeds+=bonus;
   floats.push({x:0,y:-treeGeom().h-46,txt:'+'+fmt(bonus)+' ✦',l:1.2,ml:1.2,c:'#a5e8c8',sz:14});
@@ -684,13 +865,13 @@ function gameOver(){
 function rootBurst(px,py,dmg,R){
   for(const e of enemies){if(e.dead)continue;
     if(Math.hypot(e.x-px,e.y-py)<R)hit(e,dmg);}
-  for(let k=0;k<12;k++)parts.push({root:true,x:px+rand(-30,30),y:py*ISO+rand(-16,16),
-    h:rand(18,36),a:rand(-.35,.35),l:.5,ml:.5,c:'146,104,64'});
-  parts.push({ring:true,x:px,y:py*ISO,l:.35,ml:.35,r0:12,r1:R,c:'201,160,106'});
+  for(let k=0;k<12;k++)parts.push({root:true,x:px+rand(-32,32),y:py*ISO+rand(-16,16),
+    h:rand(20,40),a:rand(-.4,.4),l:.55,ml:.55,c:'146,104,64'});
+  for(let k=0;k<6;k++)parts.push({x:px+rand(-20,20),y:py*ISO,vx:rand(-10,10),vy:rand(-50,-24),l:.5,ml:.5,sz:2,c:'170,230,180'});
+  parts.push({ring:true,x:px,y:py*ISO,l:.4,ml:.4,r0:12,r1:R,c:'201,160,106'});
   shakeM=Math.max(shakeM,3);sfx.roots();}
 
 function simulate(dt){
-  /* регенерация коры */
   if(S.treeHp>0&&S.treeHp<treeMaxHp())
     S.treeHp=Math.min(treeMaxHp(),S.treeHp+treeMaxHp()*.004*dt);
 
@@ -706,29 +887,29 @@ function simulate(dt){
       banner('Лихоцвет пробуждается…','пожиратель корней вышел из чащи',true);
       updateHUD();}}
 
-  /* — ГЛАВНАЯ АТАКА: корни прокапываются к врагу — */
+  /* корни — главная атака */
   rootCd-=dt;
   if(rootCd<=0&&enemies.length){
-    const rL=S.mods.roots;
-    rootCd=2.4-.35*rL;
+    const rL=ab('deeproots');
+    rootCd=Math.max(1.3,2.4-.12*rL);
     const near=enemies.slice().sort((a,b)=>(a.x*a.x+a.y*a.y)-(b.x*b.x+b.y*b.y));
-    const count=Math.min(1+(rL>=3?1:0),near.length);
+    const count=Math.min(Math.min(4,1+ab('rootnet')),near.length);
     for(let i=0;i<count;i++){
-      rootProj.push({t:0,dur:.8,tg:near[i],px:near[i].x,py:near[i].y,seed:rand(0,10),
-        dmg:treeDmg()*(2.2+.8*rL),R:60+15*rL});
+      rootProj.push({t:0,dur:.85,tg:near[i],px:near[i].x,py:near[i].y,seed:rand(0,10),
+        dmg:treeDmg()*(2.2+.5*rL),R:60+12*rL});
       sfx.dig();}}
   for(let i=rootProj.length-1;i>=0;i--){const p=rootProj[i];
     if(p.tg&&!p.tg.dead){p.px=p.tg.x;p.py=p.tg.y;}
     p.t+=dt/p.dur;
     const e=p.t*p.t*(3-2*p.t);
-    if(Math.random()<.6)parts.push({x:p.px*e+rand(-4,4),y:p.py*e*ISO+rand(-3,3),
+    if(Math.random()<.5)parts.push({x:p.px*e+rand(-4,4),y:p.py*e*ISO+rand(-3,3),
       vx:rand(-10,10),vy:rand(-26,-10),l:.35,ml:.35,sz:rand(1,2.2),c:'120,90,58'});
     if(p.t>=1){rootBurst(p.px,p.py,p.dmg,p.R);rootProj.splice(i,1);}}
 
-  /* — семена (доп. атака) — */
+  /* семена */
   atkT-=dt;
   if(atkT<=0&&enemies.length){
-    const n=1+S.mods.multishot;
+    const n=1+ab('multishot');
     const tg=enemies.slice().sort((a,b)=>(a.x*a.x+a.y*a.y)-(b.x*b.x+b.y*b.y));
     atkT=1/treeAspd();
     const g=treeGeom(),sw=Math.sin(T*1.05)*2.6;
@@ -741,14 +922,18 @@ function simulate(dt){
     const tx=tg.x,ty=tg.y*ISO-tg.r*.5,dx=tx-s.x,dy=ty-s.y,d=Math.hypot(dx,dy);
     if(d<tg.r*.7+6){
       hit(tg,s.dmg);
-      if(S.mods.splash>0){const L=S.mods.splash,R=40+15*L;
+      const spL=ab('resonance');
+      if(spL>0){const R=40+12*spL;
         for(const e of enemies){if(e===tg||e.dead)continue;
-          if(Math.hypot(e.x-tg.x,(e.y-tg.y)*ISO)<R)hit(e,s.dmg*(.35+.1*L));}
+          if(Math.hypot(e.x-tg.x,(e.y-tg.y)*ISO)<R)hit(e,s.dmg*(.3+.08*spL));}
         parts.push({ring:true,x:tg.x,y:tg.y*ISO-tg.r*.4,l:.3,ml:.3,r0:8,r1:R,c:'255,190,110'});}
-      if(S.mods.frost>0&&!tg.dead){const L=S.mods.frost;
-        let f=1-(.25+.1*L);if(tg.type==='boss')f=1-(1-f)*.5;
-        tg.slowF=f;tg.slowT=Math.max(tg.slowT,1.2+.3*L);}
-      if(S.mods.bounce>0&&s.b<S.mods.bounce){
+      const frL=ab('frost');
+      if(frL>0&&!tg.dead){
+        let f=1-Math.min(.7,.2+.08*frL);if(tg.type==='boss')f=1-(1-f)*.5;
+        tg.slowF=f;tg.slowT=Math.max(tg.slowT,1.2+.2*frL);
+        for(let k=0;k<3;k++)parts.push({x:tg.x+rand(-8,8),y:tg.y*ISO-tg.r*.5,vx:rand(-14,14),vy:rand(-20,0),l:.4,ml:.4,sz:1.8,c:'160,215,245'});}
+      const boL=ab('bounce');
+      if(boL>0&&s.b<boL){
         let best=null,bd=1e9;
         for(const e of enemies){if(e===tg||e.dead)continue;
           const dd=Math.hypot(e.x-tg.x,(e.y-tg.y)*ISO);
@@ -758,24 +943,24 @@ function simulate(dt){
     const v=s.sp*dt/d;s.x+=dx*v;s.y+=dy*v;
     if(Math.random()<.5)parts.push({x:s.x,y:s.y,vx:rand(-8,8),vy:rand(-8,8),l:.22,ml:.22,sz:1.5,c:'255,217,138'});}
 
-  /* — удар ветками — */
-  if(S.mods.branch>0){branchCd-=dt;
-    const reach=42+46+12*S.mods.branch;
+  /* ветви */
+  const brL=ab('branch');
+  if(brL>0){branchCd-=dt;
+    const reach=88+12*brL;
     const near=enemies.filter(e=>!e.dead&&Math.hypot(e.x,e.y)<reach);
     if(branchCd<=0&&near.length){
-      branchCd=2.4-.4*S.mods.branch;branchFx=1;branchAng=rand(0,TAU);branchDir*=-1;
-      const L=S.mods.branch,dmg=treeDmg()*(1.2+.5*L);
-      for(const e of near){hit(e,dmg);
-        if(!e.dead){const d=Math.max(1,Math.hypot(e.x,e.y));
-          e.x+=e.x/d*16;e.y+=e.y/d*16;}}
+      branchCd=Math.max(1.2,2.4-.2*brL);branchFx=1;branchAng=rand(0,TAU);branchDir*=-1;
+      for(const e of near){hit(e,treeDmg()*(1.2+.4*brL));
+        if(!e.dead){const d=Math.max(1,Math.hypot(e.x,e.y));e.x+=e.x/d*16;e.y+=e.y/d*16;}}
       sfx.branch();}}
   branchFx=Math.max(0,branchFx-dt*2.4);
 
-  /* — удар листвой: кольцо вокруг древа — */
-  if(S.mods.leaf>0){leafCd-=dt;
+  /* листопад */
+  const lfL=ab('leafstorm');
+  if(lfL>0){leafCd-=dt;
     if(leafCd<=0&&enemies.length){
-      leafCd=7-1.5*S.mods.leaf;
-      const L=S.mods.leaf,n=10+5*L,dmg=treeDmg()*(.7+.35*L);
+      leafCd=Math.max(3.5,7-lfL);
+      const n=8+3*lfL,dmg=treeDmg()*(.7+.3*lfL);
       for(let i=0;i<n;i++){const a=i/n*TAU+rand(-.12,.12);
         shots.push({kind:'ring',rot:rand(0,TAU),x:Math.cos(a)*46,y:Math.sin(a)*46,
           vx:Math.cos(a)*190,vy:Math.sin(a)*190,dmg,life:1.7,pierce:2});}
@@ -784,14 +969,17 @@ function simulate(dt){
     if(s.kind!=='ring')continue;
     s.life-=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.rot+=.25;
     if(s.life<=0){shots.splice(i,1);continue;}
+    let gone=false;
     for(const e of enemies){if(e.dead)continue;
       if(Math.hypot(e.x-s.x,(e.y-s.y)*ISO)<e.r+7){
         hit(e,s.dmg);s.pierce--;
         parts.push({leaf:true,lk:'leaf',ph:rand(0,TAU),x:s.x,y:s.y*ISO,vy:14,l:.6,ml:.6,c:'150,210,140'});
-        if(s.pierce<=0){shots.splice(i,1);break;}}}}
+        if(s.pierce<=0){shots.splice(i,1);gone=true;break;}}}
+    if(gone)continue;}
 
-  /* — враги — */
+  /* враги */
   for(const e of enemies){
+    e.born=Math.min(1,e.born+dt*2.2);
     e.flash=Math.max(0,e.flash-dt*6);
     let sf=1;if(e.slowT>0){e.slowT-=dt;sf=e.slowF;}
     const d=Math.hypot(e.x,e.y),lim=42+e.r*.35;
@@ -800,13 +988,15 @@ function simulate(dt){
     if(e.type==='boss'&&!e.dead&&Math.random()<dt*5)
       parts.push({x:e.x+rand(-e.r,e.r)*.6,y:e.y*ISO-e.r*.6,vx:rand(-6,6),vy:rand(-20,-8),
         l:rand(.8,1.4),ml:1.4,sz:rand(1.2,2.4),c:'214,140,190'});}
-  for(let i=enemies.length-1;i>=0;i--)if(enemies[i].dead)enemies.splice(i,1);
+  /* сбор урожая смертей — отдельным проходом */
+  for(let i=enemies.length-1;i>=0;i--){
+    if(enemies[i].dead){kill(enemies[i]);enemies.splice(i,1);}}
 }
 function updateFx(dt){
   flinch=Math.max(0,flinch-dt*3);pulse=Math.max(0,pulse-dt*1.6);
   const g=treeGeom(),ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
   leafT-=dt;
-  if(g.stage>=0&&leafT<=0){
+  if(leafT<=0){
     leafT=(ts.leafKind==='petal'||ts.leafKind==='leaf')?rand(.7,1.6):rand(1.1,2.2);
     const up=ts.leafKind==='spark';
     parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),
@@ -835,30 +1025,43 @@ function drawFlies(dt){
     ctx.shadowColor='rgb('+f.c+')';ctx.shadowBlur=8;
     ctx.beginPath();ctx.arc(x,y,1.8,0,TAU);ctx.fill();ctx.shadowBlur=0;}}
 
-/* — корни, прокапывающиеся под землёй — */
+/* грациозные корни */
 function drawRootProj(){
   for(const p of rootProj){
     const e=p.t*p.t*(3-2*p.t);
-    const tx=p.px*e,ty=p.py*e*ISO;
-    const dist=Math.hypot(p.px,p.py)*e,dirA=Math.atan2(p.py,p.px);
-    const mounds=Math.floor(dist/26);
-    for(let k=1;k<=mounds;k++){
-      const f=k*26/dist,mx=Math.cos(dirA)*k*26,my=Math.sin(dirA)*k*26*ISO;
-      const sz=6.5*(1-f*.45),fade=(1-f*.55);
-      ctx.fillStyle='rgba(58,40,24,'+(.6*fade).toFixed(2)+')';
-      ell(cx+mx,cy+my,sz,sz*.55);
-      ctx.fillStyle='rgba(150,110,70,'+(.5*fade).toFixed(2)+')';
-      ell(cx+mx-sz*.2,cy+my-sz*.3,sz*.55,sz*.26);}
-    ctx.fillStyle='rgba(70,48,28,.85)';ell(cx+tx,cy+ty,8.5,5.5);
-    ctx.fillStyle='rgba(170,126,80,.7)';ell(cx+tx-2,cy+ty-3,4.5,2.4);
-    const wob=Math.sin(T*14+p.seed)*2;
-    ctx.strokeStyle='rgba(120,86,52,.8)';ctx.lineWidth=3;ctx.lineCap='round';
-    ctx.beginPath();ctx.moveTo(cx+tx,cy+ty-2);
-    ctx.quadraticCurveTo(cx+tx+wob,cy+ty-9,cx+tx+wob*1.4,cy+ty-13);ctx.stroke();
-    const pu=.5+.5*Math.sin(T*8+p.seed);
-    ctx.strokeStyle='rgba(201,160,106,'+(.25+.3*pu).toFixed(2)+')';
-    ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
-    ctx.beginPath();ctx.ellipse(cx+p.px,cy+p.py*ISO,20+6*pu,(20+6*pu)*ISO,0,0,TAU);ctx.stroke();
+    const d=Math.hypot(p.px,p.py)||1,nx=-p.py/d,ny=p.px/d;
+    const off=Math.sin(p.seed)*Math.min(90,d*.35);
+    const cxw=p.px/2+nx*off,cyw=p.py/2+ny*off;
+    const bz=t=>{const u=1-t;
+      return {x:2*u*t*cxw+t*t*p.px,y:(2*u*t*cyw+t*t*p.py)};};
+    const N=16;ctx.lineCap='round';
+    ctx.strokeStyle='rgba(74,50,30,.9)';ctx.lineWidth=6.5;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    for(let k=1;k<=N;k++){const q=bz(e*k/N);ctx.lineTo(cx+q.x,cy+q.y*ISO);}
+    ctx.stroke();
+    ctx.strokeStyle='rgba(170,230,180,.55)';ctx.lineWidth=2.4;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    for(let k=1;k<=N;k++){const q=bz(e*k/N*.97);ctx.lineTo(cx+q.x,cy+q.y*ISO);}
+    ctx.stroke();
+    for(let k=1;k<=Math.floor(e*6);k++){const q=bz(k/6.5*e);
+      const al=.55*(1-k/8);
+      ctx.fillStyle='rgba(150,214,150,'+al.toFixed(2)+')';
+      ctx.beginPath();ctx.arc(cx+q.x-3,cy+q.y*ISO-2,2,0,TAU);
+      ctx.arc(cx+q.x+3,cy+q.y*ISO+1,1.6,0,TAU);ctx.fill();}
+    const tp=bz(e),tx=cx+tp.x,ty=cy+tp.y*ISO;
+    ctx.fillStyle='rgba(70,48,28,.9)';ell(tx,ty,9,5.5);
+    ctx.fillStyle='rgba(170,126,80,.75)';ell(tx-2,ty-3,4.5,2.4);
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    const pu=1+.25*Math.sin(T*12+p.seed);
+    const og=ctx.createRadialGradient(tx,ty-2,0,tx,ty-2,13*pu);
+    og.addColorStop(0,'rgba(220,255,210,.85)');og.addColorStop(.5,'rgba(140,220,160,.4)');og.addColorStop(1,'rgba(140,220,160,0)');
+    ctx.fillStyle=og;ctx.beginPath();ctx.arc(tx,ty-2,13*pu,0,TAU);ctx.fill();
+    ctx.restore();
+    const mx=cx+p.px,my=cy+p.py*ISO,ta=T*2+p.seed;
+    ctx.strokeStyle='rgba(201,160,106,.55)';ctx.lineWidth=2;ctx.setLineDash([7,6]);
+    ctx.beginPath();ctx.ellipse(mx,my,24,24*ISO,ta,0,TAU);ctx.stroke();
+    ctx.strokeStyle='rgba(170,230,180,.4)';
+    ctx.beginPath();ctx.ellipse(mx,my,15,15*ISO,-ta*1.4,0,TAU);ctx.stroke();
     ctx.setLineDash([]);}}
 
 function drawTree(){
@@ -866,18 +1069,13 @@ function drawTree(){
   const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
   const sw=Math.sin(T*1.05)*2.6+(flinch>0?Math.sin(T*55)*3*flinch:0);
   const bx=cx,by=cy;
-  /* аура жизни на земле */
-  const ga2=.05+stage*.028;
   const ggr=ctx.createRadialGradient(bx,by,4,bx,by,R*2.2);
-  ggr.addColorStop(0,'rgba('+ts.glow+','+ga2.toFixed(2)+')');ggr.addColorStop(1,'rgba('+ts.glow+',0)');
+  ggr.addColorStop(0,'rgba('+ts.glow+','+(.05+stage*.028).toFixed(2)+')');ggr.addColorStop(1,'rgba('+ts.glow+',0)');
   ctx.fillStyle=ggr;ctx.beginPath();ctx.ellipse(bx,by,R*2.2,R*2.2*ISO,0,0,TAU);ctx.fill();
-  /* свечение кроны */
-  const ga=.10+stage*.045+pulse*.5;
   const gg=ctx.createRadialGradient(bx+sw,by-h,4,bx+sw,by-h,R*3.2);
-  gg.addColorStop(0,'rgba('+ts.glow+','+ga.toFixed(2)+')');gg.addColorStop(1,'rgba('+ts.glow+',0)');
+  gg.addColorStop(0,'rgba('+ts.glow+','+(.10+stage*.045+pulse*.5).toFixed(2)+')');gg.addColorStop(1,'rgba('+ts.glow+',0)');
   ctx.fillStyle=gg;ctx.beginPath();ctx.arc(bx+sw,by-h,R*3.2,0,TAU);ctx.fill();
   ctx.fillStyle='rgba(0,0,0,.4)';ell(bx,by+4,R*1.15,R*.5);
-  /* корни: растут и укореняются с уровнем */
   const rootN=4+Math.min(6,Math.floor(L/4));
   const rootLen=R*(0.95+0.55*(1-Math.exp(-L/20)));
   ctx.lineCap='round';
@@ -894,7 +1092,6 @@ function drawTree(){
   if(stage>=3){ctx.strokeStyle='rgba(74,56,38,.5)';ctx.lineWidth=3;
     for(const s of[-1,1]){ctx.beginPath();ctx.moveTo(bx+s*R*.3,by-4);
       ctx.quadraticCurveTo(bx+s*R*.75,by-R*.28,bx+s*R*1.05,by-R*.16);ctx.stroke();}}
-  /* ствол */
   const tw=7+9*(1-Math.exp(-L/14));
   const tg=ctx.createLinearGradient(bx,by,bx,by-h);
   tg.addColorStop(0,ts.trunk[1]);tg.addColorStop(1,ts.trunk[0]);
@@ -924,13 +1121,12 @@ function drawTree(){
     for(let i=0;i<n;i++){
       const f=i/(n-1),ax=cX+(f-.5)*R*2.05,ay=cY+R*.35+Math.sin(f*Math.PI)*R*.18;
       const len=R*(1.15+.55*Math.abs(Math.sin(i*2.7)))+L*.6;
-      const sway2=Math.sin(T*1.3+i*1.9)*5;
+      const sw2=Math.sin(T*1.3+i*1.9)*5;
       ctx.strokeStyle=ts.canopy[2];ctx.globalAlpha=.85;
       ctx.beginPath();ctx.moveTo(ax,ay);
-      ctx.quadraticCurveTo(ax+sway2*.4,ay+len*.55,ax+sway2,ay+len);ctx.stroke();
+      ctx.quadraticCurveTo(ax+sw2*.4,ay+len*.55,ax+sw2,ay+len);ctx.stroke();
       ctx.fillStyle=ts.canopy[3];
-      for(const tf of[.45,.75,1]){
-        ctx.beginPath();ctx.arc(ax+sway2*tf,ay+len*tf,2.2,0,TAU);ctx.fill();}}
+      for(const tf of[.45,.75,1]){ctx.beginPath();ctx.arc(ax+sw2*tf,ay+len*tf,2.2,0,TAU);ctx.fill();}}
     ctx.globalAlpha=1;
   }else if(ts.style==='frost'){
     for(let i=0;i<Math.min(BLOBS.length,5+Math.floor(L/3));i++){const b=BLOBS[i];
@@ -954,9 +1150,7 @@ function drawTree(){
       ctx.fillStyle='#ffe3ee';
       for(let i=0;i<6+stage*2;i++){
         const a=i*2.4+L,px=cX+Math.cos(a)*R*.75,py=cY+Math.sin(a)*R*.55;
-        ctx.beginPath();ctx.arc(px,py,2,0,TAU);ctx.fill();}}
-  }
-  /* плоды и орбитальные искры */
+        ctx.beginPath();ctx.arc(px,py,2,0,TAU);ctx.fill();}}}
   if(stage>=1){
     const n=Math.min(9,2+stage*2);
     for(let i=0;i<n;i++){const a=i*2.4+T*.15;
@@ -970,21 +1164,18 @@ function drawTree(){
       ctx.fillStyle=ts.orb;ctx.globalAlpha=.85;ctx.shadowColor=ts.orb;ctx.shadowBlur=10;
       ctx.beginPath();ctx.arc(px,py,ts.style==='moon'?2:2.8,0,TAU);ctx.fill();
       ctx.globalAlpha=1;ctx.shadowBlur=0;}}
-  /* взмах веток */
-  if(branchFx>0&&S.mods.branch>0){
-    const r=78+10*S.mods.branch,a0=branchAng,a1=branchAng+2.4*branchDir;
+  if(branchFx>0&&ab('branch')>0){
+    const r=78+10*ab('branch'),a0=branchAng,a1=branchAng+2.4*branchDir;
     ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';
     ctx.lineWidth=6;ctx.lineCap='round';
     ctx.beginPath();ctx.ellipse(bx,by,r,r*ISO,0,Math.min(a0,a1),Math.max(a0,a1));ctx.stroke();
     ctx.strokeStyle='rgba('+ts.glow+','+(branchFx*.5).toFixed(2)+')';ctx.lineWidth=2.5;
     ctx.beginPath();ctx.ellipse(bx,by,r-9,(r-9)*ISO,0,Math.min(a0,a1),Math.max(a0,a1));ctx.stroke();}
-  /* здоровье */
   const pct=clamp(S.treeHp/treeMaxHp(),0,1);
   ctx.fillStyle='rgba(8,12,9,.7)';rr(bx-44,by+20,88,7,3.5);ctx.fill();
   if(pct>0){ctx.fillStyle=pct>.5?'#8fd68a':pct>.25?'#e8b64c':'#e0564f';
     rr(bx-43,by+21,Math.max(3,86*pct),5,2.5);ctx.fill();}
-  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;rr(bx-44,by+20,88,7,3.5);ctx.stroke();
-}
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;rr(bx-44,by+20,88,7,3.5);ctx.stroke();}
 
 function hpBar(x,y,w,pct,boss){const h=boss?6:4,r=h/2;
   ctx.fillStyle='rgba(8,12,9,.7)';rr(x-w/2,y,w,h,r);ctx.fill();
@@ -994,6 +1185,7 @@ function hpBar(x,y,w,pct,boss){const h=boss?6:4,r=h/2;
 function drawEnemy(e){
   const sx=cx+e.x,sy=cy+e.y*ISO;
   const ang=Math.atan2(cy-sy,cx-sx);
+  ctx.globalAlpha=.25+.75*e.born;
   ctx.fillStyle='rgba(0,0,0,.35)';ell(sx,sy+2,e.r*.95,e.r*.4);
   const bob=Math.sin(T*6+e.phase)*(e.type==='wolf'?1.6:1);
   ctx.save();ctx.translate(sx,sy-e.r*.42+bob);
@@ -1032,7 +1224,7 @@ function drawEnemy(e){
     ctx.fillStyle='rgba(128,178,134,.4)';ell(-e.r*.3,-e.r*.62,e.r*.3,e.r*.16);
     ctx.fillStyle='#ffc46a';ctx.shadowColor='#ffc46a';ctx.shadowBlur=6;
     ctx.beginPath();ctx.arc(e.r*.34,-e.r*.5,2,0,TAU);ctx.arc(e.r*.62,-e.r*.5,2,0,TAU);ctx.fill();ctx.shadowBlur=0;
-  }else{ /* Лихоцвет */
+  }else{
     const pr=e.r*(1+Math.sin(T*2.2+e.phase)*.05);
     const ag=ctx.createRadialGradient(0,0,pr*.2,0,0,pr*2.2);
     ag.addColorStop(0,'rgba(214,96,168,.30)');ag.addColorStop(1,'rgba(214,96,168,0)');
@@ -1066,16 +1258,16 @@ function drawEnemy(e){
       const ex=Math.cos(ang)*pr*.07,ey=Math.sin(ang)*pr*.07;
       ctx.fillStyle='#7c1f4e';ctx.beginPath();ctx.arc(ex,ey,pr*.12,0,TAU);ctx.fill();
       ctx.fillStyle='#1c0714';ctx.beginPath();ctx.arc(ex,ey,pr*.055,0,TAU);ctx.fill();
-      ctx.fillStyle='rgba(255,255,255,.8)';ctx.beginPath();ctx.arc(ex-pr*.03,ey-pr*.035,pr*.02,0,TAU);ctx.fill();}
-  }
+      ctx.fillStyle='rgba(255,255,255,.8)';ctx.beginPath();ctx.arc(ex-pr*.03,ey-pr*.035,pr*.02,0,TAU);ctx.fill();}}
   ctx.restore();
+  ctx.globalAlpha=1;
   if(e.slowT>0){ctx.fillStyle='rgba(140,200,240,.26)';
     ctx.beginPath();ctx.arc(sx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.fill();
     ctx.fillStyle='rgba(200,235,255,.8)';
     ctx.beginPath();ctx.arc(sx-e.r*.6,sy-e.r-6,1.6,0,TAU);ctx.fill();}
   if(e.flash>0){ctx.fillStyle='rgba(255,255,255,'+(e.flash*.5).toFixed(2)+')';
     ctx.beginPath();ctx.arc(sx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.fill();}
-  hpBar(sx,sy-e.r-14,e.r*2.2,e.hp/e.maxHp,e.type==='boss');
+  if(e.born>.6)hpBar(sx,sy-e.r-14,e.r*2.2,e.hp/e.maxHp,e.type==='boss');
 }
 
 function drawShots(){
@@ -1101,6 +1293,9 @@ function drawParts(){
       ctx.beginPath();ctx.arc(x,y,p.r0+(p.r1-p.r0)*(1-a),0,TAU);ctx.stroke();}
     else if(p.root){const grow=Math.min(1,(1-p.l/p.ml)*2.5);
       ctx.strokeStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.lineWidth=3;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(x,y);
+      ctx.quadraticCurveTo(x+Math.sin(p.a)*6,y-p.h*grow*.6,x+Math.sin(p.a)*10,y-p.h*grow);ctx.stroke();
+      ctx.strokeStyle='rgba(170,230,180,'+(a*.5).toFixed(2)+')';ctx.lineWidth=1.2;
       ctx.beginPath();ctx.moveTo(x,y);
       ctx.quadraticCurveTo(x+Math.sin(p.a)*6,y-p.h*grow*.6,x+Math.sin(p.a)*10,y-p.h*grow);ctx.stroke();}
     else if(p.leaf){
@@ -1143,8 +1338,11 @@ function render(dt){
 let last=performance.now();
 function loop(now){requestAnimationFrame(loop);
   let dt=(now-last)/1000;last=now;if(dt>.05)dt=.05;T+=dt;
-  if(!S.over)simulate(dt);
-  updateFx(dt);render(dt);
+  try{
+    if(!S.over)simulate(dt);
+    updateFx(dt);render(dt);
+    wheelFrame(dt);
+  }catch(err){if(!loop.err){loop.err=true;console.error('Игровая ошибка (поймана, игра продолжается):',err);}}
   dispSeeds+=(S.seeds-dispSeeds)*Math.min(1,dt*10);
   if(Math.abs(S.seeds-dispSeeds)<.5)dispSeeds=S.seeds;
   const s=fmt(dispSeeds);if(s!==lastStr){lastStr=s;el.seeds.textContent=s;}}
@@ -1162,7 +1360,7 @@ function buy(k,btn){if(S.over)return;const c=costOf(k);if(S.seeds<c)return;
   if(k==='dmg')S.dmgLvl++;
   else if(k==='spd')S.spdLvl++;
   else{const o=treeMaxHp();S.hpLvl++;S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-o));}
-  pulse=1;leafBurst();sfx.upgrade();
+  pulse=1;leafBurst();sfx.upgrade();checkAmber();
   btn.classList.remove('bought');void btn.offsetWidth;btn.classList.add('bought');
   save();updateHUD();}
 el.ud.addEventListener('click',()=>buy('dmg',el.ud));
@@ -1171,17 +1369,19 @@ el.uh.addEventListener('click',()=>buy('hp',el.uh));
 
 $('#afkClaim').addEventListener('click',()=>{
   S.seeds+=afkReward;runSeeds+=afkReward;
-  if(afkDew>0){S.dew+=afkDew;dewBump();}
+  if(afkDew>0){S.dew+=afkDew;bump('#dewPill');}
   afkReward=0;afkDew=0;
   close('#afkOverlay');sfx.claim();save();updateHUD();toast('Награда зачислена! Древо довольно 🌿');});
 $('#reviveBtn').addEventListener('click',()=>{
-  S.over=false;S.treeHp=treeMaxHp();
+  S.over=false;S.treeHp=treeMaxHp();barkUsed=false;
   enemies.length=0;shots.length=0;rootProj.length=0;
   S.killed=0;spawned=0;bossActive=false;betweenT=3;spawnT=1.2;
   rootCd=1.2;branchCd=2;leafCd=6;branchFx=0;
   close('#overOverlay');banner('Древо возрождается','улучшите его, чтобы выстоять');
   sfx.upgrade();leafBurst();save();updateHUD();});
-const wipe=()=>{if(confirm('Сбросить весь прогресс?')){localStorage.removeItem(KEY);location.reload();}};
+const wipe=()=>{if(confirm('Сбросить ВЕСЬ прогресс?')){
+  ['drevo.save.v1','drevo.save.v2','drevo.save.v3','drevo.save.v4'].forEach(k=>localStorage.removeItem(k));
+  location.reload();}};
 $('#wipeBtn').addEventListener('click',wipe);
 $('#resetBtn').addEventListener('click',wipe);
 $('#muteBtn').addEventListener('click',()=>{S.muted=!S.muted;
@@ -1194,7 +1394,7 @@ if(afkReward>0){$('#afkTime').textContent=fmtTime(afkSec);
   $('#afkAmount').textContent='+'+fmt(afkReward);
   if(afkDew>0){$('#afkDewRow').style.display='flex';$('#afkDew').textContent='+'+afkDew;}
   open('#afkOverlay');}
-else if(!S.seen){toast('Корни атакуют сами. Касайтесь врагов и растите древо семенами 🌿');S.seen=true;save();}
+else if(!S.seen){toast('Корни атакуют сами. Крутите рулетку и растите древо 🌿');S.seen=true;save();}
 banner('Волна '+S.wave,'защитите древо',false);
 requestAnimationFrame(t=>{last=t;loop(t);});
 setInterval(save,5000);
