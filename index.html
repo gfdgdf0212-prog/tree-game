@@ -178,12 +178,12 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600;line-height:1.5}
 
 /* карты-рулетка */
-.cards-stage{position:relative;height:230px;margin:6px 0 14px;perspective:900px}
-.rcard{position:absolute;width:86px;height:134px;left:50%;top:50%;cursor:default;
+.cards-stage{position:relative;height:280px;margin:6px 0 14px;perspective:900px}
+.rcard{position:absolute;width:78px;height:120px;left:50%;top:50%;cursor:default;
   transform-style:preserve-3d;transition:transform .55s cubic-bezier(.34,1.3,.5,1),opacity .4s,filter .3s;
   will-change:transform}
 .rcard .face,.rcard .back{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
-  display:flex;flex-direction:column;align-items:center;padding:10px 7px;
+  display:flex;flex-direction:column;align-items:center;padding:8px 6px;
   border:2px solid rgba(150,200,160,.42);box-shadow:0 8px 22px rgba(0,0,0,.5)}
 .rcard .back{background:
   radial-gradient(circle at 50% 38%,rgba(150,200,160,.16),transparent 60%),
@@ -193,15 +193,25 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .rcard .back::after{content:'❧';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:rgba(150,200,160,.45)}
 .rcard .face{background:linear-gradient(170deg,#22352a,#141d16)}
 .rcard.flipped{transform:var(--tf) rotateY(180deg)}
-.rcard .nm{font-size:9px;font-weight:800;text-align:center;color:var(--ink);line-height:1.25}
-.rcard .plus{margin:auto 0;font-family:Unbounded;font-weight:800;font-size:30px;color:var(--gold2);line-height:1;
+.rcard .nm{font-size:8.5px;font-weight:800;text-align:center;color:var(--ink);line-height:1.2}
+.rcard .plus{margin:auto 0;font-family:Unbounded;font-weight:800;font-size:28px;color:var(--gold2);line-height:1;
   text-shadow:0 0 14px rgba(246,212,136,.35)}
-.rcard .ti{font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tc)}
+.rcard .ti{font-size:7.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tc)}
 .rcard.pickable{cursor:pointer}
 .rcard.pickable:hover{filter:brightness(1.18)}
 .rcard.picked{filter:none}
-.rcard.picked .face{box-shadow:0 0 24px rgba(246,212,136,.55),0 8px 22px rgba(0,0,0,.5);border-color:#f6d488}
+.rcard.picked .face{box-shadow:0 0 24px rgba(var(--tg),.55),0 8px 22px rgba(0,0,0,.5);border-color:var(--tc)}
 .rcard.dim{opacity:.3;filter:grayscale(.5)}
+.rcard.fly-up{animation:flyUp .6s ease-in forwards;pointer-events:none}
+.rcard.fly-down{animation:flyDown .7s ease-out forwards;pointer-events:none}
+@keyframes flyUp{
+  0%{transform:var(--tf) scale(1);opacity:1}
+  100%{transform:translate(-50%,-50%) translateY(-400px) scale(.6);opacity:0}
+}
+@keyframes flyDown{
+  0%{transform:var(--tf) scale(1);opacity:1}
+  100%{transform:translate(-50%,-50%) translateY(300px) scale(.7);opacity:0}
+}
 .t-common{--tc:#9db8a4;--tg:157,184,164}
 .t-rare{--tc:#5aa9e6;--tg:90,169,230}
 .t-epic{--tc:#b07fd8;--tg:176,127,216}
@@ -217,6 +227,12 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .btn-spin:disabled{opacity:.45;cursor:default}
 .btn-spin.can{animation:spinGlow 1.8s ease-in-out infinite}
 @keyframes spinGlow{50%{box-shadow:0 8px 26px rgba(111,211,199,.55)}}
+.btn-claim{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;
+  padding:13px;cursor:pointer;font-family:Unbounded;font-weight:700;font-size:13px;color:#241a06;
+  background:linear-gradient(180deg,#f4d083,#dfa93c);box-shadow:0 8px 22px rgba(232,182,76,.3);
+  transition:transform .15s,filter .2s;margin-top:8px}
+.btn-claim:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn-claim:active{transform:scale(.97)}
 
 .ab-head{display:flex;align-items:baseline;gap:10px;margin:2px 2px 10px;flex-wrap:wrap}
 .ab-head b{font-family:Unbounded;font-size:14px;color:var(--gold2)}
@@ -287,6 +303,7 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .q-prog{font-size:9.5px;color:var(--muted);font-weight:700;margin-top:3px}
 .q-rew{flex:none;display:flex;align-items:center;gap:4px;font-family:Unbounded;font-size:11px;font-weight:700;color:#bfe9f5}
 .q-rew svg{width:11px;height:11px}
+.q-rew.inactive{opacity:.45;filter:saturate(.4);cursor:default;animation:none}
 .q-claim{flex:none;border:0;border-radius:9px;padding:7px 11px;cursor:pointer;font:800 10px Unbounded;color:#241a06;
   background:linear-gradient(180deg,#f4d083,#dfa93c);animation:costGlow 1.6s ease-in-out infinite}
 .q-claimed{flex:none;font-size:9px;font-weight:800;color:var(--leaf);letter-spacing:.08em}
@@ -344,7 +361,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   <div class="hud-group left">
     <div class="pill" id="wavePill">
       <svg viewBox="0 0 16 16"><path d="M2 6c2-2.5 4-2.5 6 0s4 2.5 6 0M2 11c2-2.5 4-2.5 6 0s4 2.5 6 0" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
-      <span class="col"><span class="lab" id="waveLab" data-i18n="wave">Волна</span><b id="waveNum">1</b></span>
+      <span class="col"><span class="lab" id="waveLab" data-i18n="stage">Этап</span><b id="waveNum">1-1</b></span>
       <span id="wprog"><i></i></span>
     </div>
     <div class="pill" id="lvlPill">
@@ -444,11 +461,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
     <div class="tabpane" id="paneRoulette">
       <div class="cards-stage" id="cardsStage"></div>
       <button class="btn-spin" id="spinBtn"></button>
-      <p class="shop-note" data-i18n="rouNote">✦ Семь карт: три «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.</p>
+      <button class="btn-claim" id="claimBtn" style="display:none" data-i18n="claimCards">Забрать</button>
+      <p class="shop-note" data-i18n="rouNote">✦ Семь карт: четыре «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.</p>
     </div>
     <div class="tabpane" id="paneSkills" hidden></div>
     <div class="tabpane" id="paneAbils" hidden>
-      <div class="ab-head"><span data-i18n="equipped">Экипировано</span> <b id="abCount">0/5</b><span class="ab-hint" data-i18n="abHint">коснитесь карточки, чтобы надеть или снять</span></div>
+      <div class="ab-head"><span data-i18n="equipped">Экипировано</span> <b id="abCount">0/2</b><span class="ab-hint" data-i18n="abHint">коснитесь карточки, чтобы надеть или снять</span></div>
       <div class="abil-grid" id="abilGrid"></div>
     </div>
     <div class="tabpane" id="paneQuests" hidden></div>
@@ -496,7 +514,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
     <h2 data-i18n="overTitle">Древо пало…</h2>
     <p class="sub" data-i18n="overSub">Тьма оказалась сильнее. Но корни помнят —<br>древо возродится, если подпитать его семенами.</p>
     <div class="stats">
-      <div class="st"><b id="stWave">1</b><span data-i18n="wave">волна</span></div>
+      <div class="st"><b id="stWave">1-1</b><span data-i18n="stage">этап</span></div>
       <div class="st"><b id="stKills">0</b><span data-i18n="enemies">врагов</span></div>
       <div class="st"><b id="stSeeds">0</b><span data-i18n="seeds">семян</span></div>
     </div>
@@ -527,11 +545,11 @@ function safeInt(v,def){const n=parseInt(v,10);return(isFinite(n)&&!isNaN(n))?n:
 
 /* ═══════════ локализация ═══════════ */
 const I18N={
- ru:{wave:'Волна',boss:'Босс',tree:'Древо',dmg:'Урон',spd:'Скорость',rad:'Радиус',cc:'Крит. шанс',cd:'Крит. урон',hp:'Кора',
+ ru:{stage:'Этап',boss:'Босс',tree:'Древо',dmg:'Урон',spd:'Скорость',rad:'Радиус',cc:'Крит. шанс',cd:'Крит. урон',hp:'Кора',
    shop:'ЛАВКА',shopTitle:'Лавка рощи',shopSub:'росу приносят боссы и этапы · янтарь — за каждые 50 уровней',
    tabRou:'Рулетка',tabSkill:'Ветки',tabAbil:'Способности',tabQuest:'Задания',tabTree:'Облик',
-   rouNote:'✦ Семь карт: три «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.',
-   spin:'Крутить · ',equipped:'Экипировано',abHint:'коснитесь карточки, чтобы надеть или снять',
+   rouNote:'✦ Семь карт: четыре «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.',
+   spin:'Крутить · ',claimCards:'Забрать',equipped:'Экипировано',abHint:'коснитесь карточки, чтобы надеть или снять',
    setTitle:'Настройки',vol:'Громкость',lang:'Язык',
    afkTitle:'Пока вас не было…',afkSub1:'Древо держало оборону',afkSub2:'и собрало урожай с поверженных существ',
    seeds:'семян',dew:'росы',amber:'янтаря',claim:'Забрать награду',
@@ -539,19 +557,20 @@ const I18N={
    enemies:'врагов',revive:'🌱 Возродить древо',wipe:'Начать с чистого листа',
    qDaily:'Ежедневные',qWave:'Этап',qOnce:'Разовые',qClaim:'Взять',qDone:'✓',
    pickHint:'Выбери 3 карты',memHint:'Запоминай…',shuffleHint:'Перемешивание…',
-   newAbil:' — новая способность!',maxEquip:'Экипировано максимум 5 способностей',
+   newAbil:' — новая способность!',maxEquip:'Экипировано максимум способностей',
    fromRoulette:'Способность выпадает в рулетке',use:'Используется ✓',choose:'Выбрать',
-   chap:'Глава',chapDone:'пройдена',bark:'Вечная кора спасла древо!',
+   chap:'Этап',chapDone:'пройдена',bark:'Вечная кора спасла древо!',
    squirrel:'Белка принесла росу!',resetConfirm:'Сбросить ВЕСЬ прогресс?',
    tipStart:'Корни атакуют сами. Крутите рулетку и растите древо 🌿',tipDew:'Роса! Испытайте рулетку в лавке 🎡',
    protect:'защитите древо',revived:'улучшите его, чтобы выстоять',debug:'ЧИТЫ',
    tier1:'Корни',tier2:'Крона',tier3:'Вершина',
-   lock2:'полностью прокачайте «Корни»',lock3:'полностью прокачайте «Крону»',maxed:'МАКС'},
- en:{wave:'Wave',boss:'Boss',tree:'Tree',dmg:'Damage',spd:'Speed',rad:'Range',cc:'Crit chance',cd:'Crit damage',hp:'Bark',
+   lock2:'полностью прокачайте «Корни»',lock3:'полностью прокачайте «Крону»',maxed:'МАКС',
+   nextSlot:'Следующий слот — этап',slotLocked:'🔒'},
+ en:{stage:'Stage',boss:'Boss',tree:'Tree',dmg:'Damage',spd:'Speed',rad:'Range',cc:'Crit chance',cd:'Crit damage',hp:'Bark',
    shop:'SHOP',shopTitle:'Grove Shop',shopSub:'dew from bosses & stages · amber every 50 levels',
    tabRou:'Roulette',tabSkill:'Branches',tabAbil:'Abilities',tabQuest:'Quests',tabTree:'Look',
-   rouNote:'✦ Seven cards: three «+1», two «+3» and one «+5». Remember the faces — after shuffle you pick three blind.',
-   spin:'Spin · ',equipped:'Equipped',abHint:'tap a card to equip or remove',
+   rouNote:'✦ Seven cards: four «+1», two «+3» and one «+5». Remember the faces — after shuffle you pick three blind.',
+   spin:'Spin · ',claimCards:'Claim',equipped:'Equipped',abHint:'tap a card to equip or remove',
    setTitle:'Settings',vol:'Volume',lang:'Language',
    afkTitle:'While you were away…',afkSub1:'The tree held the line for',afkSub2:'and gathered harvest from the fallen',
    seeds:'seeds',dew:'dew',amber:'amber',claim:'Claim reward',
@@ -559,14 +578,15 @@ const I18N={
    enemies:'foes',revive:'🌱 Revive the tree',wipe:'Start from scratch',
    qDaily:'Daily',qWave:'Stage',qOnce:'One-time',qClaim:'Claim',qDone:'✓',
    pickHint:'Pick 3 cards',memHint:'Memorize…',shuffleHint:'Shuffling…',
-   newAbil:' — new ability!',maxEquip:'Max 5 abilities equipped',
+   newAbil:' — new ability!',maxEquip:'Max abilities equipped',
    fromRoulette:'Ability drops from the roulette',use:'In use ✓',choose:'Choose',
-   chap:'Chapter',chapDone:'cleared',bark:'Eternal Bark saved the tree!',
+   chap:'Stage',chapDone:'cleared',bark:'Eternal Bark saved the tree!',
    squirrel:'Squirrel brought dew!',resetConfirm:'Reset ALL progress?',
    tipStart:'Roots attack on their own. Spin the roulette and grow the tree 🌿',tipDew:'Dew! Try the roulette in the shop 🎡',
    protect:'protect the tree',revived:'upgrade it to stand firm',debug:'CHEATS',
    tier1:'Roots',tier2:'Crown',tier3:'Apex',
-   lock2:'fully upgrade «Roots»',lock3:'fully upgrade «Crown»',maxed:'MAX'}
+   lock2:'fully upgrade «Roots»',lock3:'fully upgrade «Crown»',maxed:'MAX',
+   nextSlot:'Next slot — stage',slotLocked:'🔒'}
 };
 const t=(k,o)=>{let s=(I18N[S.lang]||I18N.ru)[k]||k;if(o)for(const p in o)s=s.replace('{'+p+'}',o[p]);return s;};
 function applyLang(){document.documentElement.lang=S.lang;
@@ -575,13 +595,47 @@ function applyLang(){document.documentElement.lang=S.lang;
   $('#langRu').classList.toggle('on',S.lang==='ru');$('#langEn').classList.toggle('on',S.lang==='en');
   try{renderShop();updateHUD();}catch(e){}}
 
+/* ═══════════ этапы и слоты ═══════════ */
+function stageOf(wave){return `${Math.floor((wave-1)/7)+1}-${((wave-1)%7)+1}`;}
+function chapterOf(wave){return Math.floor((wave-1)/7)+1;}
+function slotCap(){
+  const ch=chapterOf(S.bestWave);
+  if(ch>=250)return 6;
+  if(ch>=200)return 5;
+  if(ch>=130)return 4;
+  if(ch>=50)return 3;
+  return 2;
+}
+function nextSlotChapter(){
+  const ch=chapterOf(S.bestWave);
+  if(ch<50)return 50;
+  if(ch<130)return 130;
+  if(ch<200)return 200;
+  if(ch<250)return 250;
+  return null;
+}
+
 /* ═══════════ редкости и способности ═══════════ */
 const TIERS={
-  common:   {name:{ru:'Обычная',en:'Common'},   c:'#9db8a4',g:'157,184,164',w:100, idx:0},
-  rare:     {name:{ru:'Редкая',en:'Rare'},       c:'#5aa9e6',g:'90,169,230', w:45,  idx:1},
-  epic:     {name:{ru:'Эпическая',en:'Epic'},     c:'#b07fd8',g:'176,127,216',w:18,  idx:2},
-  legendary:{name:{ru:'Легендарная',en:'Legendary'},c:'#f0a848',g:'240,168,72',w:7,  idx:3},
-  mythic:   {name:{ru:'Мифическая',en:'Mythic'},   c:'#ff6b8a',g:'255,107,138',w:2.5, idx:4}};
+  common:   {name:{ru:'Обычная',en:'Common'},   c:'#9db8a4',g:'157,184,164', idx:0},
+  rare:     {name:{ru:'Редкая',en:'Rare'},       c:'#5aa9e6',g:'90,169,230',  idx:1},
+  epic:     {name:{ru:'Эпическая',en:'Epic'},     c:'#b07fd8',g:'176,127,216',idx:2},
+  legendary:{name:{ru:'Легендарная',en:'Legendary'},c:'#f0a848',g:'240,168,72',idx:3},
+  mythic:   {name:{ru:'Мифическая',en:'Mythic'},   c:'#ff6b8a',g:'255,107,138',idx:4}};
+const TIER_WEIGHTS=[
+  {common:90, rare:9,  epic:1,    legendary:0,  mythic:0},
+  {common:70, rare:22, epic:7,    legendary:1,  mythic:0},
+  {common:50, rare:30, epic:16,   legendary:3.9,mythic:0.1},
+  {common:30, rare:31, epic:27,   legendary:10.5,mythic:1.5},
+  {common:15, rare:30, epic:35,   legendary:18, mythic:2}];
+function tierStage(){
+  const ch=chapterOf(S.bestWave);
+  if(ch>=250)return 5;
+  if(ch>=200)return 4;
+  if(ch>=130)return 3;
+  if(ch>=50)return 2;
+  return 1;
+}
 const ABIL=[
  {k:'multishot',n:{ru:'Семена-снаряды',en:'Seed Shots'},short:{ru:'Семена',en:'Seeds'},tier:'common',desc:{ru:'Открывает атаку семенами: 1 снаряд за уровень',en:'Unlocks seed attack: 1 projectile per level'},
   svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8 3.5 3M8 8l4.5-5M8 8V2.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
@@ -709,7 +763,7 @@ function load(){
     s.amberTier=safeInt(s.amberTier,0);
     s.chaptersCleared=safeInt(s.chaptersCleared,0);
     s.abilities=Object.assign({},d.abilities||{});
-    s.equip=Array.isArray(d.equip)?d.equip.slice(0,5):[];
+    s.equip=Array.isArray(d.equip)?d.equip.slice(0,6):[];
     s.skill=Object.assign({},d.skill||{});
     s.dailyProg=Object.assign({kills:0,waves:0,spins:0,crits:0,upg:0},d.dailyProg||{});
     s.treeSkins=(Array.isArray(d.treeSkins)&&d.treeSkins.length)?d.treeSkins:['oak'];
@@ -719,7 +773,7 @@ function load(){
     if(!d.abilities&&d.mods){
       const map={multishot:'multishot',bounce:'bounce',splash:'resonance',frost:'frost',roots:'deeproots',branch:'branch',leaf:'leafstorm'};
       for(const m in map)if(d.mods[m])s.abilities[map[m]]=d.mods[m];
-      s.equip=Object.keys(s.abilities).slice(0,5);}
+      s.equip=Object.keys(s.abilities).slice(0,6);}
     const L=s.dmgLvl+s.spdLvl+s.hpLvl+s.radLvl+s.ccLvl+s.cdLvl;
     if(d.amber===undefined){s.amberTier=Math.floor(L/50);s.amber=5*s.amberTier;}
     if(s.treeHp<=0||isNaN(s.treeHp))s.treeHp=maxHpOf(s);
@@ -754,7 +808,6 @@ function treeGeom(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
 function afkRate(){const dps=10*Math.pow(1.10,S.dmgLvl)*Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl));
   const avgHp=12*Math.pow(1.13,S.wave-1)*1.8,avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
   return dps/avgHp*avgRw*.35;}
-const chapterOf=w=>Math.floor((w-1)/7)+1;
 function chapterReward(ch){if(ch%10===0)return 50;if(ch%5===0)return 40;if(ch%3===0)return 30;return 20;}
 
 let afkReward=0,afkDew=0,afkSec=0;
@@ -884,11 +937,11 @@ function setUpg(btn,k,stat){const c=costOf(k);
   btn.querySelector('.upg-cost b').textContent=fmt(c);
   const ok=S.seeds>=c&&!S.over;btn.disabled=!ok;btn.classList.toggle('afford',ok);}
 function updateHUD(){
-  el.wave.textContent=S.wave;
+  el.wave.textContent=stageOf(S.wave);
   el.lvl.textContent=1+S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
   el.dew.textContent=S.dew;el.amber.textContent=S.amber;
   el.prog.style.width=clamp(100*S.killed/quota(S.wave),0,100)+'%';
-  $('#waveLab').textContent=bossActive?t('boss'):t('wave');
+  $('#waveLab').textContent=bossActive?t('boss'):t('stage');
   $('#wavePill').classList.toggle('boss-phase',bossActive);
   $('#shopBtn').classList.toggle('glow',S.dew>=SPIN_COST||S.amber>=12);
   setUpg(el.ud,'dmg',fmtS(treeDmg()));
@@ -903,30 +956,37 @@ function checkAmber(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl
     bump('#amberPill');toast('+'+n+' '+t('amber'));
     sfx.claim();save();updateHUD();}}
 
-/* ═══════════ карты-рулетка (7 карт, выбор 3) ═══════════ */
+/* ═══════════ карты-рулетка (7 карт в два ряда) ═══════════ */
 const SPIN_COST=15;
 let cards=[],cardPhase='idle',pickedCount=0,cardTimer=null;
-function luck(){return 1+S.wave*.02;}
 function pickAbility(){
-  const lk=luck();let tot=0;const tw={};
-  for(const t in TIERS){tw[t]=TIERS[t].w*Math.pow(lk,TIERS[t].idx);tot+=tw[t];}
+  const stage=tierStage();
+  const weights=TIER_WEIGHTS[stage-1];
+  let tot=0;
+  for(const t in weights)tot+=weights[t];
   let r=Math.random()*tot,tier='common';
-  for(const t in TIERS){if(r<tw[t]){tier=t;break;}r-=tw[t];}
+  for(const t in weights){if(r<weights[t]){tier=t;break;}r-=weights[t];}
   const list=ABIL.filter(a=>a.tier===tier);
   return list[Math.floor(Math.random()*list.length)];}
 function genCards(autoReady=true){
-  const plus=[1,1,1,3,3,5];
+  const plus=[1,1,1,1,3,3,5];
   cards=plus.map((p,i)=>({id:i,a:pickAbility(),plus:p,slot:i,picked:false,revealed:false,flipped:false}));
   cardPhase='show';pickedCount=0;
   $('#cardsStage').innerHTML='';
+  $('#claimBtn').style.display='none';
   renderCards();updateSpinBtn();
   clearTimeout(cardTimer);
   if(autoReady)cardTimer=setTimeout(()=>{if(cardPhase==='show'){cardPhase='ready';renderCards();updateSpinBtn();}},1700);}
 function cardTransform(slot){
   const n=7,stageW=$('#cardsStage').clientWidth||340;
-  const sp=Math.min(78,Math.max(40,(stageW-90)/(n-1)));
-  const off=(slot-(n-1)/2);
-  const x=off*sp, rot=off*5, y=Math.abs(off)*6;
+  const sp=Math.min(72,Math.max(36,(stageW-80)/(n-1)));
+  const row=slot<4?0:1;
+  const colInRow=slot<4?slot:slot-4;
+  const countInRow=row===0?4:3;
+  const off=colInRow-(countInRow-1)/2;
+  const x=off*sp*1.1;
+  const y=row===0?-55:55;
+  const rot=off*4;
   return `translate(-50%,-50%) translate(${x}px,${y}px) rotate(${rot}deg)`;}
 function renderCards(){
   const st=$('#cardsStage');
@@ -949,21 +1009,33 @@ function onCardClick(id){
   const c=cards.find(x=>x.id===id);if(!c||c.picked)return;
   c.picked=true;c.revealed=true;c.flipped=false;pickedCount++;
   sfx.flip();renderCards();
-  if(pickedCount>=3){cardPhase='done';updateSpinBtn();
-    const r=cards.filter(x=>x.revealed);
-    setTimeout(()=>revealCards(r),450);}}
-function revealCards(r){
-  let bestTier='common';
-  r.forEach(c=>{const a=c.a,k=a.k,plus=c.plus,tier=a.tier;
-    const isNew=!S.abilities[k];
-    S.abilities[k]=(S.abilities[k]||0)+plus;
-    if(isNew&&S.equip.length<5){S.equip.push(k);setTimeout(()=>toast(LN(a.n)+t('newAbil')),900);}
-    if(TIERS[tier].idx>TIERS[bestTier].idx)bestTier=tier;});
-  if(bestTier==='legendary'||bestTier==='mythic'){
-    $('#shopModal').classList.add('shake-lg');setTimeout(()=>$('#shopModal').classList.remove('shake-lg'),600);}
-  sfx.reveal(bestTier);
-  bump('#dewPill');
-  save();updateHUD();renderAbilities();updateSpinBtn();}
+  if(pickedCount>=3){
+    cardPhase='done';
+    cards.forEach(c=>{if(!c.picked){
+      const elc=$('#cardsStage').querySelector(`[data-id="${c.id}"]`);
+      if(elc)elc.classList.add('fly-up');}});
+    setTimeout(()=>{
+      $('#claimBtn').style.display='flex';
+      updateSpinBtn();},650);}}
+function claimCards(){
+  const r=cards.filter(x=>x.revealed);
+  r.forEach(c=>{const elc=$('#cardsStage').querySelector(`[data-id="${c.id}"]`);
+    if(elc)elc.classList.add('fly-down');});
+  $('#claimBtn').style.display='none';
+  setTimeout(()=>{
+    let bestTier='common';
+    r.forEach(c=>{const a=c.a,k=a.k,plus=c.plus,tier=a.tier;
+      const isNew=!S.abilities[k];
+      S.abilities[k]=(S.abilities[k]||0)+plus;
+      if(isNew&&S.equip.length<slotCap()){S.equip.push(k);setTimeout(()=>toast(LN(a.n)+t('newAbil')),900);}
+      if(TIERS[tier].idx>TIERS[bestTier].idx)bestTier=tier;});
+    if(bestTier==='legendary'||bestTier==='mythic'){
+      $('#shopModal').classList.add('shake-lg');setTimeout(()=>$('#shopModal').classList.remove('shake-lg'),600);}
+    sfx.reveal(bestTier);
+    bump('#dewPill');
+    save();updateHUD();renderAbilities();
+    cardPhase='idle';
+    genCards();},750);}
 function startSpin(){
   if(!(cardPhase==='ready'||cardPhase==='done')||S.dew<SPIN_COST)return;
   S.dew-=SPIN_COST;
@@ -990,7 +1062,8 @@ function updateSpinBtn(){
 let shopOpen=false,curTab='roulette';
 function renderAbilities(){
   try{
-  $('#abCount').textContent=S.equip.length+'/5';
+  const cap=slotCap();
+  $('#abCount').textContent=S.equip.length+'/'+cap;
   $('#abilGrid').innerHTML=ABIL.map(a=>{
     const l=S.abilities[a.k]||0,eq=S.equip.includes(a.k),t=TIERS[a.tier];
     return `<div class="abil t-${a.tier} ${l?'':'locked'} ${eq?'eq':''}" data-abil="${a.k}">
@@ -998,6 +1071,12 @@ function renderAbilities(){
       <span class="abil-body"><b>${LN(a.n)}</b><i style="color:${t.c}">${LN(t.name)}</i>
       <span class="abil-lvl">${l?(S.lang==='ru'?'ур. ':'lv ')+l:(S.lang==='ru'?'не найдена':'not found')}</span></span>
       <span class="abil-eq">${eq?'✓':l?'＋':''}</span></div>`;}).join('');
+  const next=nextSlotChapter();
+  if(next){
+    const hint=document.createElement('p');
+    hint.className='shop-note';
+    hint.textContent=`${t('slotLocked')} ${t('nextSlot')} ${stageOf(next*7-6)}`;
+    $('#paneAbils').appendChild(hint);}
   }catch(e){console.error('renderAbilities',e);}}
 function renderTrees(){
   try{
@@ -1067,11 +1146,11 @@ function dailyList(){ensureDaily();const r=rng(S.dailyDate);const pool=[...DAILY
     const done=prog>=p.g,claimed=!!S.dailyDone[p.id];
     return {id:p.id,txt:p.txt,goal:p.g,prog:Math.min(prog,p.g),done,claimed,reward:{dew:p.r}};});}
 function waveQuest(){const goal=quota(S.wave);
-  return {id:'wq',txt:{ru:'Зачисти этап '+S.wave,en:'Clear stage '+S.wave},goal,prog:Math.min(S.killed,goal),
+  return {id:'wq',txt:{ru:'Зачисти этап '+stageOf(S.wave),en:'Clear stage '+stageOf(S.wave)},goal,prog:Math.min(S.killed,goal),
     done:S.killed>=goal,claimed:!!S.waveQ.claimed,reward:{dew:3}};}
 function onceList(){const list=[];
   for(let ch=1;ch<=S.chaptersCleared;ch++){const id='chap'+ch;
-    list.push({id,txt:{ru:t('chap')+' '+ch+' '+t('chapDone'),en:t('chap')+' '+ch+' '+t('chapDone')},
+    list.push({id,txt:{ru:t('chap')+' '+stageOf(ch*7-6)+' '+t('chapDone'),en:t('chap')+' '+stageOf(ch*7-6)+' '+t('chapDone')},
       goal:1,prog:1,done:true,claimed:!!S.onceDone[id],reward:{dew:chapterReward(ch)}});}
   ACH.forEach(a=>{let val=0;
     if(a.field==='totalKills')val=S.totalKills;else if(a.field==='bestWave')val=S.bestWave;
@@ -1090,10 +1169,10 @@ function claimQuest(q,sec){
 function renderQuests(){
   try{
   const sec=(title,arr,secKey,extra)=>`<div class="q-sec"><h3>${title}${extra||''}</h3>`+
-    arr.map(q=>{const rew=q.reward.dew?`<span class="q-rew"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>${q.reward.dew}</span>`
-      :q.reward.amber?`<span class="q-rew" style="color:#ffd9a0"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg>${q.reward.amber}</span>`:'';
+    arr.map(q=>{const rew=q.reward.dew?`<span class="q-rew ${q.done?'':'inactive'}"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>${q.reward.dew}</span>`
+      :q.reward.amber?`<span class="q-rew ${q.done?'':'inactive'}" style="color:#ffd9a0"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg>${q.reward.amber}</span>`:'';
       const right=q.claimed?`<span class="q-claimed">${t('qDone')}</span>`
-        :q.done?`<button class="q-claim" data-q="${q.id}" data-sec="${secKey}">${t('qClaim')}</button>`:rew;
+        :q.done?`<button class="q-claim" data-q="${q.id}" data-sec="${secKey}">${rew}</button>`:rew;
       return `<div class="qrow ${q.done?'done':''}">
         <span class="q-ico"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         <span class="q-body"><span class="q-txt">${LN(q.txt)}</span>
@@ -1150,12 +1229,13 @@ $('#tabAbils').addEventListener('click',()=>setTab('abils'));
 $('#tabQuests').addEventListener('click',()=>setTab('quests'));
 $('#tabTrees').addEventListener('click',()=>setTab('trees'));
 $('#spinBtn').addEventListener('click',startSpin);
+$('#claimBtn').addEventListener('click',claimCards);
 $('#abilGrid').addEventListener('click',e=>{
   const c=e.target.closest('[data-abil]');if(!c)return;
   const k=c.dataset.abil;
   if(!S.abilities[k]){toast(t('fromRoulette'));return;}
   if(S.equip.includes(k))S.equip=S.equip.filter(x=>x!==k);
-  else if(S.equip.length<5)S.equip.push(k);
+  else if(S.equip.length<slotCap())S.equip.push(k);
   else{toast(t('maxEquip'));return;}
   sfx.tick();save();renderAbilities();updateHUD();});
 $('#paneTrees').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
@@ -1195,7 +1275,6 @@ function kill(e){
   if(leech>0&&S.treeHp>0){
     S.treeHp=Math.min(treeMaxHp(),S.treeHp+treeMaxHp()*(.01+.005*leech));
     parts.push({x:rand(-14,14),y:-20,vx:rand(-6,6),vy:rand(-30,-14),l:.7,ml:.7,sz:2.4,c:'143,214,138'});}
-  /* заражение: труп взрывается корнями */
   const infL=sk('infect');
   if(infL>0&&e.type!=='boss'){
     const R=60+18*infL,dmg=treeDmg()*(.6+.3*infL);
@@ -1247,14 +1326,14 @@ function nextWave(){
   floats.push({x:0,y:-treeGeom().h-46,txt:'+'+fmt(bonus)+' ✦',l:1.2,ml:1.2,c:'#a5e8c8',sz:14});
   if(finishedWave%7===0){const ch=chapterOf(finishedWave);
     if(S.chaptersCleared<ch){S.chaptersCleared=ch;
-      banner(t('chap')+' '+ch+'!', (S.lang==='ru'?'награда в заданиях':'reward in quests'), 'chap');}}
+      banner(t('chap')+' '+stageOf(finishedWave)+'!', (S.lang==='ru'?'награда в заданиях':'reward in quests'), 'chap');}}
   const subs=SUBS[S.lang]||SUBS.ru;
-  banner(t('wave')+' '+S.wave, subs[Math.floor(Math.random()*subs.length)], false);
+  banner(t('stage')+' '+stageOf(S.wave), subs[Math.floor(Math.random()*subs.length)], false);
   sfx.wave();save();updateHUD();if(shopOpen&&curTab==='quests')renderQuests();}
 function gameOver(){
   S.over=true;shakeM=10;sfx.over();
   const g=treeGeom();burst(0,-g.h*.6,g.R,'124,168,120');
-  $('#stWave').textContent=S.wave;$('#stKills').textContent=fmt(runKills);$('#stSeeds').textContent=fmt(runSeeds);
+  $('#stWave').textContent=stageOf(S.wave);$('#stKills').textContent=fmt(runKills);$('#stSeeds').textContent=fmt(runSeeds);
   setTimeout(()=>open('#overOverlay'),900);}
 
 /* ═══════════ корни-черви ═══════════ */
@@ -1274,7 +1353,6 @@ function rootStrike(p){
     for(let k=0;k<6;k++)parts.push({x:sx+rand(-10,10),y:sy,vx:rand(-8,8),vy:rand(-46,-20),l:.5,ml:.5,sz:2,c:'170,230,180'});
     parts.push({ring:true,x:sx,y:sy,l:.4,ml:.4,r0:8,r1:isCrit?70:48,c:isCrit?'255,210,120':'201,160,106'});
     shakeM=Math.max(shakeM,isCrit?5:3);sfx.strike();
-    /* отскок корня */
     const rb=sk('rootBounce');
     if(rb>0&&(p.b||0)<rb){
       let best=null,bd=1e9;
@@ -1404,7 +1482,6 @@ function simulate(dt){
     e.born=Math.min(1,e.born+dt*2.2);
     e.lift=Math.max(0,e.lift-dt*40);
     e.flash=Math.max(0,e.flash-dt*6);
-    /* кровотечение */
     if(e.bleed>0&&e.bleedT>0&&!e.dead){
       e.bleedT-=dt;
       e.hp-=e.bleed*treeDmg()*.02*dt;
@@ -1424,12 +1501,10 @@ function simulate(dt){
   for(let i=enemies.length-1;i>=0;i--){
     if(enemies[i].dead){kill(enemies[i]);enemies.splice(i,1);}}
 
-  /* ветер */
   windT+=dt;gustTimer-=dt;
   if(gustTimer<=0){gustTarget=Math.random()<.5?rand(.4,1):rand(0,.2);gustTimer=rand(5,11);}
   gust+=(gustTarget-gust)*Math.min(1,dt*1.2);
 
-  /* белка */
   squirrelTimer-=dt;
   if(!squirrel&&squirrelTimer<=0&&!anyOverlayOpen()){
     const target=scenery.filter(s=>s.type==='tree');
@@ -1495,7 +1570,6 @@ function drawFlies(dt){
     ctx.shadowColor='rgb('+f.c+')';ctx.shadowBlur=8;
     ctx.beginPath();ctx.arc(x,y,1.8,0,TAU);ctx.fill();ctx.shadowBlur=0;}}
 
-/* только мягкая подсветка радиуса атаки */
 function drawReach(){
   const r=rootReach();
   const rg=ctx.createRadialGradient(cx,cy,r*.25,cx,cy,r);
@@ -1917,7 +1991,7 @@ $('#reviveBtn').addEventListener('click',()=>{
   enemies.length=0;shots.length=0;roots.length=0;
   S.killed=0;spawned=0;bossActive=false;betweenT=3;spawnT=1.2;
   rootT=0;branchCd=2;leafCd=6;branchFx=0;
-  close('#overOverlay');banner(t('wave')+' '+S.wave, t('revived'), false);
+  close('#overOverlay');banner(t('stage')+' '+stageOf(S.wave), t('revived'), false);
   sfx.upgrade();leafBurst();save();updateHUD();});
 const ALL_SAVE_KEYS=['drevo.save.v1','drevo.save.v2','drevo.save.v3','drevo.save.v4','drevo.save.v5','drevo.save.v6','drevo.save.v7','drevo.save.v8'];
 const wipe=()=>{if(confirm(t('resetConfirm'))){
@@ -1937,13 +2011,13 @@ window.DEBUG={
   dew(n){S.dew+=n;bump('#dewPill');updateHUD();save();},
   amber(n){S.amber+=n;bump('#amberPill');updateHUD();save();},
   upg(n){S.dmgLvl+=n;S.spdLvl+=n;S.hpLvl+=n;S.radLvl+=n;S.ccLvl+=n;S.cdLvl+=n;S.treeHp=treeMaxHp();checkAmber();updateHUD();save();},
-  give(k,l){S.abilities[k]=(S.abilities[k]||0)+(l||1);if(!S.equip.includes(k)&&S.equip.length<5)S.equip.push(k);updateHUD();save();},
+  give(k,l){S.abilities[k]=(S.abilities[k]||0)+(l||1);if(!S.equip.includes(k)&&S.equip.length<slotCap())S.equip.push(k);updateHUD();save();},
   all(){ABIL.forEach(a=>window.DEBUG.give(a.k,3));},
   skills(){SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));
     S.treeHp=treeMaxHp();updateHUD();save();},
   skins(){S.treeSkins=Object.keys(TREE_SKINS);updateHUD();save();},
-  wave(n){S.wave=Math.max(1,n);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;banner(t('wave')+' '+S.wave,'debug',false);updateHUD();save();},
-  chap(n){S.chaptersCleared=Math.max(S.chaptersCleared,n);save();if(shopOpen)renderQuests();},
+  wave(n){S.wave=Math.max(1,n);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;banner(t('stage')+' '+stageOf(S.wave),'debug',false);updateHUD();save();},
+  chap(n){S.chaptersCleared=Math.max(S.chaptersCleared,n);S.bestWave=Math.max(S.bestWave,n*7-6);save();if(shopOpen)renderQuests();},
   spawn(t){spawn(t||'boss');},
   clear(){enemies.length=0;shots.length=0;roots.length=0;},
   god(){CHEAT.god=!CHEAT.god;toast('GOD: '+(CHEAT.god?'ON':'OFF'));
@@ -1981,7 +2055,7 @@ if(afkReward>0){$('#afkTime').textContent=fmtTime(afkSec);
   if(afkDew>0){$('#afkDewRow').style.display='flex';$('#afkDew').textContent='+'+afkDew;}
   open('#afkOverlay');}
 else if(!S.seen){toast(t('tipStart'));S.seen=true;save();}
-banner(t('wave')+' '+S.wave, t('protect'), false);
+banner(t('stage')+' '+stageOf(S.wave), t('protect'), false);
 requestAnimationFrame(t=>{last=t;loop(t);});
 setInterval(save,5000);
 addEventListener('beforeunload',save);
