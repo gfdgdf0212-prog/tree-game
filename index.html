@@ -169,7 +169,7 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .dew-bal svg,.amber-bal svg{width:13px;height:13px}
 .tabs{display:flex;gap:4px;margin:14px 0 12px;background:rgba(0,0,0,.25);padding:4px;border-radius:12px;flex-wrap:wrap}
 .tab{flex:1;border:0;background:transparent;color:var(--muted);font:800 10.5px Manrope;padding:9px 3px;border-radius:9px;
-  cursor:pointer;transition:color .2s,background .2s;min-width:64px}
+  cursor:pointer;transition:color .2s,background .2s;min-width:56px}
 .tab.active{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--ink);box-shadow:0 3px 10px rgba(0,0,0,.3)}
 .tabpane{max-height:min(56vh,460px);overflow-y:auto;padding-right:4px}
 .tabpane::-webkit-scrollbar{width:6px}
@@ -177,30 +177,31 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .tabpane[hidden]{display:none}
 .shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600;line-height:1.5}
 
+/* карты-рулетка */
 .cards-stage{position:relative;height:230px;margin:6px 0 14px;perspective:900px}
-.rcard{position:absolute;width:96px;height:148px;left:50%;top:50%;cursor:default;
+.rcard{position:absolute;width:86px;height:134px;left:50%;top:50%;cursor:default;
   transform-style:preserve-3d;transition:transform .55s cubic-bezier(.34,1.3,.5,1),opacity .4s,filter .3s;
   will-change:transform}
 .rcard .face,.rcard .back{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px;
-  border:2px solid var(--tc);box-shadow:0 8px 22px rgba(0,0,0,.5)}
+  display:flex;flex-direction:column;align-items:center;padding:10px 7px;
+  border:2px solid rgba(150,200,160,.42);box-shadow:0 8px 22px rgba(0,0,0,.5)}
 .rcard .back{background:
-  radial-gradient(circle at 50% 38%,rgba(var(--tg),.28),transparent 60%),
+  radial-gradient(circle at 50% 38%,rgba(150,200,160,.16),transparent 60%),
   linear-gradient(160deg,#234032,#16241b);
   transform:rotateY(180deg)}
-.rcard .back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(var(--tg),.4);border-radius:9px}
-.rcard .back::after{content:'❧';position:absolute;font-size:30px;color:rgba(var(--tg),.55)}
-.rcard .face{background:linear-gradient(170deg,#1f2e25,#141d16)}
+.rcard .back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(150,200,160,.3);border-radius:9px}
+.rcard .back::after{content:'❧';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:rgba(150,200,160,.45)}
+.rcard .face{background:linear-gradient(170deg,#22352a,#141d16)}
 .rcard.flipped{transform:var(--tf) rotateY(180deg)}
-.rcard .plus{font-family:Unbounded;font-weight:800;font-size:24px;color:var(--tc);line-height:1}
-.rcard .nm{font-size:10px;font-weight:800;text-align:center;color:var(--ink);line-height:1.2}
+.rcard .nm{font-size:9px;font-weight:800;text-align:center;color:var(--ink);line-height:1.25}
+.rcard .plus{margin:auto 0;font-family:Unbounded;font-weight:800;font-size:30px;color:var(--gold2);line-height:1;
+  text-shadow:0 0 14px rgba(246,212,136,.35)}
 .rcard .ti{font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tc)}
-.rcard .ic{width:30px;height:30px;color:var(--tc)}
 .rcard.pickable{cursor:pointer}
 .rcard.pickable:hover{filter:brightness(1.18)}
 .rcard.picked{filter:none}
-.rcard.picked .face{box-shadow:0 0 26px rgba(var(--tg),.7),0 8px 22px rgba(0,0,0,.5)}
-.rcard.dim{opacity:.32;filter:grayscale(.5)}
+.rcard.picked .face{box-shadow:0 0 24px rgba(246,212,136,.55),0 8px 22px rgba(0,0,0,.5);border-color:#f6d488}
+.rcard.dim{opacity:.3;filter:grayscale(.5)}
 .t-common{--tc:#9db8a4;--tg:157,184,164}
 .t-rare{--tc:#5aa9e6;--tg:90,169,230}
 .t-epic{--tc:#b07fd8;--tg:176,127,216}
@@ -238,6 +239,37 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .abil-eq{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;
   color:var(--tc);border:1px solid rgba(var(--tg),.5)}
 
+/* древо прокачки */
+.sk-tier{margin-bottom:13px;padding:12px;border-radius:14px;background:rgba(255,255,255,.025);
+  border:1px solid rgba(150,200,160,.12);transition:border-color .3s}
+.sk-tier.open{border-color:rgba(150,200,160,.22)}
+.sk-tier.locked{opacity:.5;filter:saturate(.35)}
+.sk-tier.locked .sknode{pointer-events:none}
+.sk-th{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.sk-th b{font-family:Unbounded;font-size:14px;color:var(--gold2)}
+.sk-th span{font:800 11px Manrope;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.sk-th i{font-style:normal;font-size:10px;color:var(--muted);margin-left:auto;font-weight:700;text-align:right}
+.sk-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+@media(max-width:480px){.sk-grid{grid-template-columns:1fr}}
+.sknode{display:flex;align-items:center;gap:9px;padding:8px 9px;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,.03);border:1px solid rgba(150,200,160,.12);
+  transition:transform .15s,border-color .2s,box-shadow .25s}
+.sknode:hover{transform:translateY(-1px);border-color:rgba(150,200,160,.38)}
+.sknode:active{transform:scale(.97)}
+.sknode.maxed{border-color:rgba(232,182,76,.42)}
+.sk-ico{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:9px;color:var(--leaf);
+  background:rgba(143,214,138,.1);border:1px solid rgba(143,214,138,.3)}
+.sk-ico svg{width:15px;height:15px}
+.sk-body{flex:1;min-width:0}
+.sk-body b{display:block;font-size:11.5px}
+.sk-body b i{font-style:normal;font:700 9.5px Unbounded;color:var(--muted);margin-left:4px}
+.sk-body em{font-style:normal;display:block;font-size:9.5px;color:var(--muted);font-weight:600;line-height:1.35;margin-top:2px}
+.sk-buy{flex:none;font:700 10.5px Unbounded;color:var(--gold2);padding:5px 8px;border-radius:8px;
+  background:rgba(232,182,76,.09);border:1px solid rgba(232,182,76,.28)}
+.sknode.afford .sk-buy{animation:costGlow 1.8s ease-in-out infinite}
+.sknode.maxed .sk-buy{color:var(--leaf);border-color:rgba(143,214,138,.4);background:rgba(143,214,138,.08);animation:none}
+
+/* задания */
 .q-sec{margin-bottom:14px}
 .q-sec h3{margin:0 0 7px;font-family:Unbounded;font-size:12px;letter-spacing:.06em;color:var(--muted);
   text-transform:uppercase;display:flex;align-items:center;gap:7px}
@@ -404,6 +436,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
     </div>
     <div class="tabs">
       <button class="tab active" id="tabRoulette" data-i18n="tabRou">Рулетка</button>
+      <button class="tab" id="tabSkills" data-i18n="tabSkill">Ветки</button>
       <button class="tab" id="tabAbils" data-i18n="tabAbil">Способности</button>
       <button class="tab" id="tabQuests" data-i18n="tabQuest">Задания</button>
       <button class="tab" id="tabTrees" data-i18n="tabTree">Облик</button>
@@ -411,8 +444,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
     <div class="tabpane" id="paneRoulette">
       <div class="cards-stage" id="cardsStage"></div>
       <button class="btn-spin" id="spinBtn"></button>
-      <p class="shop-note" data-i18n="rouNote">✦ Пять карт: две «+3» и одна «+5», остальные «+1». Запомни лица — после перемешивания выбираешь две вслепую.</p>
+      <p class="shop-note" data-i18n="rouNote">✦ Семь карт: три «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.</p>
     </div>
+    <div class="tabpane" id="paneSkills" hidden></div>
     <div class="tabpane" id="paneAbils" hidden>
       <div class="ab-head"><span data-i18n="equipped">Экипировано</span> <b id="abCount">0/5</b><span class="ab-hint" data-i18n="abHint">коснитесь карточки, чтобы надеть или снять</span></div>
       <div class="abil-grid" id="abilGrid"></div>
@@ -474,6 +508,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 <script>
 (() => {
 'use strict';
+/* ═══════════ утилиты ═══════════ */
 const $=s=>document.querySelector(s);
 const TAU=Math.PI*2, ISO=0.62, KEY='drevo.save.v6';
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
@@ -490,11 +525,12 @@ function dayKey(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+
 function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
 function safeInt(v,def){const n=parseInt(v,10);return(isFinite(n)&&!isNaN(n))?n:def;}
 
+/* ═══════════ локализация ═══════════ */
 const I18N={
  ru:{wave:'Волна',boss:'Босс',tree:'Древо',dmg:'Урон',spd:'Скорость',rad:'Радиус',cc:'Крит. шанс',cd:'Крит. урон',hp:'Кора',
    shop:'ЛАВКА',shopTitle:'Лавка рощи',shopSub:'росу приносят боссы и этапы · янтарь — за каждые 50 уровней',
-   tabRou:'Рулетка',tabAbil:'Способности',tabQuest:'Задания',tabTree:'Облик',
-   rouNote:'✦ Пять карт: две «+3» и одна «+5», остальные «+1». Запомни лица — после перемешивания выбираешь две вслепую.',
+   tabRou:'Рулетка',tabSkill:'Ветки',tabAbil:'Способности',tabQuest:'Задания',tabTree:'Облик',
+   rouNote:'✦ Семь карт: три «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.',
    spin:'Крутить · ',equipped:'Экипировано',abHint:'коснитесь карточки, чтобы надеть или снять',
    setTitle:'Настройки',vol:'Громкость',lang:'Язык',
    afkTitle:'Пока вас не было…',afkSub1:'Древо держало оборону',afkSub2:'и собрало урожай с поверженных существ',
@@ -502,17 +538,19 @@ const I18N={
    overTitle:'Древо пало…',overSub:'Тьма оказалась сильнее. Но корни помнят —<br>древо возродится, если подпитать его семенами.',
    enemies:'врагов',revive:'🌱 Возродить древо',wipe:'Начать с чистого листа',
    qDaily:'Ежедневные',qWave:'Этап',qOnce:'Разовые',qClaim:'Взять',qDone:'✓',
-   pickHint:'Выбери 2 карты',memHint:'Запоминай…',shuffleHint:'Перемешивание…',
+   pickHint:'Выбери 3 карты',memHint:'Запоминай…',shuffleHint:'Перемешивание…',
    newAbil:' — новая способность!',maxEquip:'Экипировано максимум 5 способностей',
    fromRoulette:'Способность выпадает в рулетке',use:'Используется ✓',choose:'Выбрать',
    chap:'Глава',chapDone:'пройдена',bark:'Вечная кора спасла древо!',
    squirrel:'Белка принесла росу!',resetConfirm:'Сбросить ВЕСЬ прогресс?',
    tipStart:'Корни атакуют сами. Крутите рулетку и растите древо 🌿',tipDew:'Роса! Испытайте рулетку в лавке 🎡',
-   protect:'защитите древо',revived:'улучшите его, чтобы выстоять',debug:'ЧИТЫ'},
+   protect:'защитите древо',revived:'улучшите его, чтобы выстоять',debug:'ЧИТЫ',
+   tier1:'Корни',tier2:'Крона',tier3:'Вершина',
+   lock2:'полностью прокачайте «Корни»',lock3:'полностью прокачайте «Крону»',maxed:'МАКС'},
  en:{wave:'Wave',boss:'Boss',tree:'Tree',dmg:'Damage',spd:'Speed',rad:'Range',cc:'Crit chance',cd:'Crit damage',hp:'Bark',
    shop:'SHOP',shopTitle:'Grove Shop',shopSub:'dew from bosses & stages · amber every 50 levels',
-   tabRou:'Roulette',tabAbil:'Abilities',tabQuest:'Quests',tabTree:'Look',
-   rouNote:'✦ Five cards: two «+3» and one «+5», rest «+1». Remember the faces — after shuffle you pick two blind.',
+   tabRou:'Roulette',tabSkill:'Branches',tabAbil:'Abilities',tabQuest:'Quests',tabTree:'Look',
+   rouNote:'✦ Seven cards: three «+1», two «+3» and one «+5». Remember the faces — after shuffle you pick three blind.',
    spin:'Spin · ',equipped:'Equipped',abHint:'tap a card to equip or remove',
    setTitle:'Settings',vol:'Volume',lang:'Language',
    afkTitle:'While you were away…',afkSub1:'The tree held the line for',afkSub2:'and gathered harvest from the fallen',
@@ -520,13 +558,15 @@ const I18N={
    overTitle:'The tree has fallen…',overSub:'Darkness won this time. But roots remember —<br>the tree will rise again if fed with seeds.',
    enemies:'foes',revive:'🌱 Revive the tree',wipe:'Start from scratch',
    qDaily:'Daily',qWave:'Stage',qOnce:'One-time',qClaim:'Claim',qDone:'✓',
-   pickHint:'Pick 2 cards',memHint:'Memorize…',shuffleHint:'Shuffling…',
+   pickHint:'Pick 3 cards',memHint:'Memorize…',shuffleHint:'Shuffling…',
    newAbil:' — new ability!',maxEquip:'Max 5 abilities equipped',
    fromRoulette:'Ability drops from the roulette',use:'In use ✓',choose:'Choose',
    chap:'Chapter',chapDone:'cleared',bark:'Eternal Bark saved the tree!',
    squirrel:'Squirrel brought dew!',resetConfirm:'Reset ALL progress?',
    tipStart:'Roots attack on their own. Spin the roulette and grow the tree 🌿',tipDew:'Dew! Try the roulette in the shop 🎡',
-   protect:'protect the tree',revived:'upgrade it to stand firm',debug:'CHEATS'}
+   protect:'protect the tree',revived:'upgrade it to stand firm',debug:'CHEATS',
+   tier1:'Roots',tier2:'Crown',tier3:'Apex',
+   lock2:'fully upgrade «Roots»',lock3:'fully upgrade «Crown»',maxed:'MAX'}
 };
 const t=(k,o)=>{let s=(I18N[S.lang]||I18N.ru)[k]||k;if(o)for(const p in o)s=s.replace('{'+p+'}',o[p]);return s;};
 function applyLang(){document.documentElement.lang=S.lang;
@@ -535,6 +575,7 @@ function applyLang(){document.documentElement.lang=S.lang;
   $('#langRu').classList.toggle('on',S.lang==='ru');$('#langEn').classList.toggle('on',S.lang==='en');
   try{renderShop();updateHUD();}catch(e){}}
 
+/* ═══════════ редкости и способности ═══════════ */
 const TIERS={
   common:   {name:{ru:'Обычная',en:'Common'},   c:'#9db8a4',g:'157,184,164',w:100, idx:0},
   rare:     {name:{ru:'Редкая',en:'Rare'},       c:'#5aa9e6',g:'90,169,230', w:45,  idx:1},
@@ -572,6 +613,46 @@ const ABIL=[
   svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="m5.8 8 1.6 1.7 2.9-3.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}];
 const LN=o=>o[S.lang]||o.ru;
 
+/* ═══════════ древо прокачки ═══════════ */
+const SKDEF=[
+ {k:'sStat',tier:1,max:5,base:50,g:1.6,n:{ru:'Сила роста',en:'Growth Power'},d:{ru:'+12% урона и +6% скорости атаки за уровень',en:'+12% dmg & +6% atk speed per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8C8 5 5.5 3.5 3 3.5 3 6.5 5.5 8 8 8Zm0 0c0-3 2.5-4.5 5-4.5 0 3-2.5 4.5-5 4.5Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>'},
+ {k:'sRad',tier:1,max:6,max2:8,base:70,g:1.55,n:{ru:'Размах корней',en:'Root Spread'},d:{ru:'+10% радиуса корней (60% → 80% при полной ветке)',en:'+10% root range (60% → 80% on full branch)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v4M8 6 3 13M8 6l5 7M8 6v8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'sAfkT',tier:1,max:5,base:60,g:1.5,n:{ru:'Глубокий покой',en:'Deep Slumber'},d:{ru:'+1 час к лимиту AFK-наград (база 3 ч)',en:'+1h AFK reward cap (base 3h)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M13.6 9.7A6 6 0 0 1 6.3 2.4a6.3 6.3 0 1 0 7.3 7.3Z" fill="currentColor"/></svg>'},
+ {k:'sAfkA',tier:1,max:5,base:80,g:1.55,n:{ru:'Плодородие',en:'Fertility'},d:{ru:'+20% семян из AFK-наград за уровень',en:'+20% AFK seed rewards per level'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'},
+ {k:'t2dmg',tier:2,max:10,base:250,g:1.32,n:{ru:'Твёрдость древесины',en:'Hardwood'},d:{ru:'+1 уровень урона древа',en:'+1 tree damage level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'t2spd',tier:2,max:10,base:250,g:1.32,n:{ru:'Гибкость ветвей',en:'Lithe Branches'},d:{ru:'+1 уровень скорости атаки',en:'+1 attack speed level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'t2hp',tier:2,max:10,base:220,g:1.3,n:{ru:'Толстая кора',en:'Thick Bark'},d:{ru:'+1 уровень коры (HP)',en:'+1 bark (HP) level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>'},
+ {k:'t2rad',tier:2,max:10,base:300,g:1.4,n:{ru:'Сеть корневищ',en:'Rhizome Web'},d:{ru:'+10 к базовому радиусу корней',en:'+10 base root range'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M4.5 8a3.5 3.5 0 0 1 7 0M2.5 8a5.5 5.5 0 0 1 11 0" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'t2cc',tier:2,max:10,base:280,g:1.38,n:{ru:'Меткость побегов',en:'Shoot Aim'},d:{ru:'+1 уровень крит. шанса',en:'+1 crit chance level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M9 1.5 4 9h3.5L7 14.5 12 7H8.5L9 1.5Z" fill="currentColor"/></svg>'},
+ {k:'t2cd',tier:2,max:10,base:280,g:1.38,n:{ru:'Вес ветвей',en:'Branch Weight'},d:{ru:'+1 уровень крит. урона',en:'+1 crit damage level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5 9.6 5.4 13.8 5.7 10.6 8.4 11.6 12.5 8 10.3 4.4 12.5 5.4 8.4 2.2 5.7 6.4 5.4 8 1.5Z" fill="currentColor"/></svg>'},
+ {k:'vamp',tier:2,max:5,base:420,g:1.7,n:{ru:'Жажда сока',en:'Sap Thirst'},d:{ru:'1% нанесённого урона лечит древо за уровень',en:'Heal 1% of damage dealt per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'bleed',tier:2,max:5,base:460,g:1.7,n:{ru:'Едкий сок',en:'Acerbic Sap'},d:{ru:'Удары копят стаки кровотечения: 2% урона/с за стак',en:'Hits stack bleed: 2% dmg/s per stack'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 4 6 4 9a4 4 0 0 0 8 0C12 6 8 1.5 8 1.5Z" fill="currentColor"/><path d="M12.8 12.2v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'slow',tier:2,max:5,base:400,g:1.65,n:{ru:'Липкая смола',en:'Sticky Resin'},d:{ru:'+7% замедления при каждом ударе за уровень',en:'+7% slow on every hit per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5 11 8a3.2 3.2 0 0 1-6 0L8 1.5Z" fill="currentColor"/><path d="M8 11.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'rootBounce',tier:3,max:3,base:2600,g:2.3,n:{ru:'Отскок корня',en:'Root Bounce'},d:{ru:'Корень перескакивает на соседнюю цель (70% урона)',en:'Root jumps to a nearby foe (70% dmg)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+ {k:'infect',tier:3,max:3,base:3200,g:2.3,n:{ru:'Заражение',en:'Infestation'},d:{ru:'Павший враг взрывается, выпуская корни из тела',en:'Fallen foe bursts, spawning roots from the corpse'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.6" fill="currentColor"/><path d="M8 1.5v2.5M8 12v2.5M1.5 8H4M12 8h2.5M3.4 3.4l1.8 1.8M10.8 10.8l1.8 1.8M12.6 3.4l-1.8 1.8M5.2 10.8l-1.8 1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'}];
+const sk=k=>(S.skill&&S.skill[k])||0;
+function tier1Full(){return sk('sStat')>=5&&sk('sRad')>=6&&sk('sAfkT')>=5&&sk('sAfkA')>=5;}
+function tier2Full(){return SKDEF.filter(n=>n.tier===2).every(n=>sk(n.k)>=n.max);}
+function tierOpen(tr){return tr===1?true:tr===2?tier1Full():tier2Full();}
+function nodeMax(n){if(n.k==='sRad'&&tier1Full())return n.max2||n.max;return n.max;}
+const skCost=n=>Math.ceil(n.base*Math.pow(n.g,sk(n.k)));
+
+/* ═══════════ облики дерева ═══════════ */
 const TREE_SKINS={
  oak:{name:{ru:'Древо-хранитель',en:'Guardian Tree'},style:'oak',cost:0,
   trunk:['#6b5138','#4a3826'],canopy:['#2c5f41','#3a7a52','#4b9463','#5fae74'],
@@ -598,7 +679,8 @@ const TREE_SKINS={
   glow:'150,160,232',leafC:'150,165,230',leafKind:'spark',orb:'#c3ccff',fruit:'#8fa0ff',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#33304a"/><circle cx="20" cy="18" r="11" fill="#3c4268"/><circle cx="12" cy="22" r="7" fill="#2c2f4a"/><circle cx="28" cy="22" r="7" fill="#2c2f4a"/><circle cx="20" cy="12" r="7" fill="#4d5684"/><circle cx="15" cy="15" r="1.4" fill="#c3ccff"/><circle cx="24" cy="18" r="1.4" fill="#c3ccff"/><circle cx="20" cy="10" r="1.4" fill="#e6ebff"/></svg>'}};
 
-const maxHpOf=o=>Math.round(100*Math.pow(1.16,safeInt(o.hpLvl,0)));
+/* ═══════════ состояние ═══════════ */
+const maxHpOf=o=>Math.round(100*Math.pow(1.16,(o.hpLvl||0)+((o.skill&&o.skill.t2hp)||0)));
 function load(){
   let d=null;
   for(const k of ['drevo.save.v6','drevo.save.v5','drevo.save.v4','drevo.save.v3','drevo.save.v2','drevo.save.v1']){
@@ -606,9 +688,9 @@ function load(){
   const base={v:1,seeds:0,dew:0,amber:0,wave:1,killed:0,totalKills:0,
     dmgLvl:0,spdLvl:0,hpLvl:0,radLvl:0,ccLvl:0,cdLvl:0,
     treeHp:100,muted:false,vol:1,lang:'ru',lastSeen:0,bestWave:1,seen:true,tipShop:false,amberTier:0,
-    abilities:{},equip:[],treeSkins:['oak'],treeSkin:'oak',
-    dailyDate:0,dailyDone:{},waveQ:{prog:0,done:false,claimed:false},
-    onceDone:{},chaptersCleared:0};
+    abilities:{},equip:[],treeSkins:['oak'],treeSkin:'oak',skill:{},
+    dailyDate:0,dailyDone:{},dailyProg:{kills:0,waves:0,spins:0,crits:0,upg:0},
+    waveQ:{prog:0,done:false,claimed:false},onceDone:{},chaptersCleared:0};
   if(d&&d.v===1){
     const s=Object.assign(base,d);
     s.dmgLvl=safeInt(s.dmgLvl,0);
@@ -628,6 +710,8 @@ function load(){
     s.chaptersCleared=safeInt(s.chaptersCleared,0);
     s.abilities=Object.assign({},d.abilities||{});
     s.equip=Array.isArray(d.equip)?d.equip.slice(0,5):[];
+    s.skill=Object.assign({},d.skill||{});
+    s.dailyProg=Object.assign({kills:0,waves:0,spins:0,crits:0,upg:0},d.dailyProg||{});
     s.treeSkins=(Array.isArray(d.treeSkins)&&d.treeSkins.length)?d.treeSkins:['oak'];
     s.treeSkin=(d.treeSkin&&TREE_SKINS[d.treeSkin])?d.treeSkin:'oak';
     if(s.vol==null||isNaN(s.vol))s.vol=1;
@@ -648,19 +732,21 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify({v:1,seeds:S.seeds,d
   wave:S.wave,killed:S.killed,totalKills:S.totalKills,dmgLvl:S.dmgLvl,spdLvl:S.spdLvl,hpLvl:S.hpLvl,
   radLvl:S.radLvl,ccLvl:S.ccLvl,cdLvl:S.cdLvl,
   treeHp:S.treeHp,muted:S.muted,vol:S.vol,lang:S.lang,lastSeen:Date.now(),bestWave:S.bestWave,seen:true,tipShop:S.tipShop,
-  amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,treeSkin:S.treeSkin,
-  dailyDate:S.dailyDate,dailyDone:S.dailyDone,waveQ:S.waveQ,onceDone:S.onceDone,chaptersCleared:S.chaptersCleared}));}catch(e){}}
+  amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,treeSkin:S.treeSkin,skill:S.skill,
+  dailyDate:S.dailyDate,dailyDone:S.dailyDone,dailyProg:S.dailyProg,
+  waveQ:S.waveQ,onceDone:S.onceDone,chaptersCleared:S.chaptersCleared}));}catch(e){}}
 
+/* ═══════════ статы ═══════════ */
 const ab=k=>S.equip.includes(k)?(S.abilities[k]||0):0;
-const treeDmg  =()=>10*Math.pow(1.10,S.dmgLvl)*(1+.12*ab('thorns'))*(1+.08*ab('avatar'));
-const rootDmg  =()=>treeDmg()*1.2*(1+.15*ab('deeproots'));
-const treeAspd =()=>Math.min(4,1.0*Math.pow(1.08,S.spdLvl)*(1+.10*ab('swift')));
-const rootAspd =()=>Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl)*(1+.10*ab('swift'))*(1+.10*ab('deeproots')));
+const treeDmg  =()=>10*Math.pow(1.10,S.dmgLvl+sk('t2dmg'))*(1+.12*ab('thorns'))*(1+.08*ab('avatar'))*(1+.12*sk('sStat'));
+const rootDmg  =()=>treeDmg()*(1+.15*ab('deeproots'));
+const treeAspd =()=>Math.min(4,1.0*Math.pow(1.08,S.spdLvl+sk('t2spd'))*(1+.10*ab('swift'))*(1+.06*sk('sStat')));
+const rootAspd =()=>Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl+sk('t2spd'))*(1+.10*ab('swift'))*(1+.10*ab('deeproots'))*(1+.06*sk('sStat')));
 const treeMaxHp=()=>maxHpOf(S);
 const rootReachCap=()=>Math.min(W,H/ISO)*0.375;
-const rootReach=()=>clamp(85+10*S.radLvl,85,rootReachCap());
-const critChance=()=>Math.min(.5,.04*S.ccLvl);
-const critMult  =()=>Math.min(3,1.5+.12*S.cdLvl);
+const rootReach=()=>clamp((85+10*(S.radLvl+sk('t2rad')))*(1+.10*sk('sRad')),85,rootReachCap());
+const critChance=()=>Math.min(.6,.04*(S.ccLvl+sk('t2cc')));
+const critMult  =()=>Math.min(3.5,1.5+.12*(S.cdLvl+sk('t2cd')));
 const COST={dmg:[20,1.22],spd:[30,1.25],rad:[120,1.6],cc:[60,1.4],cd:[70,1.42],hp:[25,1.22]};
 const costOf=k=>Math.ceil(COST[k][0]*Math.pow(COST[k][1],S[k+'Lvl']||0));
 function treeGeom(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
@@ -673,9 +759,11 @@ function chapterReward(ch){if(ch%10===0)return 50;if(ch%5===0)return 40;if(ch%3=
 
 let afkReward=0,afkDew=0,afkSec=0;
 if(S.seen&&S.lastSeen){const el=(Date.now()-S.lastSeen)/1000;
-  if(el>90){afkSec=Math.min(el,8*3600);afkReward=Math.floor(afkRate()*afkSec);
+  if(el>90){afkSec=Math.min(el,(3+sk('sAfkT'))*3600);
+    afkReward=Math.floor(afkRate()*afkSec*(1+.2*sk('sAfkA')));
     afkDew=Math.min(12,Math.floor(afkSec/1800));}}
 
+/* ═══════════ канвас ═══════════ */
 const cv=$('#game'),ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1,cx=0,cy=0,ground=null;
 const spawnR=()=>Math.min(W*.46,H*.40/ISO,520)+20;
@@ -697,13 +785,10 @@ function makeGround(){
   const bg=g.createRadialGradient(cx,cy,60,cx,cy,Math.max(W,H)*.75);
   bg.addColorStop(0,'#152219');bg.addColorStop(.55,'#0d1611');bg.addColorStop(1,'#070c09');
   g.fillStyle=bg;g.fillRect(0,0,W,H);
-  const maxR=Math.hypot(W,H)/2;
-  for(let r=70;r<maxR;r+=58){const a=clamp(.14-(r/maxR)*.12,.02,.14);
-    g.strokeStyle='rgba(146,196,158,'+a+')';g.lineWidth=1;
-    g.beginPath();g.ellipse(cx,cy,r,r*ISO,0,0,TAU);g.stroke();}
   const ig=g.createRadialGradient(cx,cy-10,6,cx,cy,96);
   ig.addColorStop(0,'rgba(96,150,105,.34)');ig.addColorStop(.7,'rgba(64,104,74,.16)');ig.addColorStop(1,'rgba(64,104,74,0)');
   g.fillStyle=ig;g.beginPath();g.ellipse(cx,cy,96,96*ISO,0,0,TAU);g.fill();
+  const maxR=Math.hypot(W,H)/2;
   for(let i=0;i<240;i++){const a=rand(0,TAU),d=Math.pow(Math.random(),.6)*maxR;
     g.fillStyle='rgba('+(Math.random()<.5?'122,168,128':'86,120,94')+','+rand(.05,.16).toFixed(2)+')';
     g.beginPath();g.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d*ISO,rand(.7,2.1),0,TAU);g.fill();}
@@ -714,6 +799,7 @@ function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight
   ctx.setTransform(DPR,0,0,DPR,0,0);cx=W/2;cy=H*.5;makeGround();buildScenery();}
 addEventListener('resize',resize);
 
+/* ═══════════ сущности ═══════════ */
 const enemies=[],shots=[],parts=[],floats=[],roots=[];
 const flies=[];for(let i=0;i<14;i++)flies.push({x:Math.random(),y:Math.random(),p:rand(0,TAU),s:rand(.4,1),
   c:['232,214,138','138,222,196','158,224,152'][i%3]});
@@ -739,8 +825,9 @@ function spawn(type){const t=ET[type],w=S.wave,a=rand(0,TAU),R=spawnR();
   const hp=t.hp*Math.pow(1.13,w-1)*(boss?1:rand(.9,1.1));
   enemies.push({type,x:Math.cos(a)*R,y:Math.sin(a)*R,hp,maxHp:hp,
     sp:t.sp*rand(.92,1.08),dmg:t.dmg*Math.pow(1.07,w-1),rw:Math.round(t.rw*Math.pow(1.12,w-1)),
-    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1,born:0,lift:0});}
+    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1,born:0,lift:0,bleed:0,bleedT:0});}
 
+/* ═══════════ звук ═══════════ */
 let AC=null;const lastSnd={};
 function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
   if(AC.state==='suspended')AC.resume();}catch(e){}return AC;}
@@ -775,6 +862,7 @@ const sfx={
   over(){tone(220,.4,'sine',.09,-120);tone(110,.7,'sine',.08,-40,.25);}};
 document.addEventListener('pointerdown',()=>ac());
 
+/* ═══════════ UI ═══════════ */
 const vigEl=$('#vignette');let vigT=0;
 function vig(){vigEl.style.opacity=.65;clearTimeout(vigT);vigT=setTimeout(()=>vigEl.style.opacity=0,90);}
 function banner(title,sub,cls){const b=$('#waveBanner');
@@ -815,8 +903,9 @@ function checkAmber(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl
     bump('#amberPill');toast('+'+n+' '+t('amber'));
     sfx.claim();save();updateHUD();}}
 
+/* ═══════════ карты-рулетка (7 карт, выбор 3) ═══════════ */
 const SPIN_COST=15;
-let cards=[],cardPhase='idle',pickedCount=0,cardTimer=0;
+let cards=[],cardPhase='idle',pickedCount=0,cardTimer=null;
 function luck(){return 1+S.wave*.02;}
 function pickAbility(){
   const lk=luck();let tot=0;const tw={};
@@ -825,29 +914,32 @@ function pickAbility(){
   for(const t in TIERS){if(r<tw[t]){tier=t;break;}r-=tw[t];}
   const list=ABIL.filter(a=>a.tier===tier);
   return list[Math.floor(Math.random()*list.length)];}
-function genCards(){
-  const plus=[1,1,3,3,5];
-  cards=plus.map((p,i)=>({id:i,a:pickAbility(),plus:p,slot:i,picked:false,revealed:false}));
-  cardPhase='show';cardTimer=1.7;pickedCount=0;
-  renderCards();}
+function genCards(autoReady=true){
+  const plus=[1,1,1,3,3,5];
+  cards=plus.map((p,i)=>({id:i,a:pickAbility(),plus:p,slot:i,picked:false,revealed:false,flipped:false}));
+  cardPhase='show';pickedCount=0;
+  $('#cardsStage').innerHTML='';
+  renderCards();updateSpinBtn();
+  clearTimeout(cardTimer);
+  if(autoReady)cardTimer=setTimeout(()=>{if(cardPhase==='show'){cardPhase='ready';renderCards();updateSpinBtn();}},1700);}
 function cardTransform(slot){
-  const n=5,sp=Math.min(104,(($('#cardsStage').clientWidth||300)-100)/4);
+  const n=7,stageW=$('#cardsStage').clientWidth||340;
+  const sp=Math.min(78,Math.max(40,(stageW-90)/(n-1)));
   const off=(slot-(n-1)/2);
-  const x=off*sp, rot=off*7, y=Math.abs(off)*7;
+  const x=off*sp, rot=off*5, y=Math.abs(off)*6;
   return `translate(-50%,-50%) translate(${x}px,${y}px) rotate(${rot}deg)`;}
 function renderCards(){
   const st=$('#cardsStage');
   if(st.children.length!==cards.length){
     st.innerHTML=cards.map(c=>{const t=TIERS[c.a.tier];
       return `<div class="rcard t-${c.a.tier}" data-id="${c.id}">
-        <div class="face"><span class="plus">+${c.plus}</span><span class="ic">${c.a.svg}</span>
-          <span class="nm">${LN(c.a.short)}</span><span class="ti">${LN(t.name)}</span></div>
+        <div class="face"><span class="nm">${LN(c.a.n)}</span><span class="plus">+${c.plus}</span><span class="ti">${LN(t.name)}</span></div>
         <div class="back"></div></div>`;}).join('');
     st.querySelectorAll('.rcard').forEach(elc=>{
       elc.addEventListener('click',()=>onCardClick(+elc.dataset.id));});}
   cards.forEach(c=>{const elc=st.querySelector(`[data-id="${c.id}"]`);if(!elc)return;
     elc.style.setProperty('--tf',cardTransform(c.slot));
-    elc.style.transform=(c.slot!=null?cardTransform(c.slot):'translate(-50%,-50%)')+ (c.flipped?' rotateY(180deg)':'');
+    elc.style.transform=(c.slot!=null?cardTransform(c.slot):'translate(-50%,-50%)')+(c.flipped?' rotateY(180deg)':'');
     elc.classList.toggle('flipped',!!c.flipped);
     elc.classList.toggle('pickable',cardPhase==='pick'&&!c.picked);
     elc.classList.toggle('picked',c.revealed);
@@ -857,7 +949,7 @@ function onCardClick(id){
   const c=cards.find(x=>x.id===id);if(!c||c.picked)return;
   c.picked=true;c.revealed=true;c.flipped=false;pickedCount++;
   sfx.flip();renderCards();
-  if(pickedCount>=2){cardPhase='done';
+  if(pickedCount>=3){cardPhase='done';updateSpinBtn();
     const r=cards.filter(x=>x.revealed);
     setTimeout(()=>revealCards(r),450);}}
 function revealCards(r){
@@ -873,23 +965,28 @@ function revealCards(r){
   bump('#dewPill');
   save();updateHUD();renderAbilities();updateSpinBtn();}
 function startSpin(){
-  if(cardPhase==='show'||cardPhase==='shuffle'||S.dew<SPIN_COST)return;
-  S.dew-=SPIN_COST;save();updateHUD();
-  genCards();
+  if(!(cardPhase==='ready'||cardPhase==='done')||S.dew<SPIN_COST)return;
+  S.dew-=SPIN_COST;
+  if(S.dailyProg)S.dailyProg.spins=(S.dailyProg.spins||0)+1;
+  save();updateHUD();
+  genCards(false);
   setTimeout(()=>{
+    if(cardPhase!=='show')return;
     cards.forEach(c=>{c.flipped=true;});renderCards();sfx.flip();
-    cardPhase='shuffle';
-    const order=[0,1,2,3,4];for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+    cardPhase='shuffle';updateSpinBtn();
+    const order=[0,1,2,3,4,5,6];
+    for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
     cards.forEach((c,i)=>{c.slot=order[i];});
-    setTimeout(()=>{renderCards();},60);
-    setTimeout(()=>{cardPhase='pick';renderCards();updateSpinBtn();},720);
+    setTimeout(()=>renderCards(),60);
+    setTimeout(()=>{cardPhase='pick';renderCards();updateSpinBtn();},800);
   },1700);}
 function updateSpinBtn(){
   const sb=$('#spinBtn');
-  const can=cardPhase!=='show'&&cardPhase!=='shuffle'&&S.dew>=SPIN_COST;
+  const can=(cardPhase==='ready'||cardPhase==='done')&&S.dew>=SPIN_COST;
   sb.disabled=!can;sb.classList.toggle('can',can);
   sb.innerHTML=t('spin')+'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> '+SPIN_COST;}
 
+/* ═══════════ лавка ═══════════ */
 let shopOpen=false,curTab='roulette';
 function renderAbilities(){
   try{
@@ -915,6 +1012,39 @@ function renderTrees(){
       <div class="skin-state">${state}</div></div>`;}).join('')+'</div>'
     +`<p class="shop-note">✦ ${S.lang==='ru'?'Янтарь начисляется за каждые 50 уровней древа: +5.':'Amber granted every 50 tree levels: +5.'}</p>`;
   }catch(e){console.error('renderTrees',e);}}
+
+/* ═══════════ древо прокачки: рендер ═══════════ */
+function renderSkills(){
+  try{
+  const RN=['','I','II','III'],TK={1:'tier1',2:'tier2',3:'tier3'};
+  $('#paneSkills').innerHTML=[1,2,3].map(tr=>{
+    const op=tierOpen(tr);
+    const nodes=SKDEF.filter(n=>n.tier===tr);
+    const lock=tr===2?t('lock2'):tr===3?t('lock3'):'';
+    return `<div class="sk-tier ${op?'open':'locked'}">
+      <div class="sk-th"><b>${RN[tr]}</b><span>${t(TK[tr])}</span>${op?'':`<i>🔒 ${lock}</i>`}</div>
+      <div class="sk-grid">${nodes.map(n=>{
+        const l=sk(n.k),mx=nodeMax(n),c=skCost(n),maxed=l>=mx,ok=op&&!maxed&&S.seeds>=c&&!S.over;
+        return `<div class="sknode ${maxed?'maxed':''} ${ok?'afford':''}" data-sk="${n.k}">
+          <span class="sk-ico">${n.svg}</span>
+          <span class="sk-body"><b>${LN(n.n)}<i>${l}/${mx}</i></b><em>${LN(n.d)}</em></span>
+          <span class="sk-buy">${maxed?t('maxed'):fmt(c)}</span></div>`;}).join('')}</div></div>`;}).join('')
+    +`<p class="shop-note">✦ ${S.lang==='ru'?'Ветки покупаются за семена. Полная прокачка ступени открывает следующую, а «Размах корней» вырастает до 80%.':'Branches are bought with seeds. Fully upgrading a tier unlocks the next one, and «Root Spread» grows to 80%.'}</p>`;
+  }catch(e){console.error('renderSkills',e);}}
+function buySkill(n){
+  if(!tierOpen(n.tier)||S.over)return;
+  const mx=nodeMax(n),c=skCost(n);
+  if(sk(n.k)>=mx||S.seeds<c)return;
+  S.seeds-=c;
+  const before=treeMaxHp();
+  S.skill[n.k]=(S.skill[n.k]||0)+1;
+  if(n.k==='t2hp')S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-before));
+  pulse=1;leafBurst();sfx.upgrade();
+  save();updateHUD();renderSkills();}
+$('#paneSkills').addEventListener('click',e=>{const c=e.target.closest('[data-sk]');if(!c)return;
+  const n=SKDEF.find(x=>x.k===c.dataset.sk);if(n)buySkill(n);});
+
+/* ═══════════ задания ═══════════ */
 const DAILY_POOL=[
  {id:'dk',g:50,r:8,txt:{ru:'Убей 50 существ',en:'Slay 50 creatures'}},
  {id:'dw',g:3,r:6,txt:{ru:'Пройди 3 этапа',en:'Clear 3 stages'}},
@@ -928,8 +1058,9 @@ const ACH=[
  {id:'a_w25',g:25,field:'bestWave',r:{amber:5},txt:{ru:'Достигни 25 этапа',en:'Reach stage 25'}},
  {id:'a_eq5',g:5,field:'equipCount',r:{dew:12},txt:{ru:'Экипируй 5 способностей',en:'Equip 5 abilities'}},
  {id:'a_skin',g:1,field:'skinCount',r:{amber:3},txt:{ru:'Купи облик древа',en:'Buy a tree look'}}];
-function ensureDaily(){const dk=dayKey();if(S.dailyDate!==dk){S.dailyDate=dk;S.dailyDone={};
-  S.dailyProg={kills:0,waves:0,spins:0,crits:0,upg:0};save();}}
+function ensureDaily(){const dk=dayKey();
+  if(S.dailyDate!==dk){S.dailyDate=dk;S.dailyDone={};S.dailyProg={kills:0,waves:0,spins:0,crits:0,upg:0};save();}
+  if(!S.dailyProg||typeof S.dailyProg!=='object')S.dailyProg={kills:0,waves:0,spins:0,crits:0,upg:0};}
 function dailyList(){ensureDaily();const r=rng(S.dailyDate);const pool=[...DAILY_POOL];
   const pick=[];for(let i=0;i<3&&pool.length;i++){pick.push(pool.splice(Math.floor(r()*pool.length),1)[0]);}
   return pick.map(p=>{const prog=S.dailyProg[p.id==='dk'?'kills':p.id==='dw'?'waves':p.id==='dr'?'spins':p.id==='dc'?'crits':'upg']||0;
@@ -981,35 +1112,40 @@ function findQuest(id,sec){if(sec==='daily')return dailyList().find(q=>q.id===id
 function renderShop(){
   try{
   $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
-  renderAbilities();renderTrees();renderQuests();
+  renderAbilities();renderTrees();renderQuests();renderSkills();
   if(curTab==='roulette'){if(cardPhase==='idle')genCards();else renderCards();updateSpinBtn();}
   }catch(e){console.error('renderShop',e);}}
 function updateShopLive(){if(!shopOpen)return;
   try{
   $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
   if(curTab==='roulette')updateSpinBtn();
+  if(curTab==='skills')renderSkills();
   }catch(e){}}
 function pickTree(k){const ts=TREE_SKINS[k];
   if(!S.treeSkins.includes(k)){if(S.amber<ts.cost)return;S.amber-=ts.cost;S.treeSkins.push(k);}
   S.treeSkin=k;sfx.claim();pulse=1;leafBurst();
   save();renderTrees();updateHUD();}
-function setTab(t){curTab=t;
-  $('#tabRoulette').classList.toggle('active',t==='roulette');
-  $('#tabAbils').classList.toggle('active',t==='abils');
-  $('#tabQuests').classList.toggle('active',t==='quests');
-  $('#tabTrees').classList.toggle('active',t==='trees');
-  $('#paneRoulette').hidden=t!=='roulette';
-  $('#paneAbils').hidden=t!=='abils';
-  $('#paneQuests').hidden=t!=='quests';
-  $('#paneTrees').hidden=t!=='trees';
-  if(t==='abils')renderAbilities();
-  if(t==='trees')renderTrees();
-  if(t==='quests')renderQuests();
-  if(t==='roulette'){if(cardPhase==='idle')genCards();renderCards();updateSpinBtn();}}
+function setTab(tb){curTab=tb;
+  $('#tabRoulette').classList.toggle('active',tb==='roulette');
+  $('#tabSkills').classList.toggle('active',tb==='skills');
+  $('#tabAbils').classList.toggle('active',tb==='abils');
+  $('#tabQuests').classList.toggle('active',tb==='quests');
+  $('#tabTrees').classList.toggle('active',tb==='trees');
+  $('#paneRoulette').hidden=tb!=='roulette';
+  $('#paneSkills').hidden=tb!=='skills';
+  $('#paneAbils').hidden=tb!=='abils';
+  $('#paneQuests').hidden=tb!=='quests';
+  $('#paneTrees').hidden=tb!=='trees';
+  if(tb==='abils')renderAbilities();
+  if(tb==='trees')renderTrees();
+  if(tb==='quests')renderQuests();
+  if(tb==='skills')renderSkills();
+  if(tb==='roulette'){if(cardPhase==='idle')genCards();renderCards();updateSpinBtn();}}
 $('#shopBtn').addEventListener('click',()=>{shopOpen=true;open('#shopOverlay');renderShop();updateShopLive();});
 $('#shopClose').addEventListener('click',()=>{shopOpen=false;close('#shopOverlay');});
 $('#shopOverlay').addEventListener('click',e=>{if(e.target.id==='shopOverlay'){shopOpen=false;close('#shopOverlay');}});
 $('#tabRoulette').addEventListener('click',()=>setTab('roulette'));
+$('#tabSkills').addEventListener('click',()=>setTab('skills'));
 $('#tabAbils').addEventListener('click',()=>setTab('abils'));
 $('#tabQuests').addEventListener('click',()=>setTab('quests'));
 $('#tabTrees').addEventListener('click',()=>setTab('trees'));
@@ -1024,6 +1160,7 @@ $('#abilGrid').addEventListener('click',e=>{
   sfx.tick();save();renderAbilities();updateHUD();});
 $('#paneTrees').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
 
+/* ═══════════ настройки ═══════════ */
 $('#setBtn').addEventListener('click',()=>{open('#setOverlay');$('#volRange').value=Math.round((S.vol==null?1:S.vol)*100);$('#volVal').textContent=$('#volRange').value+'%';});
 $('#setClose').addEventListener('click',()=>close('#setOverlay'));
 $('#setOverlay').addEventListener('click',e=>{if(e.target.id==='setOverlay')close('#setOverlay');});
@@ -1031,6 +1168,7 @@ $('#volRange').addEventListener('input',e=>{S.vol=+e.target.value/100;$('#volVal
 $('#langRu').addEventListener('click',()=>{S.lang='ru';save();applyLang();});
 $('#langEn').addEventListener('click',()=>{S.lang='en';save();applyLang();});
 
+/* ═══════════ бой ═══════════ */
 function burst(x,y,r,c){const n=Math.min(26,8+r);
   for(let i=0;i<n;i++){const a=rand(0,TAU),v=rand(20,90+r*3);
     parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,l:rand(.35,.7),ml:.7,sz:rand(1.5,3.2),c});}
@@ -1057,11 +1195,32 @@ function kill(e){
   if(leech>0&&S.treeHp>0){
     S.treeHp=Math.min(treeMaxHp(),S.treeHp+treeMaxHp()*(.01+.005*leech));
     parts.push({x:rand(-14,14),y:-20,vx:rand(-6,6),vy:rand(-30,-14),l:.7,ml:.7,sz:2.4,c:'143,214,138'});}
+  /* заражение: труп взрывается корнями */
+  const infL=sk('infect');
+  if(infL>0&&e.type!=='boss'){
+    const R=60+18*infL,dmg=treeDmg()*(.6+.3*infL);
+    for(const o of enemies){if(o===e||o.dead)continue;
+      if(Math.hypot(o.x-e.x,o.y-e.y)<R)hit(o,dmg,false);}
+    parts.push({ring:true,x:e.x,y:e.y*ISO-e.r*.4,l:.4,ml:.4,r0:6,r1:R,c:'176,127,216'});
+    for(let i=0;i<6;i++)parts.push({x:e.x+rand(-8,8),y:e.y*ISO-e.r*.5,vx:rand(-26,26),vy:rand(-40,-10),l:.5,ml:.5,sz:2,c:'176,127,216'});
+    const near=enemies.filter(o=>!o.dead&&o!==e&&Math.hypot(o.x-e.x,o.y-e.y)<R+140)
+      .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,1+infL);
+    near.forEach(o=>launchRoot(o,e.x,e.y,0,.6));
+    if(near.length)sfx.dig();}
   if(e.type==='boss'){gainDew(2+Math.floor(S.wave/5),e.x,e.y*ISO-e.r-36);nextWave();}
   else{if(e.type==='golem'&&Math.random()<.12)gainDew(1,e.x,e.y*ISO-e.r-30);sfx.kill();}}
 function hit(e,dmg,crit){if(S.over||e.dead)return;
   e.hp-=dmg;e.flash=1;
   parts.push({x:e.x+rand(-4,4),y:e.y*ISO-e.r*.5,vx:rand(-14,14),vy:rand(-24,-6),l:.3,ml:.3,sz:2,c:'255,236,190'});
+  const vL=sk('vamp');
+  if(vL>0&&S.treeHp>0&&S.treeHp<treeMaxHp()){
+    S.treeHp=Math.min(treeMaxHp(),S.treeHp+dmg*.01*vL);
+    if(Math.random()<.1)parts.push({x:rand(-12,12),y:-18,vx:rand(-6,6),vy:rand(-28,-12),l:.6,ml:.6,sz:2.2,c:'143,214,138'});}
+  const bL=sk('bleed');
+  if(bL>0&&!e.dead){e.bleed=Math.min(4+2*bL,(e.bleed||0)+1);e.bleedT=3;}
+  const slL=sk('slow');
+  if(slL>0&&!e.dead){const f=1-Math.min(.45,.07*slL);
+    if(e.slowT<=0||f<e.slowF)e.slowF=f;e.slowT=Math.max(e.slowT,1.4);}
   if(crit){if(S.dailyProg)S.dailyProg.crits=(S.dailyProg.crits||0)+1;
     floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-12,txt:'CRIT '+Math.round(dmg),l:.85,ml:.85,c:'#ffd76a',sz:13});sfx.crit();}
   else{floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-8,txt:''+Math.round(dmg),l:.65,ml:.65,c:'#ffe9b8',sz:10.5});sfx.hit();}
@@ -1098,16 +1257,16 @@ function gameOver(){
   $('#stWave').textContent=S.wave;$('#stKills').textContent=fmt(runKills);$('#stSeeds').textContent=fmt(runSeeds);
   setTimeout(()=>open('#overOverlay'),900);}
 
-function launchRoot(tg){
-  const d=Math.hypot(tg.x,tg.y)||1;
-  roots.push({phase:'out',t:0,tg,tx:tg.x,ty:tg.y,seed:rand(0,100),
-    durOut:clamp(d/340,.42,1.0),durRet:0,
-    nx:-tg.y/d,ny:tg.x/d});}
+/* ═══════════ корни-черви ═══════════ */
+function launchRoot(tg,ox=0,oy=0,b=0,dmgMul=1){
+  const d=Math.hypot(tg.x-ox,tg.y-oy)||1;
+  roots.push({phase:'out',t:0,tg,ox,oy,tx:tg.x,ty:tg.y,seed:rand(0,100),b,dmgMul,
+    durOut:clamp(d/340,.42,1.0),durRet:0});}
 function rootStrike(p){
   const tg=p.tg;
   if(tg&&!tg.dead&&Math.hypot(tg.x-p.tx,tg.y-p.ty)<tg.r+24){
     const isCrit=Math.random()<critChance();
-    const dmg=rootDmg()*(isCrit?critMult():1);
+    const dmg=rootDmg()*(p.dmgMul||1)*(isCrit?critMult():1);
     tg.lift=isCrit?14:9;
     hit(tg,dmg,isCrit);
     const sx=p.tx,sy=p.ty*ISO;
@@ -1115,6 +1274,14 @@ function rootStrike(p){
     for(let k=0;k<6;k++)parts.push({x:sx+rand(-10,10),y:sy,vx:rand(-8,8),vy:rand(-46,-20),l:.5,ml:.5,sz:2,c:'170,230,180'});
     parts.push({ring:true,x:sx,y:sy,l:.4,ml:.4,r0:8,r1:isCrit?70:48,c:isCrit?'255,210,120':'201,160,106'});
     shakeM=Math.max(shakeM,isCrit?5:3);sfx.strike();
+    /* отскок корня */
+    const rb=sk('rootBounce');
+    if(rb>0&&(p.b||0)<rb){
+      let best=null,bd=1e9;
+      for(const e of enemies){if(e===tg||e.dead)continue;
+        const dd=Math.hypot(e.x-p.tx,e.y-p.ty);
+        if(dd<bd&&dd<240){bd=dd;best=e;}}
+      if(best){launchRoot(best,p.tx,p.ty,(p.b||0)+1,(p.dmgMul||1)*.7);sfx.dig();}}
   }else{
     const sx=p.tx,sy=p.ty*ISO;
     for(let k=0;k<6;k++)parts.push({x:sx+rand(-12,12),y:sy,vx:rand(-20,20),vy:rand(-50,-20),l:.4,ml:.4,sz:rand(1.5,2.5),c:'120,90,58'});
@@ -1155,10 +1322,11 @@ function simulate(dt){
       p.strikeT+=dt;if(p.strikeT>=.16){p.phase='return';p.t=1;p.durRet=p.durOut*.6;}}
     else{
       p.t-=dt/p.durRet;
-      if(p.t<=0){for(let k=0;k<5;k++)parts.push({x:rand(-12,12),y:rand(-6,6),vx:rand(-10,10),vy:rand(-20,-6),l:.3,ml:.3,sz:1.6,c:'120,90,58'});
+      if(p.t<=0){for(let k=0;k<5;k++)parts.push({x:p.ox+rand(-12,12),y:p.oy*ISO+rand(-6,6),vx:rand(-10,10),vy:rand(-20,-6),l:.3,ml:.3,sz:1.6,c:'120,90,58'});
         roots.splice(i,1);continue;}}
     if(Math.random()<.4){const e=smooth(clamp(p.t,0,1));
-      parts.push({x:p.tx*e+rand(-4,4),y:p.ty*e*ISO+rand(-3,3),vx:rand(-8,8),vy:rand(-22,-8),l:.3,ml:.3,sz:rand(1,2),c:'120,90,58'});}}
+      const px=lerp(p.ox,p.tx,e),py=lerp(p.oy,p.ty,e);
+      parts.push({x:px+rand(-4,4),y:py*ISO+rand(-3,3),vx:rand(-8,8),vy:rand(-22,-8),l:.3,ml:.3,sz:rand(1,2),c:'120,90,58'});}}
 
   const seedL=ab('multishot');
   if(seedL>0){
@@ -1197,7 +1365,8 @@ function simulate(dt){
       const frL=ab('frost');
       if(frL>0&&!tg.dead){
         let f=1-Math.min(.7,.2+.08*frL);if(tg.type==='boss')f=1-(1-f)*.5;
-        tg.slowF=f;tg.slowT=Math.max(tg.slowT,1.2+.2*frL);
+        if(tg.slowT<=0||f<tg.slowF)tg.slowF=f;
+        tg.slowT=Math.max(tg.slowT,1.2+.2*frL);
         for(let k=0;k<3;k++)parts.push({x:tg.x+rand(-8,8),y:tg.y*ISO-tg.r*.5,vx:rand(-14,14),vy:rand(-20,0),l:.4,ml:.4,sz:1.8,c:'160,215,245'});}
       const boL=ab('bounce');
       if(boL>0&&s.b<boL){
@@ -1235,6 +1404,13 @@ function simulate(dt){
     e.born=Math.min(1,e.born+dt*2.2);
     e.lift=Math.max(0,e.lift-dt*40);
     e.flash=Math.max(0,e.flash-dt*6);
+    /* кровотечение */
+    if(e.bleed>0&&e.bleedT>0&&!e.dead){
+      e.bleedT-=dt;
+      e.hp-=e.bleed*treeDmg()*.02*dt;
+      if(Math.random()<dt*4)parts.push({x:e.x+rand(-5,5),y:e.y*ISO-e.r*.5,vx:rand(-8,8),vy:rand(-18,-6),l:.4,ml:.4,sz:1.6,c:'168,220,120'});
+      if(e.bleedT<=0)e.bleed=0;
+      if(e.hp<=0)e.dead=true;}
     let sf=1;if(e.slowT>0){e.slowT-=dt;sf=e.slowF;}
     const d=Math.hypot(e.x,e.y),lim=26+e.r*.3;
     if(e.type==='spirit'){const v=e.sp*sf*dt;const ang=Math.atan2(-e.y,-e.x);
@@ -1248,10 +1424,12 @@ function simulate(dt){
   for(let i=enemies.length-1;i>=0;i--){
     if(enemies[i].dead){kill(enemies[i]);enemies.splice(i,1);}}
 
+  /* ветер */
   windT+=dt;gustTimer-=dt;
   if(gustTimer<=0){gustTarget=Math.random()<.5?rand(.4,1):rand(0,.2);gustTimer=rand(5,11);}
   gust+=(gustTarget-gust)*Math.min(1,dt*1.2);
 
+  /* белка */
   squirrelTimer-=dt;
   if(!squirrel&&squirrelTimer<=0&&!anyOverlayOpen()){
     const target=scenery.filter(s=>s.type==='tree');
@@ -1280,6 +1458,7 @@ function updateFx(dt){
   for(let i=floats.length-1;i>=0;i--){floats[i].l-=dt;if(floats[i].l<=0)floats.splice(i,1);}
 }
 
+/* ═══════════ отрисовка ═══════════ */
 function ell(x,y,rx,ry){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,TAU);ctx.fill();}
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
   ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
@@ -1316,22 +1495,21 @@ function drawFlies(dt){
     ctx.shadowColor='rgb('+f.c+')';ctx.shadowBlur=8;
     ctx.beginPath();ctx.arc(x,y,1.8,0,TAU);ctx.fill();ctx.shadowBlur=0;}}
 
+/* только мягкая подсветка радиуса атаки */
 function drawReach(){
   const r=rootReach();
-  ctx.save();
-  const rg=ctx.createRadialGradient(cx,cy,r*.3,cx,cy,r);
-  rg.addColorStop(0,'rgba(143,214,138,0)');rg.addColorStop(.85,'rgba(143,214,138,.04)');rg.addColorStop(1,'rgba(143,214,138,.10)');
-  ctx.fillStyle=rg;ctx.beginPath();ctx.ellipse(cx,cy,r,r*ISO,0,0,TAU);ctx.fill();
-  ctx.strokeStyle='rgba(143,214,138,.30)';ctx.lineWidth=1.5;ctx.setLineDash([6,7]);
-  ctx.beginPath();ctx.ellipse(cx,cy,r,r*ISO,0,0,TAU);ctx.stroke();
-  ctx.setLineDash([]);ctx.restore();}
+  const rg=ctx.createRadialGradient(cx,cy,r*.25,cx,cy,r);
+  rg.addColorStop(0,'rgba(143,214,138,0)');
+  rg.addColorStop(.8,'rgba(143,214,138,.05)');
+  rg.addColorStop(1,'rgba(143,214,138,.15)');
+  ctx.fillStyle=rg;
+  ctx.beginPath();ctx.ellipse(cx,cy,r,r*ISO,0,0,TAU);ctx.fill();}
 
 function drawRoots(){
   const SEG=18;
   for(const p of roots){
     const prog=smooth(clamp(p.t,0,1));
-    const hx=p.tx*prog,hy=p.ty*prog;
-    const dx=hx,dy=hy;
+    const dx=p.tx-p.ox,dy=p.ty-p.oy;
     const dist=Math.hypot(dx,dy)||1;
     const ux=dx/dist,uy=dy/dist;
     const px=-uy,py=ux;
@@ -1341,7 +1519,7 @@ function drawRoots(){
     for(let k=0;k<=SEG;k++){
       const s=k/SEG;
       const along=lerp(dist,0,s);
-      const wx=ux*along,wy=uy*along;
+      const wx=p.ox+ux*along,wy=p.oy+uy*along;
       const wig=Math.sin(s*7+p.seed+T*3)*(8*(1-s*.5))*prog;
       const depth=Math.sin(s*9 - T*6 + p.seed);
       const lift=Math.max(0,depth)*18*(0.4+0.6*prog);
@@ -1597,6 +1775,8 @@ function drawEnemy(e){
   ctx.globalAlpha=1;
   if(e.slowT>0){ctx.fillStyle='rgba(140,200,240,.26)';
     ctx.beginPath();ctx.arc(gx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.fill();}
+  if(e.bleed>0&&e.bleedT>0){ctx.strokeStyle='rgba(168,220,120,.5)';ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(gx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.stroke();}
   if(e.flash>0){ctx.fillStyle='rgba(255,255,255,'+(e.flash*.5).toFixed(2)+')';
     ctx.beginPath();ctx.arc(gx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.fill();}
   if(e.born>.6)hpBar(gx,sy-e.r-12,e.r*2.2,e.hp/e.maxHp,e.type==='boss');
@@ -1682,6 +1862,7 @@ function render(dt){
   drawShots();drawParts();drawFloats();
   ctx.restore();}
 
+/* ═══════════ цикл ═══════════ */
 let last=performance.now();
 function loop(now){requestAnimationFrame(loop);
   let dt=(now-last)/1000;last=now;if(dt>.05)dt=.05;T+=dt;
@@ -1693,6 +1874,7 @@ function loop(now){requestAnimationFrame(loop);
   if(Math.abs(S.seeds-dispSeeds)<.5)dispSeeds=S.seeds;
   const s=fmt(dispSeeds);if(s!==lastStr){lastStr=s;el.seeds.textContent=s;}}
 
+/* ═══════════ ввод ═══════════ */
 cv.addEventListener('pointerdown',ev=>{
   const sx=ev.clientX,sy=ev.clientY;
   if(squirrel&&!squirrel.clicked&&!anyOverlayOpen()){
@@ -1710,9 +1892,11 @@ cv.addEventListener('pointerdown',ev=>{
   if(best&&bd<48)hit(best,Math.max(1,treeDmg()*.55),false);});
 
 function buy(k,btn){if(S.over)return;const c=costOf(k);if(S.seeds<c)return;
-  S.seeds-=c;S[k+'Lvl']=(S[k+'Lvl']||0)+1;
+  S.seeds-=c;
+  const before=treeMaxHp();
+  S[k+'Lvl']=(S[k+'Lvl']||0)+1;
+  if(k==='hp'){S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-before));}
   if(S.dailyProg)S.dailyProg.upg=(S.dailyProg.upg||0)+1;
-  if(k==='hp'){const o=treeMaxHp();S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-o));}
   pulse=1;leafBurst();sfx.upgrade();checkAmber();
   btn.classList.remove('bought');void btn.offsetWidth;btn.classList.add('bought');
   save();updateHUD();}
@@ -1745,6 +1929,7 @@ $('#muteBtn').addEventListener('click',()=>{S.muted=!S.muted;
   $('#muteBtn').classList.toggle('off',S.muted);save();});
 $('#muteBtn').classList.toggle('off',S.muted);
 
+/* ═══════════ читы ═══════════ */
 const CHEAT={god:false};
 window.DEBUG={
   rich(){S.seeds+=1e6;S.dew+=200;S.amber+=100;updateHUD();save();},
@@ -1754,6 +1939,8 @@ window.DEBUG={
   upg(n){S.dmgLvl+=n;S.spdLvl+=n;S.hpLvl+=n;S.radLvl+=n;S.ccLvl+=n;S.cdLvl+=n;S.treeHp=treeMaxHp();checkAmber();updateHUD();save();},
   give(k,l){S.abilities[k]=(S.abilities[k]||0)+(l||1);if(!S.equip.includes(k)&&S.equip.length<5)S.equip.push(k);updateHUD();save();},
   all(){ABIL.forEach(a=>window.DEBUG.give(a.k,3));},
+  skills(){SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));
+    S.treeHp=treeMaxHp();updateHUD();save();},
   skins(){S.treeSkins=Object.keys(TREE_SKINS);updateHUD();save();},
   wave(n){S.wave=Math.max(1,n);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;banner(t('wave')+' '+S.wave,'debug',false);updateHUD();save();},
   chap(n){S.chaptersCleared=Math.max(S.chaptersCleared,n);save();if(shopOpen)renderQuests();},
@@ -1769,6 +1956,7 @@ dbg.innerHTML=
  `<b>${t('debug')} <span id="dbgX">✕</span></b>`+
  '<button data-c="DEBUG.rich()">+1M / dew / amber</button>'+
  '<button data-c="DEBUG.upg(10)">all upgrades +10</button>'+
+ '<button data-c="DEBUG.skills()">all skill branches max</button>'+
  '<button data-c="DEBUG.give(\'multishot\',3)">+ seeds ability</button>'+
  '<button data-c="DEBUG.all()">all abilities +3</button>'+
  '<button data-c="DEBUG.skins()">all looks</button>'+
@@ -1786,7 +1974,8 @@ $('#cheatFab').addEventListener('click',()=>dbg.classList.toggle('open'));
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.shiftKey&&(e.code==='KeyD'||e.key==='D'||e.key==='d')){e.preventDefault();dbg.classList.toggle('open');}});
 
-resize();applyLang();updateHUD();
+/* ═══════════ старт ═══════════ */
+resize();ensureDaily();applyLang();updateHUD();
 if(afkReward>0){$('#afkTime').textContent=fmtTime(afkSec);
   $('#afkAmount').textContent='+'+fmt(afkReward);
   if(afkDew>0){$('#afkDewRow').style.display='flex';$('#afkDew').textContent='+'+afkDew;}
