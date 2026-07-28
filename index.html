@@ -92,7 +92,7 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .upg-body{display:flex;flex-direction:column;gap:1px;min-width:0}
 .upg-name{font-weight:800;font-size:11px;display:flex;align-items:baseline;gap:5px;white-space:nowrap}
 .upg-lvl{font-size:9px;color:var(--muted);font-weight:700}
-.upg-stat{font-size:9.5px;color:var(--muted);font-weight:600;white-space:nowrap}
+.upg-stat{font-size:9.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .upg-cost{margin-left:auto;flex:none;display:flex;align-items:center;gap:4px;padding:4px 7px;border-radius:9px;
   font-family:Unbounded;font-size:10.5px;font-weight:700;color:var(--gold2);
   background:rgba(232,182,76,.09);border:1px solid rgba(232,182,76,.28)}
@@ -178,9 +178,9 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600;line-height:1.5}
 
 /* карты-рулетка */
-.cards-stage{position:relative;height:280px;margin:6px 0 14px;perspective:900px}
-.rcard{position:absolute;width:78px;height:120px;left:50%;top:50%;cursor:default;
-  transform-style:preserve-3d;transition:transform .55s cubic-bezier(.34,1.3,.5,1),opacity .4s,filter .3s;
+.cards-stage{position:relative;height:300px;margin:6px 0 14px;perspective:900px}
+.rcard{position:absolute;width:74px;height:114px;left:50%;top:50%;cursor:default;
+  transform-style:preserve-3d;transition:transform .5s cubic-bezier(.34,1.2,.5,1),opacity .4s,filter .3s;
   will-change:transform}
 .rcard .face,.rcard .back{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
   display:flex;flex-direction:column;align-items:center;padding:8px 6px;
@@ -190,13 +190,13 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
   linear-gradient(160deg,#234032,#16241b);
   transform:rotateY(180deg)}
 .rcard .back::before{content:'';position:absolute;inset:8px;border:1px solid rgba(150,200,160,.3);border-radius:9px}
-.rcard .back::after{content:'❧';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;color:rgba(150,200,160,.45)}
+.rcard .back::after{content:'❧';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:26px;color:rgba(150,200,160,.45)}
 .rcard .face{background:linear-gradient(170deg,#22352a,#141d16)}
 .rcard.flipped{transform:var(--tf) rotateY(180deg)}
-.rcard .nm{font-size:8.5px;font-weight:800;text-align:center;color:var(--ink);line-height:1.2}
-.rcard .plus{margin:auto 0;font-family:Unbounded;font-weight:800;font-size:28px;color:var(--gold2);line-height:1;
+.rcard .nm{font-size:8px;font-weight:800;text-align:center;color:var(--ink);line-height:1.2}
+.rcard .plus{margin:auto 0;font-family:Unbounded;font-weight:800;font-size:26px;color:var(--gold2);line-height:1;
   text-shadow:0 0 14px rgba(246,212,136,.35)}
-.rcard .ti{font-size:7.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tc)}
+.rcard .ti{font-size:7px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--tc)}
 .rcard.pickable{cursor:pointer}
 .rcard.pickable:hover{filter:brightness(1.18)}
 .rcard.picked{filter:none}
@@ -205,12 +205,12 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .rcard.fly-up{animation:flyUp .6s ease-in forwards;pointer-events:none}
 .rcard.fly-down{animation:flyDown .7s ease-out forwards;pointer-events:none}
 @keyframes flyUp{
-  0%{transform:var(--tf) scale(1);opacity:1}
-  100%{transform:translate(-50%,-50%) translateY(-400px) scale(.6);opacity:0}
+  0%{opacity:1}
+  100%{transform:translate(-50%,-50%) translateY(-420px) scale(.55) rotate(8deg);opacity:0}
 }
 @keyframes flyDown{
-  0%{transform:var(--tf) scale(1);opacity:1}
-  100%{transform:translate(-50%,-50%) translateY(300px) scale(.7);opacity:0}
+  0%{opacity:1}
+  100%{transform:translate(-50%,-50%) translateY(360px) scale(.65) rotate(-6deg);opacity:0}
 }
 .t-common{--tc:#9db8a4;--tg:157,184,164}
 .t-rare{--tc:#5aa9e6;--tg:90,169,230}
@@ -301,11 +301,15 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .q-bar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
 .q-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#a5e8c8);transition:width .3s}
 .q-prog{font-size:9.5px;color:var(--muted);font-weight:700;margin-top:3px}
-.q-rew{flex:none;display:flex;align-items:center;gap:4px;font-family:Unbounded;font-size:11px;font-weight:700;color:#bfe9f5}
+.q-rew{flex:none;display:flex;align-items:center;gap:4px;font-family:Unbounded;font-size:11px;font-weight:700;color:#bfe9f5;
+  padding:7px 11px;border-radius:9px;background:rgba(124,201,232,.06);border:1px solid rgba(124,201,232,.2)}
+.q-rew.amber{color:#ffd9a0;background:rgba(240,168,72,.06);border-color:rgba(240,168,72,.25)}
 .q-rew svg{width:11px;height:11px}
-.q-rew.inactive{opacity:.45;filter:saturate(.4);cursor:default;animation:none}
-.q-claim{flex:none;border:0;border-radius:9px;padding:7px 11px;cursor:pointer;font:800 10px Unbounded;color:#241a06;
-  background:linear-gradient(180deg,#f4d083,#dfa93c);animation:costGlow 1.6s ease-in-out infinite}
+.q-rew.inactive{opacity:.4;filter:saturate(.4);cursor:default;animation:none}
+.q-claim{flex:none;border:0;border-radius:9px;padding:0;cursor:pointer;font:inherit;color:inherit;background:none;
+  animation:costGlow 1.6s ease-in-out infinite}
+.q-claim .q-rew{opacity:1;filter:none;background:linear-gradient(180deg,#f4d083,#dfa93c);color:#241a06;border-color:rgba(232,182,76,.5)}
+.q-claim .q-rew svg path{fill:#241a06}
 .q-claimed{flex:none;font-size:9px;font-weight:800;color:var(--leaf);letter-spacing:.08em}
 
 .skin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
@@ -334,6 +338,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 .lang-sw{display:flex;gap:4px;background:rgba(0,0,0,.25);padding:3px;border-radius:10px}
 .lang-sw button{border:0;background:transparent;color:var(--muted);font:800 12px Manrope;padding:7px 14px;border-radius:8px;cursor:pointer}
 .lang-sw button.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--ink)}
+.tog{border:0;background:rgba(0,0,0,.25);color:var(--muted);font:800 12px Manrope;padding:8px 16px;border-radius:10px;cursor:pointer;
+  min-width:64px;transition:color .2s,background .2s}
+.tog.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--leaf)}
 
 #cheatFab{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:100;width:46px;height:46px;border-radius:50%;
   display:grid;place-items:center;cursor:pointer;font-size:22px;
@@ -350,6 +357,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
   padding:7px 10px;border-radius:9px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s}
 #dbg button:hover{background:rgba(150,200,160,.14);border-color:rgba(150,200,160,.4)}
 #dbgGod.on{background:rgba(224,112,79,.25);border-color:#e0704f;color:#ffd9c9}
+#dbg .skip-row{display:flex;gap:5px;align-items:center}
+#dbg .skip-row input{width:54px;background:rgba(255,255,255,.07);border:1px solid rgba(150,200,160,.25);border-radius:8px;
+  color:#e9f2e6;font:700 12px Manrope;padding:6px 7px;text-align:center}
+#dbg .skip-row button{flex:1;text-align:center}
 </style>
 </head>
 <body>
@@ -485,6 +496,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
       <div style="display:flex;align-items:center;gap:10px"><input type="range" id="volRange" min="0" max="100" value="100"><span class="val" id="volVal">100%</span></div>
     </div>
     <div class="set-row">
+      <label data-i18n="shake">Тряска экрана</label>
+      <button class="tog on" id="shakeTog">Вкл</button>
+    </div>
+    <div class="set-row">
       <label data-i18n="lang">Язык</label>
       <div class="lang-sw"><button id="langRu" class="on">RU</button><button id="langEn">EN</button></div>
     </div>
@@ -533,10 +548,16 @@ const clamp=(v,a,b)=>v<a?a:v>b?b:v;
 const rand=(a,b)=>a+Math.random()*(b-a);
 const lerp=(a,b,t)=>a+(b-a)*t;
 const smooth=t=>t*t*(3-2*t);
-function fmt(n){n=Math.floor(n);if(!isFinite(n))n=0;if(n<1e3)return''+n;const u=['K','M','B','T','Qa'];let i=-1,x=n;
-  while(x>=1e3&&i<u.length-1){x/=1e3;i++}
-  return (x<10?x.toFixed(2):x<100?x.toFixed(1):''+Math.round(x)).replace(/\.0+$|(\.\d*[1-9])0+$/,'$1')+u[i];}
-const fmtS=v=>v<10?v.toFixed(1):v<100?''+Math.round(v):fmt(v);
+const SUFFIX=['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc','UDc','DDc','TDc','QaDc','QiDc','SxDc','SpDc','OcDc','NoDc','Vg','UVg','DVg'];
+function fmt(n){
+  if(typeof n==='string'){const m=n.match(/^[\d.]+[KMBTQa-zA-Z]*$/);if(m)return n;}
+  n=+n;if(!isFinite(n)||isNaN(n))n=0;n=Math.floor(n);
+  if(n<1000)return''+n;
+  let i=0,x=n;
+  while(x>=1000&&i<SUFFIX.length-1){x/=1000;i++;}
+  let s=(x<10?x.toFixed(2):x<100?x.toFixed(1):''+Math.round(x)).replace(/\.0+$|(\.\d*[1-9])0+$/,'$1');
+  return s+SUFFIX[i];}
+const fmtS=v=>{v=+v;if(!isFinite(v)||isNaN(v))v=0;return v<10?v.toFixed(1):v<100?''+Math.round(v):fmt(v);};
 function fmtTime(s){s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;
   if(h)return h+' ч '+m+' мин';if(m)return m+' мин '+sec+' сек';return sec+' сек';}
 function dayKey(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
@@ -550,18 +571,18 @@ const I18N={
    tabRou:'Рулетка',tabSkill:'Ветки',tabAbil:'Способности',tabQuest:'Задания',tabTree:'Облик',
    rouNote:'✦ Семь карт: четыре «+1», две «+3» и одна «+5». Запомни лица — после перемешивания выбираешь три вслепую.',
    spin:'Крутить · ',claimCards:'Забрать',equipped:'Экипировано',abHint:'коснитесь карточки, чтобы надеть или снять',
-   setTitle:'Настройки',vol:'Громкость',lang:'Язык',
+   setTitle:'Настройки',vol:'Громкость',shake:'Тряска экрана',on:'Вкл',off:'Выкл',lang:'Язык',
    afkTitle:'Пока вас не было…',afkSub1:'Древо держало оборону',afkSub2:'и собрало урожай с поверженных существ',
    seeds:'семян',dew:'росы',amber:'янтаря',claim:'Забрать награду',
    overTitle:'Древо пало…',overSub:'Тьма оказалась сильнее. Но корни помнят —<br>древо возродится, если подпитать его семенами.',
    enemies:'врагов',revive:'🌱 Возродить древо',wipe:'Начать с чистого листа',
    qDaily:'Ежедневные',qWave:'Этап',qOnce:'Разовые',qClaim:'Взять',qDone:'✓',
    pickHint:'Выбери 3 карты',memHint:'Запоминай…',shuffleHint:'Перемешивание…',
-   newAbil:' — новая способность!',maxEquip:'Экипировано максимум способностей',
+   newAbil:' — новая способность!',maxEquip:'Достигнут лимит слотов способностей',
    fromRoulette:'Способность выпадает в рулетке',use:'Используется ✓',choose:'Выбрать',
-   chap:'Этап',chapDone:'пройдена',bark:'Вечная кора спасла древо!',
+   chap:'Этап',chapDone:'пройден',bark:'Вечная кора спасла древо!',
    squirrel:'Белка принесла росу!',resetConfirm:'Сбросить ВЕСЬ прогресс?',
-   tipStart:'Корни атакуют сами. Крутите рулетку и растите древо 🌿',tipDew:'Роса! Испытайте рулетку в лавке 🎡',
+   tipStart:'Корни атакуют сами. Крутите рулетку и растите древо 🌿 (стартовая роса — 30)',tipDew:'Роса! Испытайте рулетку в лавке 🎡',
    protect:'защитите древо',revived:'улучшите его, чтобы выстоять',debug:'ЧИТЫ',
    tier1:'Корни',tier2:'Крона',tier3:'Вершина',
    lock2:'полностью прокачайте «Корни»',lock3:'полностью прокачайте «Крону»',maxed:'МАКС',
@@ -571,18 +592,18 @@ const I18N={
    tabRou:'Roulette',tabSkill:'Branches',tabAbil:'Abilities',tabQuest:'Quests',tabTree:'Look',
    rouNote:'✦ Seven cards: four «+1», two «+3» and one «+5». Remember the faces — after shuffle you pick three blind.',
    spin:'Spin · ',claimCards:'Claim',equipped:'Equipped',abHint:'tap a card to equip or remove',
-   setTitle:'Settings',vol:'Volume',lang:'Language',
+   setTitle:'Settings',vol:'Volume',shake:'Screen shake',on:'On',off:'Off',lang:'Language',
    afkTitle:'While you were away…',afkSub1:'The tree held the line for',afkSub2:'and gathered harvest from the fallen',
    seeds:'seeds',dew:'dew',amber:'amber',claim:'Claim reward',
    overTitle:'The tree has fallen…',overSub:'Darkness won this time. But roots remember —<br>the tree will rise again if fed with seeds.',
    enemies:'foes',revive:'🌱 Revive the tree',wipe:'Start from scratch',
    qDaily:'Daily',qWave:'Stage',qOnce:'One-time',qClaim:'Claim',qDone:'✓',
    pickHint:'Pick 3 cards',memHint:'Memorize…',shuffleHint:'Shuffling…',
-   newAbil:' — new ability!',maxEquip:'Max abilities equipped',
+   newAbil:' — new ability!',maxEquip:'Ability slot cap reached',
    fromRoulette:'Ability drops from the roulette',use:'In use ✓',choose:'Choose',
    chap:'Stage',chapDone:'cleared',bark:'Eternal Bark saved the tree!',
    squirrel:'Squirrel brought dew!',resetConfirm:'Reset ALL progress?',
-   tipStart:'Roots attack on their own. Spin the roulette and grow the tree 🌿',tipDew:'Dew! Try the roulette in the shop 🎡',
+   tipStart:'Roots attack on their own. Spin the roulette and grow the tree 🌿 (start dew — 30)',tipDew:'Dew! Try the roulette in the shop 🎡',
    protect:'protect the tree',revived:'upgrade it to stand firm',debug:'CHEATS',
    tier1:'Roots',tier2:'Crown',tier3:'Apex',
    lock2:'fully upgrade «Roots»',lock3:'fully upgrade «Crown»',maxed:'MAX',
@@ -593,29 +614,19 @@ function applyLang(){document.documentElement.lang=S.lang;
   document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');
     if((I18N[S.lang]||I18N.ru)[k]!=null)e.textContent=(I18N[S.lang]||I18N.ru)[k];});
   $('#langRu').classList.toggle('on',S.lang==='ru');$('#langEn').classList.toggle('on',S.lang==='en');
+  const st=$('#shakeTog');if(st){st.textContent=S.shake?t('on'):t('off');st.classList.toggle('on',S.shake);}
   try{renderShop();updateHUD();}catch(e){}}
 
-/* ═══════════ этапы и слоты ═══════════ */
+/* ═══════════ этапы, главы, слоты ═══════════ */
 function stageOf(wave){return `${Math.floor((wave-1)/7)+1}-${((wave-1)%7)+1}`;}
 function chapterOf(wave){return Math.floor((wave-1)/7)+1;}
-function slotCap(){
-  const ch=chapterOf(S.bestWave);
-  if(ch>=250)return 6;
-  if(ch>=200)return 5;
-  if(ch>=130)return 4;
-  if(ch>=50)return 3;
-  return 2;
-}
-function nextSlotChapter(){
-  const ch=chapterOf(S.bestWave);
-  if(ch<50)return 50;
-  if(ch<130)return 130;
-  if(ch<200)return 200;
-  if(ch<250)return 250;
-  return null;
-}
+function slotCap(){const ch=chapterOf(S.bestWave);
+  if(ch>=250)return 6;if(ch>=200)return 5;if(ch>=130)return 4;if(ch>=50)return 3;return 2;}
+function nextSlotChapter(){const ch=chapterOf(S.bestWave);
+  if(ch<50)return 50;if(ch<130)return 130;if(ch<200)return 200;if(ch<250)return 250;return null;}
+function bossCount(){return clamp(1+Math.floor((chapterOf(S.wave)-100)/50),1,5);}
 
-/* ═══════════ редкости и способности ═══════════ */
+/* ═══════════ редкости ═══════════ */
 const TIERS={
   common:   {name:{ru:'Обычная',en:'Common'},   c:'#9db8a4',g:'157,184,164', idx:0},
   rare:     {name:{ru:'Редкая',en:'Rare'},       c:'#5aa9e6',g:'90,169,230',  idx:1},
@@ -623,84 +634,87 @@ const TIERS={
   legendary:{name:{ru:'Легендарная',en:'Legendary'},c:'#f0a848',g:'240,168,72',idx:3},
   mythic:   {name:{ru:'Мифическая',en:'Mythic'},   c:'#ff6b8a',g:'255,107,138',idx:4}};
 const TIER_WEIGHTS=[
-  {common:90, rare:9,  epic:1,    legendary:0,  mythic:0},
-  {common:70, rare:22, epic:7,    legendary:1,  mythic:0},
-  {common:50, rare:30, epic:16,   legendary:3.9,mythic:0.1},
+  {common:90, rare:9,  epic:1,    legendary:0,   mythic:0},
+  {common:70, rare:22, epic:7,    legendary:1,   mythic:0},
+  {common:50, rare:30, epic:16,   legendary:3.9, mythic:0.1},
   {common:30, rare:31, epic:27,   legendary:10.5,mythic:1.5},
-  {common:15, rare:30, epic:35,   legendary:18, mythic:2}];
-function tierStage(){
-  const ch=chapterOf(S.bestWave);
-  if(ch>=250)return 5;
-  if(ch>=200)return 4;
-  if(ch>=130)return 3;
-  if(ch>=50)return 2;
-  return 1;
-}
-const ABIL=[
- {k:'multishot',n:{ru:'Семена-снаряды',en:'Seed Shots'},short:{ru:'Семена',en:'Seeds'},tier:'common',desc:{ru:'Открывает атаку семенами: 1 снаряд за уровень',en:'Unlocks seed attack: 1 projectile per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8 3.5 3M8 8l4.5-5M8 8V2.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'bounce',n:{ru:'Отскок',en:'Bounce'},short:{ru:'Отскок',en:'Bounce'},tier:'common',desc:{ru:'Семя отскакивает к соседям (70% урона)',en:'Seed bounces to neighbours (70% dmg)'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
- {k:'thorns',n:{ru:'Острые шипы',en:'Sharp Thorns'},short:{ru:'Шипы',en:'Thorns'},tier:'common',desc:{ru:'+12% урона древа за уровень',en:'+12% tree damage per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M3 14c1-4 1-7 0-10M8 14c1.5-4.5 1.5-8.5 0-12.5M13 14c-1-4-1-7 0-10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'swift',n:{ru:'Стремительный ветер',en:'Swift Wind'},short:{ru:'Ветер',en:'Wind'},tier:'common',desc:{ru:'+10% скорости атаки за уровень',en:'+10% attack speed per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'resonance',n:{ru:'Резонанс',en:'Resonance'},short:{ru:'Волна',en:'Wave'},tier:'rare',desc:{ru:'Попадание семени рождает ударную волну',en:'Seed hit spawns a shockwave'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.4" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'frost',n:{ru:'Морозная роса',en:'Frost Dew'},short:{ru:'Мороз',en:'Frost'},tier:'rare',desc:{ru:'Семена сковывают врагов льдом',en:'Seeds freeze enemies'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v12M2.8 5l10.4 6M13.2 5 2.8 11" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'deeproots',n:{ru:'Глубокие корни',en:'Deep Roots'},short:{ru:'Корни',en:'Roots'},tier:'rare',desc:{ru:'Удары корнями чаще и сильнее',en:'Root strikes faster & stronger'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
- {k:'branch',n:{ru:'Живые ветви',en:'Living Branches'},short:{ru:'Ветви',en:'Branch'},tier:'epic',desc:{ru:'Ветви сметают и отбрасывают врагов вблизи',en:'Branches sweep & knock back nearby foes'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M3 14C6 9 6.5 5.5 13 2M7.6 7.4c1.6.6 3.1.3 4.2-1M5.9 10.2c1.8.4 3.3 0 4.5-1.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'leafstorm',n:{ru:'Листопад',en:'Leafstorm'},short:{ru:'Листья',en:'Leaves'},tier:'epic',desc:{ru:'Кольцо листьев разлетается от ствола',en:'A ring of leaves bursts from the trunk'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M4 13C4 7 8 3 13 3c0 5-4 9-9 10Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M4 13C7 9.5 9 7.5 12 4.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>'},
- {k:'leech',n:{ru:'Живительный сок',en:'Life Sap'},short:{ru:'Сок',en:'Sap'},tier:'epic',desc:{ru:'Каждый убитый враг лечит древо',en:'Each kill heals the tree'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'rootnet',n:{ru:'Сеть корней',en:'Root Net'},short:{ru:'Сеть',en:'Net'},tier:'legendary',desc:{ru:'+1 корень одновременно за уровень',en:'+1 simultaneous root per level'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="4" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="8" cy="4" r="1.7" fill="currentColor"/><path d="M5 11l2.3-5.3M11 11 8.7 5.7M5.7 12h4.6" stroke="currentColor" stroke-width="1.3"/></svg>'},
- {k:'harvest',n:{ru:'Золотой урожай',en:'Golden Harvest'},short:{ru:'Урожай',en:'Harvest'},tier:'legendary',desc:{ru:'+12% семян с каждого врага за уровень',en:'+12% seeds per foe per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 4C8 4 5.4 6.6 5.4 8.6a2.6 2.6 0 0 0 5.2 0C10.6 6.6 8 4 8 4Z" fill="currentColor"/><path d="M8 .8v1.7M2.5 5.5 4 6.3M13.5 5.5 12 6.3M1.5 9.5h1.8M12.7 9.5h1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'},
- {k:'avatar',n:{ru:'Аватар рощи',en:'Grove Avatar'},short:{ru:'Аватар',en:'Avatar'},tier:'mythic',desc:{ru:'+8% ко всему урону древа за уровень',en:'+8% to all tree damage per level'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><path d="M7.3 13V9.5h1.4V13" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="7" r="3" fill="currentColor"/></svg>'},
- {k:'eternalbark',n:{ru:'Вечная кора',en:'Eternal Bark'},short:{ru:'Кора',en:'Bark'},tier:'mythic',desc:{ru:'Раз в волну древо переживает смертельный удар',en:'Once per wave the tree survives a lethal hit'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="m5.8 8 1.6 1.7 2.9-3.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}];
-const LN=o=>o[S.lang]||o.ru;
+  {common:15, rare:30, epic:35,   legendary:18,  mythic:2}];
+function tierStage(){const ch=chapterOf(S.bestWave);
+  if(ch>=250)return 5;if(ch>=200)return 4;if(ch>=130)return 3;if(ch>=50)return 2;return 1;}
+const ABIL_BASE={common:100,rare:400,epic:1200,legendary:2500,mythic:7000};
 
-/* ═══════════ древо прокачки ═══════════ */
+/* ═══════════ способности (только урон) ═══════════ */
+/* kind: pass-seed/pass-root/pass-all — пассивный % к атакам; multi-* — механика доп.ударов;
+   active-* — отдельный источник урона; dot — кровотечение. aoe — коэффициент площади. */
+const ABIL=[
+ {k:'multishot',n:{ru:'Семена-снаряды',en:'Seed Shots'},short:{ru:'Семена',en:'Seeds'},tier:'common',kind:'multi-seed',aoe:1,
+  desc:{ru:'Атака семенами: 1 снаряд за уровень',en:'Seed attack: 1 projectile per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8 3.5 3M8 8l4.5-5M8 8V2.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'bounce',n:{ru:'Отскок',en:'Bounce'},short:{ru:'Отскок',en:'Bounce'},tier:'common',kind:'multi-bounce',aoe:.7,
+  desc:{ru:'Семя отскакивает к соседям (70% урона за отскок)',en:'Seed bounces to neighbours (70% dmg per bounce)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+ {k:'thorns',n:{ru:'Острые шипы',en:'Sharp Thorns'},short:{ru:'Шипы',en:'Thorns'},tier:'common',kind:'pass-seed',aoe:1,
+  desc:{ru:'% к урону семян от базового (линейный рост)',en:'% to seed dmg from base (linear growth)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M3 14c1-4 1-7 0-10M8 14c1.5-4.5 1.5-8.5 0-12.5M13 14c-1-4-1-7 0-10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'resonance',n:{ru:'Резонанс',en:'Resonance'},short:{ru:'Волна',en:'Wave'},tier:'rare',kind:'active-aoe',aoe:.4,
+  desc:{ru:'Попадание семени рождает ударную волну (% от атаки, AoE)',en:'Seed hit spawns a shockwave (% of atk, AoE)'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.4" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'deeproots',n:{ru:'Глубокие корни',en:'Deep Roots'},short:{ru:'Корни',en:'Roots'},tier:'rare',kind:'pass-root',aoe:1,
+  desc:{ru:'% к урону корней от базового',en:'% to root dmg from base'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'frost',n:{ru:'Ледяной укол',en:'Frost Spike'},short:{ru:'Лёд',en:'Frost'},tier:'rare',kind:'active-single',aoe:1,
+  desc:{ru:'Попадание семени наносит доп. урон льдом (% от атаки)',en:'Seed hit deals bonus frost dmg (% of atk)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v12M2.8 5l10.4 6M13.2 5 2.8 11" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'branch',n:{ru:'Живые ветви',en:'Living Branches'},short:{ru:'Ветви',en:'Branch'},tier:'epic',kind:'active-aoe',aoe:.4,
+  desc:{ru:'Ветви сметают врагов вблизи (% от атаки, AoE)',en:'Branches sweep nearby foes (% of atk, AoE)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M3 14C6 9 6.5 5.5 13 2M7.6 7.4c1.6.6 3.1.3 4.2-1M5.9 10.2c1.8.4 3.3 0 4.5-1.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'leafstorm',n:{ru:'Листопад',en:'Leafstorm'},short:{ru:'Листья',en:'Leaves'},tier:'epic',kind:'active-aoe',aoe:.4,
+  desc:{ru:'Кольцо листьев разлетается от ствола (% от атаки, AoE)',en:'A ring of leaves bursts from trunk (% of atk, AoE)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M4 13C4 7 8 3 13 3c0 5-4 9-9 10Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M4 13C7 9.5 9 7.5 12 4.5" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'bleed',n:{ru:'Едкий сок',en:'Acerbic Sap'},short:{ru:'Сок',en:'Sap'},tier:'epic',kind:'dot',aoe:1,
+  desc:{ru:'Удары копят стаки кровотечения (% от атаки в сек)',en:'Hits stack bleed (% of atk per sec)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 4 6 4 9a4 4 0 0 0 8 0C12 6 8 1.5 8 1.5Z" fill="currentColor"/><path d="M12.8 12.2v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'rootnet',n:{ru:'Сеть корней',en:'Root Net'},short:{ru:'Сеть',en:'Net'},tier:'legendary',kind:'multi-root',aoe:1,
+  desc:{ru:'+1 корень одновременно за уровень',en:'+1 simultaneous root per level'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="4" cy="12" r="1.7" fill="currentColor"/><circle cx="12" cy="12" r="1.7" fill="currentColor"/><circle cx="8" cy="4" r="1.7" fill="currentColor"/><path d="M5 11l2.3-5.3M11 11 8.7 5.7M5.7 12h4.6" stroke="currentColor" stroke-width="1.3"/></svg>'},
+ {k:'infect',n:{ru:'Заражение',en:'Infestation'},short:{ru:'Зараза',en:'Infect'},tier:'legendary',kind:'active-death',aoe:.4,
+  desc:{ru:'Павший враг взрывается корнями (% от атаки, AoE)',en:'Fallen foe bursts with roots (% of atk, AoE)'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.6" fill="currentColor"/><path d="M8 1.5v2.5M8 12v2.5M1.5 8H4M12 8h2.5M3.4 3.4l1.8 1.8M10.8 10.8l1.8 1.8M12.6 3.4l-1.8 1.8M5.2 10.8l-1.8 1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
+ {k:'avatar',n:{ru:'Аватар рощи',en:'Grove Avatar'},short:{ru:'Аватар',en:'Avatar'},tier:'mythic',kind:'pass-all',aoe:1,
+  desc:{ru:'Огромный % ко всему урону древа от базового',en:'Huge % to all tree dmg from base'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><path d="M7.3 13V9.5h1.4V13" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="7" r="3" fill="currentColor"/></svg>'},
+ {k:'rootBounce',n:{ru:'Рикошет корней',en:'Root Ricochet'},short:{ru:'Рикошет',en:'Ricochet'},tier:'mythic',kind:'multi-rootbounce',aoe:.7,
+  desc:{ru:'Корень перескакивает на соседнюю цель (70% за отскок)',en:'Root jumps to a nearby foe (70% per bounce)'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}];
+const ABIL_BY_K=Object.fromEntries(ABIL.map(a=>[a.k,a]));
+const LN=o=>o[S.lang]||o.ru;
+const ab=k=>S.equip.includes(k)?(S.abilities[k]||0):0;
+function abilPct(k){const a=ABIL_BY_K[k];const l=ab(k);if(!a||!l)return 0;return ABIL_BASE[a.tier]*(1+0.10*(l-1));}
+
+/* ═══════════ древо прокачки (только проценты) ═══════════ */
 const SKDEF=[
- {k:'sStat',tier:1,max:5,base:50,g:1.6,n:{ru:'Сила роста',en:'Growth Power'},d:{ru:'+12% урона и +6% скорости атаки за уровень',en:'+12% dmg & +6% atk speed per level'},
+ {k:'sDmg',tier:1,max:10,base:50,g:1.5,n:{ru:'Сила роста',en:'Growth Power'},d:{ru:'+10% урона древа за уровень',en:'+10% tree dmg per level'},
   svg:'<svg viewBox="0 0 16 16"><path d="M8 14V8M8 8C8 5 5.5 3.5 3 3.5 3 6.5 5.5 8 8 8Zm0 0c0-3 2.5-4.5 5-4.5 0 3-2.5 4.5-5 4.5Z" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linejoin="round"/></svg>'},
- {k:'sRad',tier:1,max:6,max2:8,base:70,g:1.55,n:{ru:'Размах корней',en:'Root Spread'},d:{ru:'+10% радиуса корней (60% → 80% при полной ветке)',en:'+10% root range (60% → 80% on full branch)'},
+ {k:'sSpd',tier:1,max:10,base:55,g:1.5,n:{ru:'Гибкость ветвей',en:'Lithe Branches'},d:{ru:'+8% скорости атаки за уровень',en:'+8% attack speed per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
+ {k:'sRad',tier:1,max:6,max2:8,base:70,g:1.55,n:{ru:'Размах корней',en:'Root Spread'},d:{ru:'+10% радиуса корней (до 80% при полной ветке)',en:'+10% root range (up to 80% on full branch)'},
   svg:'<svg viewBox="0 0 16 16"><path d="M8 2v4M8 6 3 13M8 6l5 7M8 6v8" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>'},
  {k:'sAfkT',tier:1,max:5,base:60,g:1.5,n:{ru:'Глубокий покой',en:'Deep Slumber'},d:{ru:'+1 час к лимиту AFK-наград (база 3 ч)',en:'+1h AFK reward cap (base 3h)'},
   svg:'<svg viewBox="0 0 16 16"><path d="M13.6 9.7A6 6 0 0 1 6.3 2.4a6.3 6.3 0 1 0 7.3 7.3Z" fill="currentColor"/></svg>'},
- {k:'sAfkA',tier:1,max:5,base:80,g:1.55,n:{ru:'Плодородие',en:'Fertility'},d:{ru:'+20% семян из AFK-наград за уровень',en:'+20% AFK seed rewards per level'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'},
- {k:'t2dmg',tier:2,max:10,base:250,g:1.32,n:{ru:'Твёрдость древесины',en:'Hardwood'},d:{ru:'+1 уровень урона древа',en:'+1 tree damage level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 2v5M8 7c0 3-3.2 3.2-4.2 6.5M8 7c0 3 3.2 3.2 4.2 6.5M8 7v7" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'t2spd',tier:2,max:10,base:250,g:1.32,n:{ru:'Гибкость ветвей',en:'Lithe Branches'},d:{ru:'+1 уровень скорости атаки',en:'+1 attack speed level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M2.5 5.5h7a2.3 2.3 0 1 0-2.3-2.3M2.5 9.5h10a2.3 2.3 0 1 1-2.3 2.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>'},
- {k:'t2hp',tier:2,max:10,base:220,g:1.3,n:{ru:'Толстая кора',en:'Thick Bark'},d:{ru:'+1 уровень коры (HP)',en:'+1 bark (HP) level'},
+ {k:'sHp',tier:2,max:10,base:220,g:1.3,n:{ru:'Толстая кора',en:'Thick Bark'},d:{ru:'+15% коры (HP) за уровень',en:'+15% bark (HP) per level'},
   svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg>'},
- {k:'t2rad',tier:2,max:10,base:300,g:1.4,n:{ru:'Сеть корневищ',en:'Rhizome Web'},d:{ru:'+10 к базовому радиусу корней',en:'+10 base root range'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M4.5 8a3.5 3.5 0 0 1 7 0M2.5 8a5.5 5.5 0 0 1 11 0" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>'},
- {k:'t2cc',tier:2,max:10,base:280,g:1.38,n:{ru:'Меткость побегов',en:'Shoot Aim'},d:{ru:'+1 уровень крит. шанса',en:'+1 crit chance level'},
+ {k:'sCrit',tier:2,max:10,base:280,g:1.38,n:{ru:'Меткость побегов',en:'Shoot Aim'},d:{ru:'+5% крит. шанса за уровень',en:'+5% crit chance per level'},
   svg:'<svg viewBox="0 0 16 16"><path d="M9 1.5 4 9h3.5L7 14.5 12 7H8.5L9 1.5Z" fill="currentColor"/></svg>'},
- {k:'t2cd',tier:2,max:10,base:280,g:1.38,n:{ru:'Вес ветвей',en:'Branch Weight'},d:{ru:'+1 уровень крит. урона',en:'+1 crit damage level'},
+ {k:'sCritDmg',tier:2,max:10,base:280,g:1.38,n:{ru:'Вес ветвей',en:'Branch Weight'},d:{ru:'+10% крит. урона за уровень',en:'+10% crit damage per level'},
   svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5 9.6 5.4 13.8 5.7 10.6 8.4 11.6 12.5 8 10.3 4.4 12.5 5.4 8.4 2.2 5.7 6.4 5.4 8 1.5Z" fill="currentColor"/></svg>'},
- {k:'vamp',tier:2,max:5,base:420,g:1.7,n:{ru:'Жажда сока',en:'Sap Thirst'},d:{ru:'1% нанесённого урона лечит древо за уровень',en:'Heal 1% of damage dealt per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M8 7v4M6 9h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'bleed',tier:2,max:5,base:460,g:1.7,n:{ru:'Едкий сок',en:'Acerbic Sap'},d:{ru:'Удары копят стаки кровотечения: 2% урона/с за стак',en:'Hits stack bleed: 2% dmg/s per stack'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 4 6 4 9a4 4 0 0 0 8 0C12 6 8 1.5 8 1.5Z" fill="currentColor"/><path d="M12.8 12.2v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'slow',tier:2,max:5,base:400,g:1.65,n:{ru:'Липкая смола',en:'Sticky Resin'},d:{ru:'+7% замедления при каждом ударе за уровень',en:'+7% slow on every hit per level'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5 11 8a3.2 3.2 0 0 1-6 0L8 1.5Z" fill="currentColor"/><path d="M8 11.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'},
- {k:'rootBounce',tier:3,max:3,base:2600,g:2.3,n:{ru:'Отскок корня',en:'Root Bounce'},d:{ru:'Корень перескакивает на соседнюю цель (70% урона)',en:'Root jumps to a nearby foe (70% dmg)'},
-  svg:'<svg viewBox="0 0 16 16"><path d="M2 12 6 4l4 8 4-8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
- {k:'infect',tier:3,max:3,base:3200,g:2.3,n:{ru:'Заражение',en:'Infestation'},d:{ru:'Павший враг взрывается, выпуская корни из тела',en:'Fallen foe bursts, spawning roots from the corpse'},
-  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.6" fill="currentColor"/><path d="M8 1.5v2.5M8 12v2.5M1.5 8H4M12 8h2.5M3.4 3.4l1.8 1.8M10.8 10.8l1.8 1.8M12.6 3.4l-1.8 1.8M5.2 10.8l-1.8 1.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'}];
+ {k:'sAfkA',tier:2,max:5,base:300,g:1.55,n:{ru:'Плодородие',en:'Fertility'},d:{ru:'+20% семян из AFK-наград за уровень',en:'+20% AFK seed rewards per level'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3" fill="currentColor"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'},
+ {k:'sAllDmg',tier:3,max:5,base:2600,g:2.1,n:{ru:'Дух рощи',en:'Grove Spirit'},d:{ru:'+25% ко ВСЕМУ урону за уровень',en:'+25% to ALL damage per level'},
+  svg:'<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.6" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><path d="M7.3 13V9.5h1.4V13" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="7" r="3" fill="currentColor"/></svg>'},
+ {k:'sAllSpd',tier:3,max:5,base:2600,g:2.1,n:{ru:'Штормовой ветер',en:'Storm Wind'},d:{ru:'+20% ко ВСЕЙ скорости за уровень',en:'+20% to ALL speed per level'},
+  svg:'<svg viewBox="0 0 16 16"><path d="M2 5h8a2 2 0 1 0-2-2M2 8h11a2 2 0 1 1-2 2M2 11h6a1.6 1.6 0 1 1-1.6 1.6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>'}];
 const sk=k=>(S.skill&&S.skill[k])||0;
-function tier1Full(){return sk('sStat')>=5&&sk('sRad')>=6&&sk('sAfkT')>=5&&sk('sAfkA')>=5;}
+function tier1Full(){return sk('sDmg')>=10&&sk('sSpd')>=10&&sk('sRad')>=6&&sk('sAfkT')>=5;}
 function tier2Full(){return SKDEF.filter(n=>n.tier===2).every(n=>sk(n.k)>=n.max);}
 function tierOpen(tr){return tr===1?true:tr===2?tier1Full():tier2Full();}
 function nodeMax(n){if(n.k==='sRad'&&tier1Full())return n.max2||n.max;return n.max;}
@@ -734,46 +748,41 @@ const TREE_SKINS={
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#33304a"/><circle cx="20" cy="18" r="11" fill="#3c4268"/><circle cx="12" cy="22" r="7" fill="#2c2f4a"/><circle cx="28" cy="22" r="7" fill="#2c2f4a"/><circle cx="20" cy="12" r="7" fill="#4d5684"/><circle cx="15" cy="15" r="1.4" fill="#c3ccff"/><circle cx="24" cy="18" r="1.4" fill="#c3ccff"/><circle cx="20" cy="10" r="1.4" fill="#e6ebff"/></svg>'}};
 
 /* ═══════════ состояние ═══════════ */
-const maxHpOf=o=>Math.round(100*Math.pow(1.16,(o.hpLvl||0)+((o.skill&&o.skill.t2hp)||0)));
+const maxHpOf=o=>{const hp=(o.skill&&o.skill.sHp)||0;return Math.round(100*Math.pow(1.16,o.hpLvl||0)*(1+0.15*hp));};
 function load(){
   let d=null;
   for(const k of ['drevo.save.v6','drevo.save.v5','drevo.save.v4','drevo.save.v3','drevo.save.v2','drevo.save.v1']){
     try{const p=JSON.parse(localStorage.getItem(k));if(p){d=p;break;}}catch(e){}}
   const base={v:1,seeds:0,dew:0,amber:0,wave:1,killed:0,totalKills:0,
     dmgLvl:0,spdLvl:0,hpLvl:0,radLvl:0,ccLvl:0,cdLvl:0,
-    treeHp:100,muted:false,vol:1,lang:'ru',lastSeen:0,bestWave:1,seen:true,tipShop:false,amberTier:0,
+    treeHp:100,muted:false,shake:true,vol:1,lang:'ru',lastSeen:0,bestWave:1,seen:true,tipShop:false,amberTier:0,
     abilities:{},equip:[],treeSkins:['oak'],treeSkin:'oak',skill:{},
     dailyDate:0,dailyDone:{},dailyProg:{kills:0,waves:0,spins:0,crits:0,upg:0},
     waveQ:{prog:0,done:false,claimed:false},onceDone:{},chaptersCleared:0};
   if(d&&d.v===1){
     const s=Object.assign(base,d);
-    s.dmgLvl=safeInt(s.dmgLvl,0);
-    s.spdLvl=safeInt(s.spdLvl,0);
-    s.hpLvl=safeInt(s.hpLvl,0);
-    s.radLvl=safeInt(s.radLvl,0);
-    s.ccLvl=safeInt(s.ccLvl,0);
-    s.cdLvl=safeInt(s.cdLvl,0);
+    s.dmgLvl=safeInt(s.dmgLvl,0);s.spdLvl=safeInt(s.spdLvl,0);s.hpLvl=safeInt(s.hpLvl,0);
+    s.radLvl=safeInt(s.radLvl,0);s.ccLvl=safeInt(s.ccLvl,0);s.cdLvl=safeInt(s.cdLvl,0);
     s.seeds=(typeof s.seeds==='number'&&isFinite(s.seeds))?s.seeds:0;
     s.dew=(typeof s.dew==='number'&&isFinite(s.dew))?s.dew:0;
     s.amber=(typeof s.amber==='number'&&isFinite(s.amber))?s.amber:0;
     s.wave=safeInt(s.wave,1);if(s.wave<1)s.wave=1;
-    s.killed=safeInt(s.killed,0);
-    s.totalKills=safeInt(s.totalKills,0);
-    s.bestWave=safeInt(s.bestWave,1);
-    s.amberTier=safeInt(s.amberTier,0);
-    s.chaptersCleared=safeInt(s.chaptersCleared,0);
+    s.killed=safeInt(s.killed,0);s.totalKills=safeInt(s.totalKills,0);
+    s.bestWave=safeInt(s.bestWave,1);s.amberTier=safeInt(s.amberTier,0);s.chaptersCleared=safeInt(s.chaptersCleared,0);
     s.abilities=Object.assign({},d.abilities||{});
-    s.equip=Array.isArray(d.equip)?d.equip.slice(0,6):[];
+    /* миграция: убираем удалённые способности */
+    ['leech','eternalbark','harvest','slow'].forEach(k=>{delete s.abilities[k];});
+    s.equip=(Array.isArray(d.equip)?d.equip:[]).filter(k=>ABIL_BY_K[k]).slice(0,6);
     s.skill=Object.assign({},d.skill||{});
+    /* миграция старого древа (t2*/vamp/bleed/slow/infect/rootBounce) — сбрасываем в новые проценты */
+    const oldKeys=['sStat','t2dmg','t2spd','t2hp','t2rad','t2cc','t2cd','vamp','bleed','slow','rootBounce','infect'];
+    oldKeys.forEach(k=>{delete s.skill[k];});
     s.dailyProg=Object.assign({kills:0,waves:0,spins:0,crits:0,upg:0},d.dailyProg||{});
     s.treeSkins=(Array.isArray(d.treeSkins)&&d.treeSkins.length)?d.treeSkins:['oak'];
     s.treeSkin=(d.treeSkin&&TREE_SKINS[d.treeSkin])?d.treeSkin:'oak';
     if(s.vol==null||isNaN(s.vol))s.vol=1;
+    if(s.shake==null)s.shake=true;
     if(!s.lang)s.lang='ru';
-    if(!d.abilities&&d.mods){
-      const map={multishot:'multishot',bounce:'bounce',splash:'resonance',frost:'frost',roots:'deeproots',branch:'branch',leaf:'leafstorm'};
-      for(const m in map)if(d.mods[m])s.abilities[map[m]]=d.mods[m];
-      s.equip=Object.keys(s.abilities).slice(0,6);}
     const L=s.dmgLvl+s.spdLvl+s.hpLvl+s.radLvl+s.ccLvl+s.cdLvl;
     if(d.amber===undefined){s.amberTier=Math.floor(L/50);s.amber=5*s.amberTier;}
     if(s.treeHp<=0||isNaN(s.treeHp))s.treeHp=maxHpOf(s);
@@ -785,28 +794,36 @@ const S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify({v:1,seeds:S.seeds,dew:S.dew,amber:S.amber,
   wave:S.wave,killed:S.killed,totalKills:S.totalKills,dmgLvl:S.dmgLvl,spdLvl:S.spdLvl,hpLvl:S.hpLvl,
   radLvl:S.radLvl,ccLvl:S.ccLvl,cdLvl:S.cdLvl,
-  treeHp:S.treeHp,muted:S.muted,vol:S.vol,lang:S.lang,lastSeen:Date.now(),bestWave:S.bestWave,seen:true,tipShop:S.tipShop,
+  treeHp:S.treeHp,muted:S.muted,shake:S.shake,vol:S.vol,lang:S.lang,lastSeen:Date.now(),bestWave:S.bestWave,seen:true,tipShop:S.tipShop,
   amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,treeSkin:S.treeSkin,skill:S.skill,
   dailyDate:S.dailyDate,dailyDone:S.dailyDone,dailyProg:S.dailyProg,
   waveQ:S.waveQ,onceDone:S.onceDone,chaptersCleared:S.chaptersCleared}));}catch(e){}}
 
-/* ═══════════ статы ═══════════ */
-const ab=k=>S.equip.includes(k)?(S.abilities[k]||0):0;
-const treeDmg  =()=>10*Math.pow(1.10,S.dmgLvl+sk('t2dmg'))*(1+.12*ab('thorns'))*(1+.08*ab('avatar'))*(1+.12*sk('sStat'));
-const rootDmg  =()=>treeDmg()*(1+.15*ab('deeproots'));
-const treeAspd =()=>Math.min(4,1.0*Math.pow(1.08,S.spdLvl+sk('t2spd'))*(1+.10*ab('swift'))*(1+.06*sk('sStat')));
-const rootAspd =()=>Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl+sk('t2spd'))*(1+.10*ab('swift'))*(1+.10*ab('deeproots'))*(1+.06*sk('sStat')));
+/* ═══════════ статы (новая иерархия урона) ═══════════ */
+/* baseDmg -> coreDmg = base*(1+tree%) -> атаки = core*seedMul/rootMul; способности = core*abilPct/100*aoe */
+const treeDmgPct=()=>0.10*sk('sDmg')+0.25*sk('sAllDmg');
+const treeSpdPct=()=>0.08*sk('sSpd')+0.20*sk('sAllSpd');
+const treeHpPct=()=>0.15*sk('sHp');
+const treeRadPct=()=>0.10*sk('sRad');
+const treeCritPct=()=>0.05*sk('sCrit');
+const treeCritDmgPct=()=>0.10*sk('sCritDmg');
+const baseDmg=()=>10*Math.pow(1.08,S.dmgLvl);
+const coreDmg=()=>baseDmg()*(1+treeDmgPct());
+const seedMul=()=>1+(abilPct('thorns')+abilPct('avatar'))/100;
+const rootMul=()=>1+(abilPct('deeproots')+abilPct('avatar'))/100;
+const treeAspd=()=>Math.min(4,1.0*Math.pow(1.06,S.spdLvl)*(1+treeSpdPct()));
+const rootAspd=()=>Math.min(3.2,1.0*Math.pow(1.06,S.spdLvl)*(1+treeSpdPct()));
 const treeMaxHp=()=>maxHpOf(S);
 const rootReachCap=()=>Math.min(W,H/ISO)*0.375;
-const rootReach=()=>clamp((85+10*(S.radLvl+sk('t2rad')))*(1+.10*sk('sRad')),85,rootReachCap());
-const critChance=()=>Math.min(.6,.04*(S.ccLvl+sk('t2cc')));
-const critMult  =()=>Math.min(3.5,1.5+.12*(S.cdLvl+sk('t2cd')));
+const rootReach=()=>clamp((85+10*S.radLvl)*(1+treeRadPct()),85,rootReachCap());
+const critChance=()=>Math.min(.6,.04*S.ccLvl+treeCritPct());
+const critMult=()=>Math.min(4,1.5+.12*S.cdLvl+treeCritDmgPct());
 const COST={dmg:[20,1.22],spd:[30,1.25],rad:[120,1.6],cc:[60,1.4],cd:[70,1.42],hp:[25,1.22]};
 const costOf=k=>Math.ceil(COST[k][0]*Math.pow(COST[k][1],S[k+'Lvl']||0));
 function treeGeom(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
   return {h:24+30*(1-Math.exp(-L/22)),R:12+18*(1-Math.exp(-L/20)),stage:Math.min(6,Math.floor(L/6)),L};}
-function afkRate(){const dps=10*Math.pow(1.10,S.dmgLvl)*Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl));
-  const avgHp=12*Math.pow(1.13,S.wave-1)*1.8,avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
+function afkRate(){const dps=baseDmg()*Math.min(3.2,1.0*Math.pow(1.06,S.spdLvl));
+  const avgHp=12*Math.pow(1.06,chapterOf(S.wave)-1)*1.8,avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
   return dps/avgHp*avgRw*.35;}
 function chapterReward(ch){if(ch%10===0)return 50;if(ch%5===0)return 40;if(ch%3===0)return 30;return 20;}
 
@@ -822,13 +839,12 @@ let W=0,H=0,DPR=1,cx=0,cy=0,ground=null;
 const spawnR=()=>Math.min(W*.46,H*.40/ISO,520)+20;
 let scenery=[];
 function buildScenery(){
-  scenery=[];const r=rng(98765);
-  const edges=[];
+  scenery=[];const r=rng(98765);const edges=[];
   for(let i=0;i<7;i++)edges.push({x:r()*W*0.16,y:r()*H});
   for(let i=0;i<7;i++)edges.push({x:W-r()*W*0.16,y:r()*H});
   for(let i=0;i<5;i++)edges.push({x:r()*W,y:r()*H*0.12});
   for(let i=0;i<6;i++)edges.push({x:r()*W,y:H-r()*H*0.14});
-  edges.forEach((p,i)=>{const big=r()<.5;
+  edges.forEach((p)=>{const big=r()<.5;
     scenery.push({type:big?'tree':'bush',x:p.x,y:p.y,s:big?(.7+r()*.6):(.6+r()*.5),ph:r()*TAU,sw:big?(.5+r()*.5):(.8+r()*.6)});});
   for(let i=0;i<46;i++)scenery.push({type:'grass',x:r()*W,y:r()*H,s:.6+r()*.8,ph:r()*TAU});
 }
@@ -873,12 +889,14 @@ function pickType(w){const r=Math.random();
   if(w>=4)return r<.22?'spirit':r<.5?'wolf':'beetle';
   if(w>=3)return r<.32?'wolf':'beetle';
   return 'beetle';}
-function spawn(type){const t=ET[type],w=S.wave,a=rand(0,TAU),R=spawnR();
+function spawn(type,bossMul=1){const t=ET[type],w=S.wave,ch=chapterOf(w),a=rand(0,TAU),R=spawnR();
   const boss=type==='boss';
-  const hp=t.hp*Math.pow(1.13,w-1)*(boss?1:rand(.9,1.1));
+  let hp,dmg;
+  if(boss){hp=t.hp*Math.pow(1.012,w-1)*bossMul;dmg=t.dmg*Math.pow(1.0073,w-1)*bossMul;}
+  else{hp=t.hp*Math.pow(1.06,ch-1)*rand(.9,1.1);dmg=t.dmg*Math.pow(1.05,ch-1);}
   enemies.push({type,x:Math.cos(a)*R,y:Math.sin(a)*R,hp,maxHp:hp,
-    sp:t.sp*rand(.92,1.08),dmg:t.dmg*Math.pow(1.07,w-1),rw:Math.round(t.rw*Math.pow(1.12,w-1)),
-    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1,born:0,lift:0,bleed:0,bleedT:0});}
+    sp:t.sp*rand(.92,1.08),dmg,rw:Math.round(t.rw*Math.pow(1.12,w-1)),
+    r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,born:0,lift:0,bleed:0,bleedT:0});}
 
 /* ═══════════ звук ═══════════ */
 let AC=null;const lastSnd={};
@@ -939,12 +957,12 @@ function setUpg(btn,k,stat){const c=costOf(k);
 function updateHUD(){
   el.wave.textContent=stageOf(S.wave);
   el.lvl.textContent=1+S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
-  el.dew.textContent=S.dew;el.amber.textContent=S.amber;
+  el.dew.textContent=fmt(S.dew);el.amber.textContent=fmt(S.amber);
   el.prog.style.width=clamp(100*S.killed/quota(S.wave),0,100)+'%';
   $('#waveLab').textContent=bossActive?t('boss'):t('stage');
   $('#wavePill').classList.toggle('boss-phase',bossActive);
   $('#shopBtn').classList.toggle('glow',S.dew>=SPIN_COST||S.amber>=12);
-  setUpg(el.ud,'dmg',fmtS(treeDmg()));
+  setUpg(el.ud,'dmg',fmtS(coreDmg()));
   setUpg(el.us,'spd',rootAspd().toFixed(1)+'/с');
   setUpg(el.ur,'rad',Math.round(rootReach()));
   setUpg(el.uc,'cc',Math.round(critChance()*100)+'%');
@@ -956,38 +974,33 @@ function checkAmber(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl
     bump('#amberPill');toast('+'+n+' '+t('amber'));
     sfx.claim();save();updateHUD();}}
 
-/* ═══════════ карты-рулетка (7 карт в два ряда) ═══════════ */
+/* ═══════════ карты-рулетка: 7 в два ряда, перемешивание через колоду ═══════════ */
 const SPIN_COST=15;
 let cards=[],cardPhase='idle',pickedCount=0,cardTimer=null;
 function pickAbility(){
-  const stage=tierStage();
-  const weights=TIER_WEIGHTS[stage-1];
-  let tot=0;
-  for(const t in weights)tot+=weights[t];
+  const stage=tierStage();const weights=TIER_WEIGHTS[stage-1];
+  let tot=0;for(const t in weights)tot+=weights[t];
   let r=Math.random()*tot,tier='common';
   for(const t in weights){if(r<weights[t]){tier=t;break;}r-=weights[t];}
   const list=ABIL.filter(a=>a.tier===tier);
   return list[Math.floor(Math.random()*list.length)];}
-function genCards(autoReady=true){
+function genCards(){
   const plus=[1,1,1,1,3,3,5];
-  cards=plus.map((p,i)=>({id:i,a:pickAbility(),plus:p,slot:i,picked:false,revealed:false,flipped:false}));
+  cards=plus.map((p,i)=>({id:i,a:pickAbility(),plus:p,slot:i,picked:false,revealed:false,flipped:false,
+    stackRot:rand(-7,7),stackOffX:rand(-4,4),stackOffY:rand(-3,3)}));
   cardPhase='show';pickedCount=0;
-  $('#cardsStage').innerHTML='';
-  $('#claimBtn').style.display='none';
+  $('#cardsStage').innerHTML='';$('#claimBtn').style.display='none';
   renderCards();updateSpinBtn();
   clearTimeout(cardTimer);
-  if(autoReady)cardTimer=setTimeout(()=>{if(cardPhase==='show'){cardPhase='ready';renderCards();updateSpinBtn();}},1700);}
+  cardTimer=setTimeout(()=>{if(cardPhase==='show'){cardPhase='memorize';renderCards();updateSpinBtn();}},1700);}
 function cardTransform(slot){
   const n=7,stageW=$('#cardsStage').clientWidth||340;
-  const sp=Math.min(72,Math.max(36,(stageW-80)/(n-1)));
-  const row=slot<4?0:1;
-  const colInRow=slot<4?slot:slot-4;
-  const countInRow=row===0?4:3;
+  const sp=Math.min(70,Math.max(34,(stageW-78)/(4-1)));
+  const row=slot<4?0:1;const colInRow=slot<4?slot:slot-4;const countInRow=row===0?4:3;
   const off=colInRow-(countInRow-1)/2;
-  const x=off*sp*1.1;
-  const y=row===0?-55:55;
-  const rot=off*4;
+  const x=off*sp*1.12,y=row===0?-62:62,rot=off*4;
   return `translate(-50%,-50%) translate(${x}px,${y}px) rotate(${rot}deg)`;}
+function centerTransform(c){return `translate(-50%,-50%) translate(${c.stackOffX}px,${c.stackOffY}px) rotate(${c.stackRot}deg)`;}
 function renderCards(){
   const st=$('#cardsStage');
   if(st.children.length!==cards.length){
@@ -998,8 +1011,9 @@ function renderCards(){
     st.querySelectorAll('.rcard').forEach(elc=>{
       elc.addEventListener('click',()=>onCardClick(+elc.dataset.id));});}
   cards.forEach(c=>{const elc=st.querySelector(`[data-id="${c.id}"]`);if(!elc)return;
-    elc.style.setProperty('--tf',cardTransform(c.slot));
-    elc.style.transform=(c.slot!=null?cardTransform(c.slot):'translate(-50%,-50%)')+(c.flipped?' rotateY(180deg)':'');
+    const base=c.slot!=null?cardTransform(c.slot):centerTransform(c);
+    elc.style.setProperty('--tf',base);
+    elc.style.transform=base+(c.flipped?' rotateY(180deg)':'');
     elc.classList.toggle('flipped',!!c.flipped);
     elc.classList.toggle('pickable',cardPhase==='pick'&&!c.picked);
     elc.classList.toggle('picked',c.revealed);
@@ -1014,9 +1028,7 @@ function onCardClick(id){
     cards.forEach(c=>{if(!c.picked){
       const elc=$('#cardsStage').querySelector(`[data-id="${c.id}"]`);
       if(elc)elc.classList.add('fly-up');}});
-    setTimeout(()=>{
-      $('#claimBtn').style.display='flex';
-      updateSpinBtn();},650);}}
+    setTimeout(()=>{$('#claimBtn').style.display='flex';updateSpinBtn();},650);}}
 function claimCards(){
   const r=cards.filter(x=>x.revealed);
   r.forEach(c=>{const elc=$('#cardsStage').querySelector(`[data-id="${c.id}"]`);
@@ -1031,30 +1043,28 @@ function claimCards(){
       if(TIERS[tier].idx>TIERS[bestTier].idx)bestTier=tier;});
     if(bestTier==='legendary'||bestTier==='mythic'){
       $('#shopModal').classList.add('shake-lg');setTimeout(()=>$('#shopModal').classList.remove('shake-lg'),600);}
-    sfx.reveal(bestTier);
-    bump('#dewPill');
+    sfx.reveal(bestTier);bump('#dewPill');
     save();updateHUD();renderAbilities();
-    cardPhase='idle';
-    genCards();},750);}
+    cardPhase='idle';genCards();},750);}
 function startSpin(){
-  if(!(cardPhase==='ready'||cardPhase==='done')||S.dew<SPIN_COST)return;
+  if(cardPhase!=='memorize'||S.dew<SPIN_COST)return;
   S.dew-=SPIN_COST;
   if(S.dailyProg)S.dailyProg.spins=(S.dailyProg.spins||0)+1;
   save();updateHUD();
-  genCards(false);
+  /* сбор в колоду (центр, рубашкой) — отслеживание невозможно */
+  cards.forEach(c=>{c.slot=null;c.flipped=true;});
+  renderCards();sfx.flip();cardPhase='gather';updateSpinBtn();
   setTimeout(()=>{
-    if(cardPhase!=='show')return;
-    cards.forEach(c=>{c.flipped=true;});renderCards();sfx.flip();
-    cardPhase='shuffle';updateSpinBtn();
+    if(cardPhase!=='gather')return;
     const order=[0,1,2,3,4,5,6];
     for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
-    cards.forEach((c,i)=>{c.slot=order[i];});
-    setTimeout(()=>renderCards(),60);
-    setTimeout(()=>{cardPhase='pick';renderCards();updateSpinBtn();},800);
-  },1700);}
+    cards.forEach((c,i)=>{c.slot=order[i];c.stackRot=rand(-7,7);c.stackOffX=rand(-4,4);c.stackOffY=rand(-3,3);});
+    renderCards();cardPhase='scatter';
+    setTimeout(()=>{if(cardPhase==='scatter'){cardPhase='pick';renderCards();updateSpinBtn();}},600);
+  },600);}
 function updateSpinBtn(){
   const sb=$('#spinBtn');
-  const can=(cardPhase==='ready'||cardPhase==='done')&&S.dew>=SPIN_COST;
+  const can=cardPhase==='memorize'&&S.dew>=SPIN_COST;
   sb.disabled=!can;sb.classList.toggle('can',can);
   sb.innerHTML=t('spin')+'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> '+SPIN_COST;}
 
@@ -1066,17 +1076,16 @@ function renderAbilities(){
   $('#abCount').textContent=S.equip.length+'/'+cap;
   $('#abilGrid').innerHTML=ABIL.map(a=>{
     const l=S.abilities[a.k]||0,eq=S.equip.includes(a.k),t=TIERS[a.tier];
+    const pct=l?Math.round(ABIL_BASE[a.tier]*(1+0.10*(l-1))):0;
     return `<div class="abil t-${a.tier} ${l?'':'locked'} ${eq?'eq':''}" data-abil="${a.k}">
       <span class="abil-ico">${a.svg}</span>
       <span class="abil-body"><b>${LN(a.n)}</b><i style="color:${t.c}">${LN(t.name)}</i>
-      <span class="abil-lvl">${l?(S.lang==='ru'?'ур. ':'lv ')+l:(S.lang==='ru'?'не найдена':'not found')}</span></span>
+      <span class="abil-lvl">${l?(S.lang==='ru'?'ур. ':'lv ')+l+' · '+pct+'%':(S.lang==='ru'?'не найдена':'not found')}</span></span>
       <span class="abil-eq">${eq?'✓':l?'＋':''}</span></div>`;}).join('');
+  const old=$('#paneAbils').querySelector('.shop-note');if(old)old.remove();
   const next=nextSlotChapter();
-  if(next){
-    const hint=document.createElement('p');
-    hint.className='shop-note';
-    hint.textContent=`${t('slotLocked')} ${t('nextSlot')} ${stageOf(next*7-6)}`;
-    $('#paneAbils').appendChild(hint);}
+  if(next){const hint=document.createElement('p');hint.className='shop-note';
+    hint.textContent=`${t('slotLocked')} ${t('nextSlot')} ${stageOf(next*7-6)}`;$('#paneAbils').appendChild(hint);}
   }catch(e){console.error('renderAbilities',e);}}
 function renderTrees(){
   try{
@@ -1097,8 +1106,7 @@ function renderSkills(){
   try{
   const RN=['','I','II','III'],TK={1:'tier1',2:'tier2',3:'tier3'};
   $('#paneSkills').innerHTML=[1,2,3].map(tr=>{
-    const op=tierOpen(tr);
-    const nodes=SKDEF.filter(n=>n.tier===tr);
+    const op=tierOpen(tr);const nodes=SKDEF.filter(n=>n.tier===tr);
     const lock=tr===2?t('lock2'):tr===3?t('lock3'):'';
     return `<div class="sk-tier ${op?'open':'locked'}">
       <div class="sk-th"><b>${RN[tr]}</b><span>${t(TK[tr])}</span>${op?'':`<i>🔒 ${lock}</i>`}</div>
@@ -1108,16 +1116,15 @@ function renderSkills(){
           <span class="sk-ico">${n.svg}</span>
           <span class="sk-body"><b>${LN(n.n)}<i>${l}/${mx}</i></b><em>${LN(n.d)}</em></span>
           <span class="sk-buy">${maxed?t('maxed'):fmt(c)}</span></div>`;}).join('')}</div></div>`;}).join('')
-    +`<p class="shop-note">✦ ${S.lang==='ru'?'Ветки покупаются за семена. Полная прокачка ступени открывает следующую, а «Размах корней» вырастает до 80%.':'Branches are bought with seeds. Fully upgrading a tier unlocks the next one, and «Root Spread» grows to 80%.'}</p>`;
+    +`<p class="shop-note">✦ ${S.lang==='ru'?'Ветки дают проценты к урону и статам. Полная прокачка ступени открывает следующую.':'Branches grant % to damage & stats. Fully upgrading a tier unlocks the next one.'}</p>`;
   }catch(e){console.error('renderSkills',e);}}
 function buySkill(n){
   if(!tierOpen(n.tier)||S.over)return;
   const mx=nodeMax(n),c=skCost(n);
   if(sk(n.k)>=mx||S.seeds<c)return;
-  S.seeds-=c;
-  const before=treeMaxHp();
+  S.seeds-=c;const before=treeMaxHp();
   S.skill[n.k]=(S.skill[n.k]||0)+1;
-  if(n.k==='t2hp')S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-before));
+  if(n.k==='sHp')S.treeHp=Math.min(treeMaxHp(),S.treeHp+(treeMaxHp()-before));
   pulse=1;leafBurst();sfx.upgrade();
   save();updateHUD();renderSkills();}
 $('#paneSkills').addEventListener('click',e=>{const c=e.target.closest('[data-sk]');if(!c)return;
@@ -1133,8 +1140,8 @@ const DAILY_POOL=[
 const ACH=[
  {id:'a_k100',g:100,field:'totalKills',r:{dew:15},txt:{ru:'Убей 100 существ',en:'Slay 100 creatures'}},
  {id:'a_k1000',g:1000,field:'totalKills',r:{dew:40},txt:{ru:'Убей 1000 существ',en:'Slay 1000 creatures'}},
- {id:'a_w10',g:10,field:'bestWave',r:{dew:20},txt:{ru:'Достигни 10 этапа',en:'Reach stage 10'}},
- {id:'a_w25',g:25,field:'bestWave',r:{amber:5},txt:{ru:'Достигни 25 этапа',en:'Reach stage 25'}},
+ {id:'a_w10',g:10,field:'bestWave',r:{dew:20},txt:{ru:'Достигни этапа 2-3',en:'Reach stage 2-3'}},
+ {id:'a_w25',g:25,field:'bestWave',r:{amber:5},txt:{ru:'Достигни этапа 4-4',en:'Reach stage 4-4'}},
  {id:'a_eq5',g:5,field:'equipCount',r:{dew:12},txt:{ru:'Экипируй 5 способностей',en:'Equip 5 abilities'}},
  {id:'a_skin',g:1,field:'skinCount',r:{amber:3},txt:{ru:'Купи облик древа',en:'Buy a tree look'}}];
 function ensureDaily(){const dk=dayKey();
@@ -1150,27 +1157,27 @@ function waveQuest(){const goal=quota(S.wave);
     done:S.killed>=goal,claimed:!!S.waveQ.claimed,reward:{dew:3}};}
 function onceList(){const list=[];
   for(let ch=1;ch<=S.chaptersCleared;ch++){const id='chap'+ch;
-    list.push({id,txt:{ru:t('chap')+' '+stageOf(ch*7-6)+' '+t('chapDone'),en:t('chap')+' '+stageOf(ch*7-6)+' '+t('chapDone')},
+    list.push({id,txt:{ru:t('chap')+' '+stageOf(ch*7)+' '+t('chapDone'),en:t('chap')+' '+stageOf(ch*7)+' '+t('chapDone')},
       goal:1,prog:1,done:true,claimed:!!S.onceDone[id],reward:{dew:chapterReward(ch)}});}
   ACH.forEach(a=>{let val=0;
     if(a.field==='totalKills')val=S.totalKills;else if(a.field==='bestWave')val=S.bestWave;
-    else if(a.field==='equipCount')val=S.equip.length;else if(a.field==='skinCount')val=S.treeSkins.length-1;
+    else if(a.field==='equipCount')val=Math.min(S.equip.length,slotCap());else if(a.field==='skinCount')val=S.treeSkins.length-1;
     const done=val>=a.g;
     list.push({id:a.id,txt:a.txt,goal:a.g,prog:Math.min(val,a.g),done,claimed:!!S.onceDone[a.id],reward:a.r});});
   return list;}
 function claimQuest(q,sec){
   if(!q.done||q.claimed)return;
-  if(sec==='daily')S.dailyDone[q.id]=1;
-  else if(sec==='wave')S.waveQ.claimed=1;
-  else S.onceDone[q.id]=1;
+  if(sec==='daily')S.dailyDone[q.id]=1;else if(sec==='wave')S.waveQ.claimed=1;else S.onceDone[q.id]=1;
   if(q.reward.dew){S.dew+=q.reward.dew;bump('#dewPill');}
   if(q.reward.amber){S.amber+=q.reward.amber;bump('#amberPill');}
   sfx.claim();save();updateHUD();renderQuests();}
+function rewSpan(q){return q.reward.amber
+  ?`<span class="q-rew amber ${q.done?'':'inactive'}"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg>${q.reward.amber}</span>`
+  :`<span class="q-rew ${q.done?'':'inactive'}"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>${q.reward.dew}</span>`;}
 function renderQuests(){
   try{
-  const sec=(title,arr,secKey,extra)=>`<div class="q-sec"><h3>${title}${extra||''}</h3>`+
-    arr.map(q=>{const rew=q.reward.dew?`<span class="q-rew ${q.done?'':'inactive'}"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>${q.reward.dew}</span>`
-      :q.reward.amber?`<span class="q-rew ${q.done?'':'inactive'}" style="color:#ffd9a0"><svg viewBox="0 0 16 16"><path d="M8 1.5 13 6l-5 8.5L3 6l5-4.5Z" fill="#f0a848"/></svg>${q.reward.amber}</span>`:'';
+  const sec=(title,arr,secKey)=>`<div class="q-sec"><h3>${title}</h3>`+
+    arr.map(q=>{const rew=rewSpan(q);
       const right=q.claimed?`<span class="q-claimed">${t('qDone')}</span>`
         :q.done?`<button class="q-claim" data-q="${q.id}" data-sec="${secKey}">${rew}</button>`:rew;
       return `<div class="qrow ${q.done?'done':''}">
@@ -1190,13 +1197,13 @@ function findQuest(id,sec){if(sec==='daily')return dailyList().find(q=>q.id===id
 
 function renderShop(){
   try{
-  $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
+  $('#shopDew').textContent=fmt(S.dew);$('#shopAmber').textContent=fmt(S.amber);
   renderAbilities();renderTrees();renderQuests();renderSkills();
   if(curTab==='roulette'){if(cardPhase==='idle')genCards();else renderCards();updateSpinBtn();}
   }catch(e){console.error('renderShop',e);}}
 function updateShopLive(){if(!shopOpen)return;
   try{
-  $('#shopDew').textContent=S.dew;$('#shopAmber').textContent=S.amber;
+  $('#shopDew').textContent=fmt(S.dew);$('#shopAmber').textContent=fmt(S.amber);
   if(curTab==='roulette')updateSpinBtn();
   if(curTab==='skills')renderSkills();
   }catch(e){}}
@@ -1210,11 +1217,8 @@ function setTab(tb){curTab=tb;
   $('#tabAbils').classList.toggle('active',tb==='abils');
   $('#tabQuests').classList.toggle('active',tb==='quests');
   $('#tabTrees').classList.toggle('active',tb==='trees');
-  $('#paneRoulette').hidden=tb!=='roulette';
-  $('#paneSkills').hidden=tb!=='skills';
-  $('#paneAbils').hidden=tb!=='abils';
-  $('#paneQuests').hidden=tb!=='quests';
-  $('#paneTrees').hidden=tb!=='trees';
+  $('#paneRoulette').hidden=tb!=='roulette';$('#paneSkills').hidden=tb!=='skills';
+  $('#paneAbils').hidden=tb!=='abils';$('#paneQuests').hidden=tb!=='quests';$('#paneTrees').hidden=tb!=='trees';
   if(tb==='abils')renderAbilities();
   if(tb==='trees')renderTrees();
   if(tb==='quests')renderQuests();
@@ -1231,8 +1235,7 @@ $('#tabTrees').addEventListener('click',()=>setTab('trees'));
 $('#spinBtn').addEventListener('click',startSpin);
 $('#claimBtn').addEventListener('click',claimCards);
 $('#abilGrid').addEventListener('click',e=>{
-  const c=e.target.closest('[data-abil]');if(!c)return;
-  const k=c.dataset.abil;
+  const c=e.target.closest('[data-abil]');if(!c)return;const k=c.dataset.abil;
   if(!S.abilities[k]){toast(t('fromRoulette'));return;}
   if(S.equip.includes(k))S.equip=S.equip.filter(x=>x!==k);
   else if(S.equip.length<slotCap())S.equip.push(k);
@@ -1241,10 +1244,12 @@ $('#abilGrid').addEventListener('click',e=>{
 $('#paneTrees').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
 
 /* ═══════════ настройки ═══════════ */
-$('#setBtn').addEventListener('click',()=>{open('#setOverlay');$('#volRange').value=Math.round((S.vol==null?1:S.vol)*100);$('#volVal').textContent=$('#volRange').value+'%';});
+$('#setBtn').addEventListener('click',()=>{open('#setOverlay');$('#volRange').value=Math.round((S.vol==null?1:S.vol)*100);$('#volVal').textContent=$('#volRange').value+'%';
+  const st=$('#shakeTog');st.textContent=S.shake?t('on'):t('off');st.classList.toggle('on',S.shake);});
 $('#setClose').addEventListener('click',()=>close('#setOverlay'));
 $('#setOverlay').addEventListener('click',e=>{if(e.target.id==='setOverlay')close('#setOverlay');});
 $('#volRange').addEventListener('input',e=>{S.vol=+e.target.value/100;$('#volVal').textContent=e.target.value+'%';save();});
+$('#shakeTog').addEventListener('click',()=>{S.shake=!S.shake;const st=$('#shakeTog');st.textContent=S.shake?t('on'):t('off');st.classList.toggle('on',S.shake);save();});
 $('#langRu').addEventListener('click',()=>{S.lang='ru';save();applyLang();});
 $('#langEn').addEventListener('click',()=>{S.lang='en';save();applyLang();});
 
@@ -1259,31 +1264,26 @@ function leafBurst(){const g=treeGeom(),ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oa
     x:rand(-g.R,g.R)*.9,y:-g.h+rand(-g.R*.4,g.R*.3),vy:rand(16,28),l:rand(1,1.8),ml:1.8,c:ts.leafC});
   parts.push({ring:true,x:0,y:-g.h,l:.45,ml:.45,r0:g.R*.5,r1:g.R*2.4,c:ts.glow});}
 function gainDew(n,x,y){S.dew+=n;bump('#dewPill');
-  floats.push({x,y,txt:'+'+n+' '+t('dew'),l:1.3,ml:1.3,c:'#a5e8f0',sz:13});
+  floats.push({x,y,txt:'+'+fmt(n)+' '+t('dew'),l:1.3,ml:1.3,c:'#a5e8f0',sz:13});
   if(!S.tipShop){S.tipShop=true;toast(t('tipDew'));}
   updateHUD();}
 
 function kill(e){
-  const harvest=ab('harvest');
-  const rw=Math.round(e.rw*(1+.12*harvest));
+  const rw=e.rw;
   S.seeds+=rw;runSeeds+=rw;S.killed++;S.totalKills++;runKills++;
   if(S.dailyProg){S.dailyProg.kills=(S.dailyProg.kills||0)+1;}
   floats.push({x:e.x,y:e.y*ISO-e.r-16,txt:'+'+fmt(rw),l:1,ml:1,c:'#f6d488',sz:e.type==='boss'?16:13});
   burst(e.x,e.y*ISO-e.r*.5,e.r,e.type==='boss'?'214,110,170':'224,124,94');
-  if(harvest>0)for(let i=0;i<3;i++)parts.push({x:e.x+rand(-8,8),y:e.y*ISO-e.r*.5,vx:rand(-12,12),vy:rand(-40,-16),l:.6,ml:.6,sz:2,c:'246,212,136'});
-  const leech=ab('leech');
-  if(leech>0&&S.treeHp>0){
-    S.treeHp=Math.min(treeMaxHp(),S.treeHp+treeMaxHp()*(.01+.005*leech));
-    parts.push({x:rand(-14,14),y:-20,vx:rand(-6,6),vy:rand(-30,-14),l:.7,ml:.7,sz:2.4,c:'143,214,138'});}
-  const infL=sk('infect');
-  if(infL>0&&e.type!=='boss'){
-    const R=60+18*infL,dmg=treeDmg()*(.6+.3*infL);
+  /* заражение: труп взрывается корнями (урон от атаки, AoE) */
+  const infP=abilPct('infect');
+  if(infP>0&&e.type!=='boss'){
+    const R=60+18*ab('infect'),dmg=coreDmg()*(infP/100)*0.4;
     for(const o of enemies){if(o===e||o.dead)continue;
       if(Math.hypot(o.x-e.x,o.y-e.y)<R)hit(o,dmg,false);}
     parts.push({ring:true,x:e.x,y:e.y*ISO-e.r*.4,l:.4,ml:.4,r0:6,r1:R,c:'176,127,216'});
     for(let i=0;i<6;i++)parts.push({x:e.x+rand(-8,8),y:e.y*ISO-e.r*.5,vx:rand(-26,26),vy:rand(-40,-10),l:.5,ml:.5,sz:2,c:'176,127,216'});
     const near=enemies.filter(o=>!o.dead&&o!==e&&Math.hypot(o.x-e.x,o.y-e.y)<R+140)
-      .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,1+infL);
+      .sort((a,b)=>Math.hypot(a.x-e.x,a.y-e.y)-Math.hypot(b.x-e.x,b.y-e.y)).slice(0,1+ab('infect'));
     near.forEach(o=>launchRoot(o,e.x,e.y,0,.6));
     if(near.length)sfx.dig();}
   if(e.type==='boss'){gainDew(2+Math.floor(S.wave/5),e.x,e.y*ISO-e.r-36);nextWave();}
@@ -1291,27 +1291,14 @@ function kill(e){
 function hit(e,dmg,crit){if(S.over||e.dead)return;
   e.hp-=dmg;e.flash=1;
   parts.push({x:e.x+rand(-4,4),y:e.y*ISO-e.r*.5,vx:rand(-14,14),vy:rand(-24,-6),l:.3,ml:.3,sz:2,c:'255,236,190'});
-  const vL=sk('vamp');
-  if(vL>0&&S.treeHp>0&&S.treeHp<treeMaxHp()){
-    S.treeHp=Math.min(treeMaxHp(),S.treeHp+dmg*.01*vL);
-    if(Math.random()<.1)parts.push({x:rand(-12,12),y:-18,vx:rand(-6,6),vy:rand(-28,-12),l:.6,ml:.6,sz:2.2,c:'143,214,138'});}
-  const bL=sk('bleed');
-  if(bL>0&&!e.dead){e.bleed=Math.min(4+2*bL,(e.bleed||0)+1);e.bleedT=3;}
-  const slL=sk('slow');
-  if(slL>0&&!e.dead){const f=1-Math.min(.45,.07*slL);
-    if(e.slowT<=0||f<e.slowF)e.slowF=f;e.slowT=Math.max(e.slowT,1.4);}
+  const bP=abilPct('bleed');
+  if(bP>0&&!e.dead){e.bleed=Math.min(10,(e.bleed||0)+1);e.bleedT=3;}
   if(crit){if(S.dailyProg)S.dailyProg.crits=(S.dailyProg.crits||0)+1;
-    floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-12,txt:'CRIT '+Math.round(dmg),l:.85,ml:.85,c:'#ffd76a',sz:13});sfx.crit();}
-  else{floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-8,txt:''+Math.round(dmg),l:.65,ml:.65,c:'#ffe9b8',sz:10.5});sfx.hit();}
+    floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-12,txt:'CRIT '+fmt(dmg),l:.85,ml:.85,c:'#ffd76a',sz:13});sfx.crit();}
+  else{floats.push({x:e.x+rand(-6,6),y:e.y*ISO-e.r-8,txt:fmt(dmg),l:.65,ml:.65,c:'#ffe9b8',sz:10.5});sfx.hit();}
   if(e.hp<=0)e.dead=true;}
 function damageTree(d){if(S.over)return;
-  if(S.treeHp-d<=0){
-    const eb=ab('eternalbark');
-    if(eb>0&&!barkUsed){
-      barkUsed=true;S.treeHp=treeMaxHp()*(.2+.08*eb);
-      parts.push({ring:true,x:0,y:-30,l:.6,ml:.6,r0:20,r1:120,c:'246,212,136'});
-      toast(t('bark'));sfx.reveal('legendary');updateHUD();return;}}
-  S.treeHp-=d;flinch=1;shakeM=Math.max(shakeM,4.5);vig();sfx.hurt();
+  S.treeHp-=d;flinch=1;if(S.shake)shakeM=Math.max(shakeM,4.5);vig();sfx.hurt();
   if(S.treeHp<=0){S.treeHp=0;gameOver();}
   updateHUD();}
 function nextWave(){
@@ -1331,7 +1318,7 @@ function nextWave(){
   banner(t('stage')+' '+stageOf(S.wave), subs[Math.floor(Math.random()*subs.length)], false);
   sfx.wave();save();updateHUD();if(shopOpen&&curTab==='quests')renderQuests();}
 function gameOver(){
-  S.over=true;shakeM=10;sfx.over();
+  S.over=true;if(S.shake)shakeM=10;sfx.over();
   const g=treeGeom();burst(0,-g.h*.6,g.R,'124,168,120');
   $('#stWave').textContent=stageOf(S.wave);$('#stKills').textContent=fmt(runKills);$('#stSeeds').textContent=fmt(runSeeds);
   setTimeout(()=>open('#overOverlay'),900);}
@@ -1345,15 +1332,15 @@ function rootStrike(p){
   const tg=p.tg;
   if(tg&&!tg.dead&&Math.hypot(tg.x-p.tx,tg.y-p.ty)<tg.r+24){
     const isCrit=Math.random()<critChance();
-    const dmg=rootDmg()*(p.dmgMul||1)*(isCrit?critMult():1);
+    const dmg=coreDmg()*rootMul()*(p.dmgMul||1)*(isCrit?critMult():1);
     tg.lift=isCrit?14:9;
     hit(tg,dmg,isCrit);
     const sx=p.tx,sy=p.ty*ISO;
     for(let k=0;k<(isCrit?16:10);k++)parts.push({x:sx+rand(-16,16),y:sy,vx:rand(-30,30),vy:rand(-70,-26),l:rand(.4,.7),ml:.7,sz:rand(1.5,3),c:isCrit?'255,224,150':'120,90,58'});
     for(let k=0;k<6;k++)parts.push({x:sx+rand(-10,10),y:sy,vx:rand(-8,8),vy:rand(-46,-20),l:.5,ml:.5,sz:2,c:'170,230,180'});
     parts.push({ring:true,x:sx,y:sy,l:.4,ml:.4,r0:8,r1:isCrit?70:48,c:isCrit?'255,210,120':'201,160,106'});
-    shakeM=Math.max(shakeM,isCrit?5:3);sfx.strike();
-    const rb=sk('rootBounce');
+    if(S.shake)shakeM=Math.max(shakeM,isCrit?5:3);sfx.strike();
+    const rb=ab('rootBounce');
     if(rb>0&&(p.b||0)<rb){
       let best=null,bd=1e9;
       for(const e of enemies){if(e===tg||e.dead)continue;
@@ -1377,9 +1364,11 @@ function simulate(dt){
       if(enemies.length<70){spawn(pickType(S.wave));spawned++;}
       spawnT=spawnInt(S.wave)*rand(.75,1.25);}
     if(S.killed>=quota(S.wave)){
-      bossActive=true;spawn('boss');
-      shakeM=Math.max(shakeM,6);sfx.boss();
-      banner((S.lang==='ru'?'Лихоцвет пробуждается…':'Blightbloom awakens…'),(S.lang==='ru'?'пожиратель корней вышел из чащи':'the root-eater emerges'),true);
+      bossActive=true;const bc=bossCount();
+      for(let i=0;i<bc;i++)spawn('boss',Math.pow(0.7,i));
+      if(S.shake)shakeM=Math.max(shakeM,6);sfx.boss();
+      banner((S.lang==='ru'?'Лихоцвет пробуждается…':'Blightbloom awakens…'),
+        (bc>1?bc+'× ':'')+(S.lang==='ru'?'пожиратели корней вышли из чащи':'the root-eaters emerge'),true);
       updateHUD();}}
 
   rootT-=dt;
@@ -1414,9 +1403,10 @@ function simulate(dt){
       const tg=enemies.slice().sort((a,b)=>(a.x*a.x+a.y*a.y)-(b.x*b.x+b.y*b.y));
       atkT=1/treeAspd();
       const g=treeGeom(),sw=Math.sin(T*1.05)*2.6;
+      const sdmg=coreDmg()*seedMul();
       for(let i=0;i<n;i++)
         shots.push({kind:'orb',x:sw*1.2,y:-g.h+8,t:tg[Math.min(i,tg.length-1)],
-          dmg:treeDmg()*rand(.88,1.12),sp:480,b:0});
+          dmg:sdmg*rand(.88,1.12),sp:480,b:0});
       sfx.shoot();}}
   for(let i=shots.length-1;i>=0;i--){const s=shots[i];
     if(s.kind==='ring'){
@@ -1435,16 +1425,13 @@ function simulate(dt){
     const tx=tg.x,ty=tg.y*ISO-tg.r*.5,dx=tx-s.x,dy=ty-s.y,d=Math.hypot(dx,dy);
     if(d<tg.r*.7+6){
       hit(tg,s.dmg,false);
-      const spL=ab('resonance');
-      if(spL>0){const R=40+12*spL;
+      const rP=abilPct('resonance');
+      if(rP>0){const R=40+12*ab('resonance');
         for(const e of enemies){if(e===tg||e.dead)continue;
-          if(Math.hypot(e.x-tg.x,(e.y-tg.y)*ISO)<R)hit(e,s.dmg*(.3+.08*spL),false);}
+          if(Math.hypot(e.x-tg.x,(e.y-tg.y)*ISO)<R)hit(e,coreDmg()*(rP/100)*0.4,false);}
         parts.push({ring:true,x:tg.x,y:tg.y*ISO-tg.r*.4,l:.3,ml:.3,r0:8,r1:R,c:'255,190,110'});}
-      const frL=ab('frost');
-      if(frL>0&&!tg.dead){
-        let f=1-Math.min(.7,.2+.08*frL);if(tg.type==='boss')f=1-(1-f)*.5;
-        if(tg.slowT<=0||f<tg.slowF)tg.slowF=f;
-        tg.slowT=Math.max(tg.slowT,1.2+.2*frL);
+      const fP=abilPct('frost');
+      if(fP>0&&!tg.dead){hit(tg,coreDmg()*(fP/100)*1.0,false);
         for(let k=0;k<3;k++)parts.push({x:tg.x+rand(-8,8),y:tg.y*ISO-tg.r*.5,vx:rand(-14,14),vy:rand(-20,0),l:.4,ml:.4,sz:1.8,c:'160,215,245'});}
       const boL=ab('bounce');
       if(boL>0&&s.b<boL){
@@ -1457,43 +1444,44 @@ function simulate(dt){
     const v=s.sp*dt/d;s.x+=dx*v;s.y+=dy*v;
     if(Math.random()<.5)parts.push({x:s.x,y:s.y,vx:rand(-8,8),vy:rand(-8,8),l:.22,ml:.22,sz:1.5,c:'255,217,138'});}
 
-  const brL=ab('branch');
-  if(brL>0){branchCd-=dt;
-    const reach=88+12*brL;
+  const brP=abilPct('branch');
+  if(brP>0){branchCd-=dt;
+    const reach=88+12*ab('branch');
     const near=enemies.filter(e=>!e.dead&&Math.hypot(e.x,e.y)<reach);
     if(branchCd<=0&&near.length){
-      branchCd=Math.max(1.2,2.4-.2*brL);branchFx=1;branchAng=rand(0,TAU);branchDir*=-1;
-      for(const e of near){hit(e,treeDmg()*(1.2+.4*brL),false);
+      branchCd=Math.max(1.2,2.4-.2*ab('branch'));branchFx=1;branchAng=rand(0,TAU);branchDir*=-1;
+      const bdmg=coreDmg()*(brP/100)*0.4;
+      for(const e of near){hit(e,bdmg,false);
         if(!e.dead){const d=Math.max(1,Math.hypot(e.x,e.y));e.x+=e.x/d*16;e.y+=e.y/d*16;}}
       sfx.branch();}}
   branchFx=Math.max(0,branchFx-dt*2.4);
 
-  const lfL=ab('leafstorm');
-  if(lfL>0){leafCd-=dt;
+  const lfP=abilPct('leafstorm');
+  if(lfP>0){leafCd-=dt;
     if(leafCd<=0&&enemies.length){
-      leafCd=Math.max(3.5,7-lfL);
-      const n=8+3*lfL,dmg=treeDmg()*(.7+.3*lfL);
+      leafCd=Math.max(3.5,7-ab('leafstorm'));
+      const n=8+3*ab('leafstorm'),dmg=coreDmg()*(lfP/100)*0.4;
       for(let i=0;i<n;i++){const a=i/n*TAU+rand(-.12,.12);
         shots.push({kind:'ring',rot:rand(0,TAU),x:Math.cos(a)*46,y:Math.sin(a)*46,
           vx:Math.cos(a)*190,vy:Math.sin(a)*190,dmg,life:1.7,pierce:2});}
       sfx.leaf();}}
 
+  const blP=abilPct('bleed');
   for(const e of enemies){
     e.born=Math.min(1,e.born+dt*2.2);
     e.lift=Math.max(0,e.lift-dt*40);
     e.flash=Math.max(0,e.flash-dt*6);
-    if(e.bleed>0&&e.bleedT>0&&!e.dead){
+    if(blP>0&&e.bleed>0&&e.bleedT>0&&!e.dead){
       e.bleedT-=dt;
-      e.hp-=e.bleed*treeDmg()*.02*dt;
+      e.hp-=coreDmg()*(blP/100)*0.01*e.bleed*dt;
       if(Math.random()<dt*4)parts.push({x:e.x+rand(-5,5),y:e.y*ISO-e.r*.5,vx:rand(-8,8),vy:rand(-18,-6),l:.4,ml:.4,sz:1.6,c:'168,220,120'});
       if(e.bleedT<=0)e.bleed=0;
       if(e.hp<=0)e.dead=true;}
-    let sf=1;if(e.slowT>0){e.slowT-=dt;sf=e.slowF;}
     const d=Math.hypot(e.x,e.y),lim=26+e.r*.3;
-    if(e.type==='spirit'){const v=e.sp*sf*dt;const ang=Math.atan2(-e.y,-e.x);
+    if(e.type==='spirit'){const v=e.sp*dt;const ang=Math.atan2(-e.y,-e.x);
       if(d>lim){e.x+=Math.cos(ang)*v;e.y+=Math.sin(ang)*v;}
       else{e.atk-=dt;if(e.atk<=0){e.atk=1.0;damageTree(e.dmg);}}}
-    else if(d>lim){const v=e.sp*sf*dt/d;e.x-=e.x*v;e.y-=e.y*v;}
+    else if(d>lim){const v=e.sp*dt/d;e.x-=e.x*v;e.y-=e.y*v;}
     else{e.atk-=dt;if(e.atk<=0){e.atk=1.0;damageTree(e.dmg);}}
     if(e.type==='boss'&&!e.dead&&Math.random()<dt*5)
       parts.push({x:e.x+rand(-e.r,e.r)*.6,y:e.y*ISO-e.r*.6,vx:rand(-6,6),vy:rand(-20,-8),
@@ -1737,7 +1725,7 @@ function drawTree(){
       ctx.fillStyle=ts.orb;ctx.globalAlpha=.85;ctx.shadowColor=ts.orb;ctx.shadowBlur=9;
       ctx.beginPath();ctx.arc(px,py,ts.style==='moon'?1.7:2.4,0,TAU);ctx.fill();
       ctx.globalAlpha=1;ctx.shadowBlur=0;}}
-  if(branchFx>0&&ab('branch')>0){
+  if(branchFx>0&&abilPct('branch')>0){
     const r=60+8*ab('branch'),a0=branchAng,a1=branchAng+2.4*branchDir;
     ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';
     ctx.lineWidth=5;ctx.lineCap='round';
@@ -1847,8 +1835,6 @@ function drawEnemy(e){
       ctx.fillStyle='#1c0714';ctx.beginPath();ctx.arc(ex,ey,pr*.055,0,TAU);ctx.fill();}}
   ctx.restore();
   ctx.globalAlpha=1;
-  if(e.slowT>0){ctx.fillStyle='rgba(140,200,240,.26)';
-    ctx.beginPath();ctx.arc(gx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.fill();}
   if(e.bleed>0&&e.bleedT>0){ctx.strokeStyle='rgba(168,220,120,.5)';ctx.lineWidth=1.5;
     ctx.beginPath();ctx.arc(gx,sy-e.r*.5,e.r*1.05,0,TAU);ctx.stroke();}
   if(e.flash>0){ctx.fillStyle='rgba(255,255,255,'+(e.flash*.5).toFixed(2)+')';
@@ -1925,7 +1911,7 @@ function render(dt){
   drawFlies(dt);
   ctx.save();
   if(shakeM>0){shakeM=Math.max(0,shakeM-dt*20);
-    ctx.translate(rand(-1,1)*shakeM,rand(-1,1)*shakeM);}
+    if(S.shake)ctx.translate(rand(-1,1)*shakeM,rand(-1,1)*shakeM);}
   drawReach();
   const order=enemies.slice().sort((a,b)=>a.y-b.y);
   for(const e of order){if(e.y>=0)break;drawEnemy(e);}
@@ -1956,14 +1942,14 @@ cv.addEventListener('pointerdown',ev=>{
     const bx=lerp(squirrel.fx,squirrel.tx,p),by=lerp(squirrel.fy,squirrel.ty,p)-Math.abs(Math.sin(p*Math.PI*4))*14;
     if(Math.hypot(sx-bx,sy-by)<26){
       squirrel.clicked=true;const n=Math.floor(rand(3,9));S.dew+=n;bump('#dewPill');
-      floats.push({x:(bx-cx),y:(by-cy)-14,txt:'+'+n+' '+t('dew'),l:1.2,ml:1.2,c:'#a5e8f0',sz:13});
+      floats.push({x:(bx-cx),y:(by-cy)-14,txt:'+'+fmt(n)+' '+t('dew'),l:1.2,ml:1.2,c:'#a5e8f0',sz:13});
       for(let i=0;i<8;i++)parts.push({x:bx-cx,y:by-cy,vx:rand(-30,30),vy:rand(-40,-10),l:.5,ml:.5,sz:2,c:'124,201,232'});
       sfx.squirrel();save();updateHUD();return;}}
   const x=sx-cx,y=sy-cy;
   parts.push({ring:true,x,y,l:.35,ml:.35,r0:4,r1:34,c:'159,222,187'});
   let best=null,bd=1e9;
   for(const e of enemies){const d=Math.hypot(e.x-x,e.y*ISO-y)-e.r;if(d<bd){bd=d;best=e;}}
-  if(best&&bd<48)hit(best,Math.max(1,treeDmg()*.55),false);});
+  if(best&&bd<48)hit(best,Math.max(1,coreDmg()*.55),false);});
 
 function buy(k,btn){if(S.over)return;const c=costOf(k);if(S.seeds<c)return;
   S.seeds-=c;
@@ -2013,11 +1999,10 @@ window.DEBUG={
   upg(n){S.dmgLvl+=n;S.spdLvl+=n;S.hpLvl+=n;S.radLvl+=n;S.ccLvl+=n;S.cdLvl+=n;S.treeHp=treeMaxHp();checkAmber();updateHUD();save();},
   give(k,l){S.abilities[k]=(S.abilities[k]||0)+(l||1);if(!S.equip.includes(k)&&S.equip.length<slotCap())S.equip.push(k);updateHUD();save();},
   all(){ABIL.forEach(a=>window.DEBUG.give(a.k,3));},
-  skills(){SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));
-    S.treeHp=treeMaxHp();updateHUD();save();},
+  skills(){SKDEF.forEach(n=>S.skill[n.k]=nodeMax(n));S.treeHp=treeMaxHp();updateHUD();save();},
   skins(){S.treeSkins=Object.keys(TREE_SKINS);updateHUD();save();},
-  wave(n){S.wave=Math.max(1,n);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;banner(t('stage')+' '+stageOf(S.wave),'debug',false);updateHUD();save();},
-  chap(n){S.chaptersCleared=Math.max(S.chaptersCleared,n);S.bestWave=Math.max(S.bestWave,n*7-6);save();if(shopOpen)renderQuests();},
+  wave(n){S.wave=Math.max(1,S.wave+n);S.bestWave=Math.max(S.bestWave,S.wave);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;banner(t('stage')+' '+stageOf(S.wave),'debug',false);updateHUD();save();},
+  chap(n){const add=n*7;S.wave=Math.max(1,S.wave+add);S.bestWave=Math.max(S.bestWave,S.wave);S.killed=0;spawned=0;bossActive=false;betweenT=1.5;S.chaptersCleared=Math.max(S.chaptersCleared,chapterOf(S.wave));banner(t('stage')+' '+stageOf(S.wave),'debug',false);updateHUD();save();if(shopOpen)renderQuests();},
   spawn(t){spawn(t||'boss');},
   clear(){enemies.length=0;shots.length=0;roots.length=0;},
   god(){CHEAT.god=!CHEAT.god;toast('GOD: '+(CHEAT.god?'ON':'OFF'));
@@ -2034,8 +2019,8 @@ dbg.innerHTML=
  '<button data-c="DEBUG.give(\'multishot\',3)">+ seeds ability</button>'+
  '<button data-c="DEBUG.all()">all abilities +3</button>'+
  '<button data-c="DEBUG.skins()">all looks</button>'+
- '<button data-c="DEBUG.wave(S.wave+5)">wave +5</button>'+
- '<button data-c="DEBUG.chap(10)">chapters → 10</button>'+
+ '<div class="skip-row"><input id="dbgSkipW" type="number" value="10" min="1"><button data-c="DEBUG.wave(+($(\'#dbgSkipW\').value||0))">+волн</button></div>'+
+ '<div class="skip-row"><input id="dbgSkipC" type="number" value="5" min="1"><button data-c="DEBUG.chap(+($(\'#dbgSkipC\').value||0))">+глав</button></div>'+
  '<button data-c="DEBUG.spawn(\'boss\')">spawn boss</button>'+
  '<button data-c="DEBUG.spawn(\'spirit\')">spawn spirit</button>'+
  '<button data-c="DEBUG.clear()">clear field</button>'+
@@ -2052,9 +2037,9 @@ document.addEventListener('keydown',e=>{
 resize();ensureDaily();applyLang();updateHUD();
 if(afkReward>0){$('#afkTime').textContent=fmtTime(afkSec);
   $('#afkAmount').textContent='+'+fmt(afkReward);
-  if(afkDew>0){$('#afkDewRow').style.display='flex';$('#afkDew').textContent='+'+afkDew;}
+  if(afkDew>0){$('#afkDewRow').style.display='flex';$('#afkDew').textContent='+'+fmt(afkDew);}
   open('#afkOverlay');}
-else if(!S.seen){toast(t('tipStart'));S.seen=true;save();}
+else if(!S.seen){S.dew+=30;save();updateHUD();toast(t('tipStart'));S.seen=true;save();}
 banner(t('stage')+' '+stageOf(S.wave), t('protect'), false);
 requestAnimationFrame(t=>{last=t;loop(t);});
 setInterval(save,5000);
