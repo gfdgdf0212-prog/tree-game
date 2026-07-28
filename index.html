@@ -177,7 +177,6 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .tabpane[hidden]{display:none}
 .shop-note{margin:10px 2px 0;font-size:11px;color:var(--muted);font-weight:600;line-height:1.5}
 
-/* карты-рулетка */
 .cards-stage{position:relative;height:230px;margin:6px 0 14px;perspective:900px}
 .rcard{position:absolute;width:96px;height:148px;left:50%;top:50%;cursor:default;
   transform-style:preserve-3d;transition:transform .55s cubic-bezier(.34,1.3,.5,1),opacity .4s,filter .3s;
@@ -239,7 +238,6 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .abil-eq{width:24px;height:24px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;
   color:var(--tc);border:1px solid rgba(var(--tg),.5)}
 
-/* задания */
 .q-sec{margin-bottom:14px}
 .q-sec h3{margin:0 0 7px;font-family:Unbounded;font-size:12px;letter-spacing:.06em;color:var(--muted);
   text-transform:uppercase;display:flex;align-items:center;gap:7px}
@@ -274,7 +272,6 @@ body{font-family:Manrope,system-ui,sans-serif;color:var(--ink);user-select:none;
 .skin-state{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:4px}
 .skin-state svg{width:11px;height:11px}
 
-/* настройки */
 .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line)}
 .set-row:last-child{border-bottom:0}
 .set-row label{font-weight:700;font-size:13px}
@@ -289,13 +286,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 .lang-sw button{border:0;background:transparent;color:var(--muted);font:800 12px Manrope;padding:7px 14px;border-radius:8px;cursor:pointer}
 .lang-sw button.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--ink)}
 
-/* читы — всегда видимая кнопка */
-#cheatFab{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:6;width:46px;height:46px;border-radius:50%;
+#cheatFab{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:100;width:46px;height:46px;border-radius:50%;
   display:grid;place-items:center;cursor:pointer;font-size:22px;
   background:linear-gradient(180deg,#3a2418,#241410);border:1px solid rgba(224,112,79,.55);
   box-shadow:0 8px 22px rgba(0,0,0,.5);transition:transform .15s}
 #cheatFab:active{transform:translateY(-50%) scale(.92)}
-#dbg{position:fixed;right:10px;top:50%;transform:translate(130%,-50%);z-index:30;display:flex;flex-direction:column;gap:6px;
+#dbg{position:fixed;right:10px;top:50%;transform:translate(130%,-50%);z-index:101;display:flex;flex-direction:column;gap:6px;
   padding:12px;background:rgba(10,16,12,.96);border:1px solid rgba(224,112,79,.5);border-radius:14px;
   box-shadow:0 16px 40px rgba(0,0,0,.6);transition:transform .3s cubic-bezier(.2,.9,.3,1.1);max-width:230px}
 #dbg.open{transform:translate(0,-50%)}
@@ -370,7 +366,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
       </button>
       <button class="upg upg-rad" id="upgRad">
         <span class="upg-ico"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="1.6" fill="currentColor"/><path d="M4.5 8a3.5 3.5 0 0 1 7 0M2.5 8a5.5 5.5 0 0 1 11 0" stroke="currentColor" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg></span>
-        <span class="upg-body"><span class="upg-name"><span data-i18n="rad">Радиус</span> <span class="upg-lvl">0</span></span><span class="upg-stat">70</span></span>
+        <span class="upg-body"><span class="upg-name"><span data-i18n="rad">Радиус</span> <span class="upg-lvl">0</span></span><span class="upg-stat">85</span></span>
         <span class="upg-cost"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.2 6 3.2 9.6a4.8 4.8 0 0 0 9.6 0C12.8 6 8 1.5 8 1.5Z" fill="#e8b64c"/></svg><b>120</b></span>
       </button>
       <button class="upg upg-cc" id="upgCc">
@@ -478,7 +474,6 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 <script>
 (() => {
 'use strict';
-/* ═══════════ утилиты ═══════════ */
 const $=s=>document.querySelector(s);
 const TAU=Math.PI*2, ISO=0.62, KEY='drevo.save.v6';
 const clamp=(v,a,b)=>v<a?a:v>b?b:v;
@@ -493,8 +488,8 @@ function fmtTime(s){s=Math.floor(s);const h=Math.floor(s/3600),m=Math.floor(s%36
   if(h)return h+' ч '+m+' мин';if(m)return m+' мин '+sec+' сек';return sec+' сек';}
 function dayKey(){const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
 function rng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+function safeInt(v,def){const n=parseInt(v,10);return(isFinite(n)&&!isNaN(n))?n:def;}
 
-/* ═══════════ локализация ═══════════ */
 const I18N={
  ru:{wave:'Волна',boss:'Босс',tree:'Древо',dmg:'Урон',spd:'Скорость',rad:'Радиус',cc:'Крит. шанс',cd:'Крит. урон',hp:'Кора',
    shop:'ЛАВКА',shopTitle:'Лавка рощи',shopSub:'росу приносят боссы и этапы · янтарь — за каждые 50 уровней',
@@ -540,7 +535,6 @@ function applyLang(){document.documentElement.lang=S.lang;
   $('#langRu').classList.toggle('on',S.lang==='ru');$('#langEn').classList.toggle('on',S.lang==='en');
   try{renderShop();updateHUD();}catch(e){}}
 
-/* ═══════════ редкости и способности ═══════════ */
 const TIERS={
   common:   {name:{ru:'Обычная',en:'Common'},   c:'#9db8a4',g:'157,184,164',w:100, idx:0},
   rare:     {name:{ru:'Редкая',en:'Rare'},       c:'#5aa9e6',g:'90,169,230', w:45,  idx:1},
@@ -578,7 +572,6 @@ const ABIL=[
   svg:'<svg viewBox="0 0 16 16"><path d="M8 1.5l5.5 2.2v3.8c0 3.6-2.4 6.2-5.5 7-3.1-.8-5.5-3.4-5.5-7V3.7L8 1.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="m5.8 8 1.6 1.7 2.9-3.3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}];
 const LN=o=>o[S.lang]||o.ru;
 
-/* ═══════════ облики дерева ═══════════ */
 const TREE_SKINS={
  oak:{name:{ru:'Древо-хранитель',en:'Guardian Tree'},style:'oak',cost:0,
   trunk:['#6b5138','#4a3826'],canopy:['#2c5f41','#3a7a52','#4b9463','#5fae74'],
@@ -605,8 +598,7 @@ const TREE_SKINS={
   glow:'150,160,232',leafC:'150,165,230',leafKind:'spark',orb:'#c3ccff',fruit:'#8fa0ff',
   svg:'<svg viewBox="0 0 40 44"><path d="M18 42v-14h4v14z" fill="#33304a"/><circle cx="20" cy="18" r="11" fill="#3c4268"/><circle cx="12" cy="22" r="7" fill="#2c2f4a"/><circle cx="28" cy="22" r="7" fill="#2c2f4a"/><circle cx="20" cy="12" r="7" fill="#4d5684"/><circle cx="15" cy="15" r="1.4" fill="#c3ccff"/><circle cx="24" cy="18" r="1.4" fill="#c3ccff"/><circle cx="20" cy="10" r="1.4" fill="#e6ebff"/></svg>'}};
 
-/* ═══════════ состояние ═══════════ */
-const maxHpOf=o=>Math.round(100*Math.pow(1.16,o.hpLvl));
+const maxHpOf=o=>Math.round(100*Math.pow(1.16,safeInt(o.hpLvl,0)));
 function load(){
   let d=null;
   for(const k of ['drevo.save.v6','drevo.save.v5','drevo.save.v4','drevo.save.v3','drevo.save.v2','drevo.save.v1']){
@@ -619,18 +611,34 @@ function load(){
     onceDone:{},chaptersCleared:0};
   if(d&&d.v===1){
     const s=Object.assign(base,d);
+    s.dmgLvl=safeInt(s.dmgLvl,0);
+    s.spdLvl=safeInt(s.spdLvl,0);
+    s.hpLvl=safeInt(s.hpLvl,0);
+    s.radLvl=safeInt(s.radLvl,0);
+    s.ccLvl=safeInt(s.ccLvl,0);
+    s.cdLvl=safeInt(s.cdLvl,0);
+    s.seeds=(typeof s.seeds==='number'&&isFinite(s.seeds))?s.seeds:0;
+    s.dew=(typeof s.dew==='number'&&isFinite(s.dew))?s.dew:0;
+    s.amber=(typeof s.amber==='number'&&isFinite(s.amber))?s.amber:0;
+    s.wave=safeInt(s.wave,1);if(s.wave<1)s.wave=1;
+    s.killed=safeInt(s.killed,0);
+    s.totalKills=safeInt(s.totalKills,0);
+    s.bestWave=safeInt(s.bestWave,1);
+    s.amberTier=safeInt(s.amberTier,0);
+    s.chaptersCleared=safeInt(s.chaptersCleared,0);
     s.abilities=Object.assign({},d.abilities||{});
     s.equip=Array.isArray(d.equip)?d.equip.slice(0,5):[];
     s.treeSkins=(Array.isArray(d.treeSkins)&&d.treeSkins.length)?d.treeSkins:['oak'];
     s.treeSkin=(d.treeSkin&&TREE_SKINS[d.treeSkin])?d.treeSkin:'oak';
-    if(s.vol==null)s.vol=1;if(!s.lang)s.lang='ru';
+    if(s.vol==null||isNaN(s.vol))s.vol=1;
+    if(!s.lang)s.lang='ru';
     if(!d.abilities&&d.mods){
       const map={multishot:'multishot',bounce:'bounce',splash:'resonance',frost:'frost',roots:'deeproots',branch:'branch',leaf:'leafstorm'};
       for(const m in map)if(d.mods[m])s.abilities[map[m]]=d.mods[m];
       s.equip=Object.keys(s.abilities).slice(0,5);}
-    const L=(s.dmgLvl||0)+(s.spdLvl||0)+(s.hpLvl||0)+(s.radLvl||0)+(s.ccLvl||0)+(s.cdLvl||0);
+    const L=s.dmgLvl+s.spdLvl+s.hpLvl+s.radLvl+s.ccLvl+s.cdLvl;
     if(d.amber===undefined){s.amberTier=Math.floor(L/50);s.amber=5*s.amberTier;}
-    if(s.treeHp<=0)s.treeHp=maxHpOf(s);
+    if(s.treeHp<=0||isNaN(s.treeHp))s.treeHp=maxHpOf(s);
     s.treeHp=Math.min(s.treeHp,maxHpOf(s));
     return s;}
   base.seen=false;return base;
@@ -643,21 +651,20 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify({v:1,seeds:S.seeds,d
   amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,treeSkin:S.treeSkin,
   dailyDate:S.dailyDate,dailyDone:S.dailyDone,waveQ:S.waveQ,onceDone:S.onceDone,chaptersCleared:S.chaptersCleared}));}catch(e){}}
 
-/* ═══════════ статы ═══════════ */
 const ab=k=>S.equip.includes(k)?(S.abilities[k]||0):0;
 const treeDmg  =()=>10*Math.pow(1.10,S.dmgLvl)*(1+.12*ab('thorns'))*(1+.08*ab('avatar'));
-const rootDmg  =()=>treeDmg()*(1+.15*ab('deeproots'));
+const rootDmg  =()=>treeDmg()*1.2*(1+.15*ab('deeproots'));
 const treeAspd =()=>Math.min(4,1.0*Math.pow(1.08,S.spdLvl)*(1+.10*ab('swift')));
 const rootAspd =()=>Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl)*(1+.10*ab('swift'))*(1+.10*ab('deeproots')));
 const treeMaxHp=()=>maxHpOf(S);
 const rootReachCap=()=>Math.min(W,H/ISO)*0.375;
-const rootReach=()=>clamp(70+10*S.radLvl,70,rootReachCap());
+const rootReach=()=>clamp(85+10*S.radLvl,85,rootReachCap());
 const critChance=()=>Math.min(.5,.04*S.ccLvl);
 const critMult  =()=>Math.min(3,1.5+.12*S.cdLvl);
 const COST={dmg:[20,1.22],spd:[30,1.25],rad:[120,1.6],cc:[60,1.4],cd:[70,1.42],hp:[25,1.22]};
 const costOf=k=>Math.ceil(COST[k][0]*Math.pow(COST[k][1],S[k+'Lvl']||0));
 function treeGeom(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl;
-  return {h:34+44*(1-Math.exp(-L/22)),R:16+26*(1-Math.exp(-L/20)),stage:Math.min(6,Math.floor(L/6)),L};}
+  return {h:24+30*(1-Math.exp(-L/22)),R:12+18*(1-Math.exp(-L/20)),stage:Math.min(6,Math.floor(L/6)),L};}
 function afkRate(){const dps=10*Math.pow(1.10,S.dmgLvl)*Math.min(3.2,1.0*Math.pow(1.07,S.spdLvl));
   const avgHp=12*Math.pow(1.13,S.wave-1)*1.8,avgRw=6.5*Math.pow(1.12,S.wave-1)*1.6;
   return dps/avgHp*avgRw*.35;}
@@ -669,7 +676,6 @@ if(S.seen&&S.lastSeen){const el=(Date.now()-S.lastSeen)/1000;
   if(el>90){afkSec=Math.min(el,8*3600);afkReward=Math.floor(afkRate()*afkSec);
     afkDew=Math.min(12,Math.floor(afkSec/1800));}}
 
-/* ═══════════ канвас ═══════════ */
 const cv=$('#game'),ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1,cx=0,cy=0,ground=null;
 const spawnR=()=>Math.min(W*.46,H*.40/ISO,520)+20;
@@ -708,7 +714,6 @@ function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight
   ctx.setTransform(DPR,0,0,DPR,0,0);cx=W/2;cy=H*.5;makeGround();buildScenery();}
 addEventListener('resize',resize);
 
-/* ═══════════ сущности ═══════════ */
 const enemies=[],shots=[],parts=[],floats=[],roots=[];
 const flies=[];for(let i=0;i<14;i++)flies.push({x:Math.random(),y:Math.random(),p:rand(0,TAU),s:rand(.4,1),
   c:['232,214,138','138,222,196','158,224,152'][i%3]});
@@ -722,8 +727,8 @@ let squirrel=null,squirrelTimer=rand(120,300);
 
 const quota=w=>15+Math.floor((w-1)/5)*5;
 const spawnInt=w=>Math.max(.38,1.7*Math.pow(.94,w-1));
-const ET={beetle:{hp:10,sp:30,rw:5,dmg:3,r:8},wolf:{hp:18,sp:56,rw:9,dmg:5,r:9},
-  golem:{hp:60,sp:18,rw:22,dmg:9,r:12},spirit:{hp:14,sp:46,rw:12,dmg:4,r:8},boss:{hp:110,sp:15,rw:45,dmg:16,r:20}};
+const ET={beetle:{hp:8,sp:30,rw:5,dmg:3,r:6},wolf:{hp:15,sp:56,rw:9,dmg:5,r:7},
+  golem:{hp:50,sp:18,rw:22,dmg:9,r:9},spirit:{hp:12,sp:46,rw:12,dmg:4,r:6},boss:{hp:90,sp:15,rw:45,dmg:16,r:14}};
 function pickType(w){const r=Math.random();
   if(w>=6)return r<.12?'golem':r<.30?'spirit':r<.55?'wolf':'beetle';
   if(w>=4)return r<.22?'spirit':r<.5?'wolf':'beetle';
@@ -736,7 +741,6 @@ function spawn(type){const t=ET[type],w=S.wave,a=rand(0,TAU),R=spawnR();
     sp:t.sp*rand(.92,1.08),dmg:t.dmg*Math.pow(1.07,w-1),rw:Math.round(t.rw*Math.pow(1.12,w-1)),
     r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,slowT:0,slowF:1,born:0,lift:0});}
 
-/* ═══════════ звук ═══════════ */
 let AC=null;const lastSnd={};
 function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
   if(AC.state==='suspended')AC.resume();}catch(e){}return AC;}
@@ -771,7 +775,6 @@ const sfx={
   over(){tone(220,.4,'sine',.09,-120);tone(110,.7,'sine',.08,-40,.25);}};
 document.addEventListener('pointerdown',()=>ac());
 
-/* ═══════════ UI ═══════════ */
 const vigEl=$('#vignette');let vigT=0;
 function vig(){vigEl.style.opacity=.65;clearTimeout(vigT);vigT=setTimeout(()=>vigEl.style.opacity=0,90);}
 function banner(title,sub,cls){const b=$('#waveBanner');
@@ -812,7 +815,6 @@ function checkAmber(){const L=S.dmgLvl+S.spdLvl+S.hpLvl+S.radLvl+S.ccLvl+S.cdLvl
     bump('#amberPill');toast('+'+n+' '+t('amber'));
     sfx.claim();save();updateHUD();}}
 
-/* ═══════════ карты-рулетка ═══════════ */
 const SPIN_COST=15;
 let cards=[],cardPhase='idle',pickedCount=0,cardTimer=0;
 function luck(){return 1+S.wave*.02;}
@@ -888,7 +890,6 @@ function updateSpinBtn(){
   sb.disabled=!can;sb.classList.toggle('can',can);
   sb.innerHTML=t('spin')+'<svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> '+SPIN_COST;}
 
-/* ═══════════ лавка ═══════════ */
 let shopOpen=false,curTab='roulette';
 function renderAbilities(){
   try{
@@ -914,7 +915,6 @@ function renderTrees(){
       <div class="skin-state">${state}</div></div>`;}).join('')+'</div>'
     +`<p class="shop-note">✦ ${S.lang==='ru'?'Янтарь начисляется за каждые 50 уровней древа: +5.':'Amber granted every 50 tree levels: +5.'}</p>`;
   }catch(e){console.error('renderTrees',e);}}
-/* ═══════════ задания ═══════════ */
 const DAILY_POOL=[
  {id:'dk',g:50,r:8,txt:{ru:'Убей 50 существ',en:'Slay 50 creatures'}},
  {id:'dw',g:3,r:6,txt:{ru:'Пройди 3 этапа',en:'Clear 3 stages'}},
@@ -1024,7 +1024,6 @@ $('#abilGrid').addEventListener('click',e=>{
   sfx.tick();save();renderAbilities();updateHUD();});
 $('#paneTrees').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
 
-/* ═══════════ настройки ═══════════ */
 $('#setBtn').addEventListener('click',()=>{open('#setOverlay');$('#volRange').value=Math.round((S.vol==null?1:S.vol)*100);$('#volVal').textContent=$('#volRange').value+'%';});
 $('#setClose').addEventListener('click',()=>close('#setOverlay'));
 $('#setOverlay').addEventListener('click',e=>{if(e.target.id==='setOverlay')close('#setOverlay');});
@@ -1032,7 +1031,6 @@ $('#volRange').addEventListener('input',e=>{S.vol=+e.target.value/100;$('#volVal
 $('#langRu').addEventListener('click',()=>{S.lang='ru';save();applyLang();});
 $('#langEn').addEventListener('click',()=>{S.lang='en';save();applyLang();});
 
-/* ═══════════ бой ═══════════ */
 function burst(x,y,r,c){const n=Math.min(26,8+r);
   for(let i=0;i<n;i++){const a=rand(0,TAU),v=rand(20,90+r*3);
     parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,l:rand(.35,.7),ml:.7,sz:rand(1.5,3.2),c});}
@@ -1100,7 +1098,6 @@ function gameOver(){
   $('#stWave').textContent=S.wave;$('#stKills').textContent=fmt(runKills);$('#stSeeds').textContent=fmt(runSeeds);
   setTimeout(()=>open('#overOverlay'),900);}
 
-/* ═══════════ корни-черви ═══════════ */
 function launchRoot(tg){
   const d=Math.hypot(tg.x,tg.y)||1;
   roots.push({phase:'out',t:0,tg,tx:tg.x,ty:tg.y,seed:rand(0,100),
@@ -1108,7 +1105,7 @@ function launchRoot(tg){
     nx:-tg.y/d,ny:tg.x/d});}
 function rootStrike(p){
   const tg=p.tg;
-  if(tg&&!tg.dead&&Math.hypot(tg.x-p.tx,tg.y-p.ty)<tg.r+30){
+  if(tg&&!tg.dead&&Math.hypot(tg.x-p.tx,tg.y-p.ty)<tg.r+24){
     const isCrit=Math.random()<critChance();
     const dmg=rootDmg()*(isCrit?critMult():1);
     tg.lift=isCrit?14:9;
@@ -1251,12 +1248,10 @@ function simulate(dt){
   for(let i=enemies.length-1;i>=0;i--){
     if(enemies[i].dead){kill(enemies[i]);enemies.splice(i,1);}}
 
-  /* ветер */
   windT+=dt;gustTimer-=dt;
   if(gustTimer<=0){gustTarget=Math.random()<.5?rand(.4,1):rand(0,.2);gustTimer=rand(5,11);}
   gust+=(gustTarget-gust)*Math.min(1,dt*1.2);
 
-  /* белка */
   squirrelTimer-=dt;
   if(!squirrel&&squirrelTimer<=0&&!anyOverlayOpen()){
     const target=scenery.filter(s=>s.type==='tree');
@@ -1285,7 +1280,6 @@ function updateFx(dt){
   for(let i=floats.length-1;i>=0;i--){floats[i].l-=dt;if(floats[i].l<=0)floats.splice(i,1);}
 }
 
-/* ═══════════ отрисовка ═══════════ */
 function ell(x,y,rx,ry){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,TAU);ctx.fill();}
 function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);
   ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
@@ -1427,7 +1421,7 @@ function drawTree(){
     ctx.strokeStyle=k%2?'#4a3826':'#54402c';ctx.lineWidth=3.4-k%3;
     ctx.beginPath();ctx.moveTo(bx,by-5);
     ctx.quadraticCurveTo(bx+(ex-bx)*.4,by+2,ex,ey);ctx.stroke();}
-  const tw=5+6*(1-Math.exp(-L/14));
+  const tw=4+5*(1-Math.exp(-L/14));
   const tg=ctx.createLinearGradient(bx,by,bx,by-h);
   tg.addColorStop(0,ts.trunk[1]);tg.addColorStop(1,ts.trunk[0]);
   ctx.fillStyle=tg;ctx.beginPath();
@@ -1688,7 +1682,6 @@ function render(dt){
   drawShots();drawParts();drawFloats();
   ctx.restore();}
 
-/* ═══════════ цикл ═══════════ */
 let last=performance.now();
 function loop(now){requestAnimationFrame(loop);
   let dt=(now-last)/1000;last=now;if(dt>.05)dt=.05;T+=dt;
@@ -1700,7 +1693,6 @@ function loop(now){requestAnimationFrame(loop);
   if(Math.abs(S.seeds-dispSeeds)<.5)dispSeeds=S.seeds;
   const s=fmt(dispSeeds);if(s!==lastStr){lastStr=s;el.seeds.textContent=s;}}
 
-/* ═══════════ ввод ═══════════ */
 cv.addEventListener('pointerdown',ev=>{
   const sx=ev.clientX,sy=ev.clientY;
   if(squirrel&&!squirrel.clicked&&!anyOverlayOpen()){
@@ -1743,8 +1735,9 @@ $('#reviveBtn').addEventListener('click',()=>{
   rootT=0;branchCd=2;leafCd=6;branchFx=0;
   close('#overOverlay');banner(t('wave')+' '+S.wave, t('revived'), false);
   sfx.upgrade();leafBurst();save();updateHUD();});
+const ALL_SAVE_KEYS=['drevo.save.v1','drevo.save.v2','drevo.save.v3','drevo.save.v4','drevo.save.v5','drevo.save.v6','drevo.save.v7','drevo.save.v8'];
 const wipe=()=>{if(confirm(t('resetConfirm'))){
-  ['drevo.save.v1','drevo.save.v2','drevo.save.v3','drevo.save.v4','drevo.save.v5','drevo.save.v6'].forEach(k=>localStorage.removeItem(k));
+  ALL_SAVE_KEYS.forEach(k=>localStorage.removeItem(k));
   location.reload();}};
 $('#wipeBtn').addEventListener('click',wipe);
 $('#resetBtn').addEventListener('click',wipe);
@@ -1752,7 +1745,6 @@ $('#muteBtn').addEventListener('click',()=>{S.muted=!S.muted;
   $('#muteBtn').classList.toggle('off',S.muted);save();});
 $('#muteBtn').classList.toggle('off',S.muted);
 
-/* ═══════════ читы — всегда видимая панель ═══════════ */
 const CHEAT={god:false};
 window.DEBUG={
   rich(){S.seeds+=1e6;S.dew+=200;S.amber+=100;updateHUD();save();},
@@ -1768,7 +1760,8 @@ window.DEBUG={
   spawn(t){spawn(t||'boss');},
   clear(){enemies.length=0;shots.length=0;roots.length=0;},
   god(){CHEAT.god=!CHEAT.god;toast('GOD: '+(CHEAT.god?'ON':'OFF'));
-    const b=document.querySelector('#dbgGod');if(b)b.classList.toggle('on',CHEAT.god);return CHEAT.god;}
+    const b=document.querySelector('#dbgGod');if(b)b.classList.toggle('on',CHEAT.god);return CHEAT.god;},
+  wipe(){ALL_SAVE_KEYS.forEach(k=>localStorage.removeItem(k));location.reload();}
 };
 setInterval(()=>{if(CHEAT.god&&!S.over)S.treeHp=treeMaxHp();},250);
 const dbg=document.createElement('div');dbg.id='dbg';
@@ -1784,7 +1777,8 @@ dbg.innerHTML=
  '<button data-c="DEBUG.spawn(\'boss\')">spawn boss</button>'+
  '<button data-c="DEBUG.spawn(\'spirit\')">spawn spirit</button>'+
  '<button data-c="DEBUG.clear()">clear field</button>'+
- '<button id="dbgGod" data-c="DEBUG.god()">god mode</button>';
+ '<button id="dbgGod" data-c="DEBUG.god()">god mode</button>'+
+ '<button data-c="DEBUG.wipe()" style="border-color:rgba(224,86,79,.5);color:#e8a49b">⚠ HARD WIPE</button>';
 document.body.appendChild(dbg);
 dbg.addEventListener('click',e=>{if(e.target.id==='dbgX'){dbg.classList.remove('open');return;}
   const b=e.target.closest('[data-c]');if(b){try{eval(b.dataset.c);}catch(err){console.error(err);}}});
@@ -1792,7 +1786,6 @@ $('#cheatFab').addEventListener('click',()=>dbg.classList.toggle('open'));
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.shiftKey&&(e.code==='KeyD'||e.key==='D'||e.key==='d')){e.preventDefault();dbg.classList.toggle('open');}});
 
-/* ═══════════ старт ═══════════ */
 resize();applyLang();updateHUD();
 if(afkReward>0){$('#afkTime').textContent=fmtTime(afkSec);
   $('#afkAmount').textContent='+'+fmt(afkReward);
