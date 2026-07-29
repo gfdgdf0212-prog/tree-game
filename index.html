@@ -2356,7 +2356,7 @@ sfx.upgrade();leafBurst();save();updateHUD();});
 const ALL_SAVE_KEYS=['drevo.save.v1','drevo.save.v2','drevo.save.v3','drevo.save.v4','drevo.save.v5','drevo.save.v6','drevo.save.v7','drevo.save.v8'];
 function fullReset(){
 ALL_SAVE_KEYS.forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
-S.seeds=0;S.dew=CONFIG.START_DEW;S.amber=0;S.wave=1;S.killed=0;S.totalKills=0;
+S.seeds=500;S.dew=CONFIG.START_DEW;S.amber=0;S.wave=1;S.killed=0;S.totalKills=0;
 S.dmgLvl=0;S.spdLvl=0;S.hpLvl=0;S.radLvl=0;S.ccLvl=0;S.cdLvl=0;
 S.muted=false;S.shake=true;S.vol=1;S.lang='ru';
 S.lastSeen=Date.now();S.bestWave=1;S.seen=true;S.tipShop=false;S.amberTier=0;
@@ -2425,7 +2425,7 @@ const aa=$('#afkAmount');if(aa)aa.textContent='+'+fmt(afkReward);
 if(afkDew>0){const dr=$('#afkDewRow');if(dr)dr.style.display='flex';
 const ad=$('#afkDew');if(ad)ad.textContent='+'+fmt(afkDew);}
 open('#afkOverlay');}
-else if(!S.seen){S.seeds=CONFIG.START_SEEDS;S.dew+=CONFIG.START_DEW;S.seen=true;save();updateHUD();}
+else if(!S.seen){S.seeds=500;S.dew+=CONFIG.START_DEW;S.seen=true;save();updateHUD();}
 banner(t('stage')+' '+stageOf(S.wave), t('protect'), false);
 requestAnimationFrame(tt=>{last=tt;loop(tt);});
 setInterval(save,5000);
