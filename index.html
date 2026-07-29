@@ -1752,228 +1752,287 @@ const pr=clamp(p.t,0,1);ctx.fillStyle='rgba(92,66,40,'+(0.4*pr).toFixed(2)+')';e
 }
 }
 }
-/* ═══════════════════════════════════════════════════════════════
-[ВИЗУАЛ] Древо — единая изометрия для всех скинов:
-общая точка опоры (bx,by), земляные элементы сжаты по ISO,
-кроны-билборды одинаково ориентированы у всех обликов
+/* ══════════════════════════════════════════════════════════════
+[ВИЗУАЛ] Древо — Обновленная версия с реалистичными корнями
 ═══════════════════════════════════════════════════════════════ */
 function drawTree(){
-const g=treeGeom(),L=g.L,h=g.h,R=g.R,stage=g.stage;
-const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
-const windSway=Math.sin(windT*1.3)*1.5+gust*3;
-const shakeImp=treeShakeT>0?Math.sin(T*60)*4*treeShakeT:0;
-const sw=Math.sin(T*1.05)*2.0+windSway+shakeImp+(flinch>0?Math.sin(T*55)*3*flinch:0);
-const bx=cx,by=cy;
-const style=ts.style;
-// мягкая подсветка радиуса атаки (в изометрии)
-const rr2=rootReach();
-ctx.fillStyle=radg(bx,by,rr2*.25,rr2,[[0,'rgba(143,214,138,0)'],[.8,'rgba(143,214,138,.05)'],[1,'rgba(143,214,138,.13)']]);
-ctx.beginPath();ctx.ellipse(bx,by,rr2,rr2*ISO,0,0,TAU);ctx.fill();
-// свечение кроны
-ctx.fillStyle=radg(bx+sw,by-h,4,R*3.2,[[0,'rgba('+ts.glow+','+(.10+stage*.045+pulse*.5).toFixed(2)+')'],[1,'rgba('+ts.glow+',0)']]);
-ctx.beginPath();ctx.arc(bx+sw,by-h,R*3.2,0,TAU);ctx.fill();
-// тень под деревом (изо-эллипс)
-ctx.fillStyle='rgba(0,0,0,.42)';ell(bx,by+4,R*1.05,R*.44);
-// корни-опоры: толстые, объёмные, с отростками (у лозы — свои, чёрные)
-if(style!=='ashvine'){
-const rootPal=ts.roots||['#3a2a1c','#6b4f34'];
-const rootN=5+Math.min(6,Math.floor(L/35));
-const rootLen=R*(1.05+0.6*(1-Math.exp(-L/200)));
-ctx.lineCap='round';
-for(let k=0;k<rootN;k++){
-const f=rootN>1?k/(rootN-1):.5;const ang=Math.PI*(0.10+0.80*f);
-const len=rootLen*(k%2?1:.8)*(0.9+0.2*Math.sin(k*3.7));
-const ex=bx+Math.cos(ang)*len,ey=by+Math.sin(ang)*len*.5+4;
-const mx=bx+(ex-bx)*.42,my=by+3+(k%3-1)*2;
-ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=8.5-k%3;
-ctx.beginPath();ctx.moveTo(bx,by-2);ctx.quadraticCurveTo(mx,my+3,ex,ey+2.5);ctx.stroke();
-ctx.strokeStyle=rootPal[0];ctx.lineWidth=7.5-k%3;
-ctx.beginPath();ctx.moveTo(bx,by-5);ctx.quadraticCurveTo(mx,my,ex,ey);ctx.stroke();
-ctx.strokeStyle=rootPal[1];ctx.lineWidth=3.6-k%2;
-ctx.beginPath();ctx.moveTo(bx,by-7);ctx.quadraticCurveTo(mx,my-2,ex,ey-1.5);ctx.stroke();
-ctx.strokeStyle='rgba(255,235,200,.10)';ctx.lineWidth=1.4;
-ctx.beginPath();ctx.moveTo(bx,by-8);ctx.quadraticCurveTo(mx,my-3,ex-2,ey-3);ctx.stroke();
-ctx.strokeStyle=rootPal[0];ctx.lineWidth=2.2;
-const tpx=lerp(mx,ex,.6),tpy=lerp(my,ey,.6);
-ctx.beginPath();ctx.moveTo(tpx,tpy);ctx.quadraticCurveTo(tpx+6,tpy+4,tpx+10,tpy+3);ctx.stroke();
-ctx.beginPath();ctx.moveTo(tpx-4,tpy+1);ctx.quadraticCurveTo(tpx-9,tpy+5,tpx-13,tpy+4);ctx.stroke();
-}}
-// ствол с текстурой коры
-const tw=4+5*(1-Math.exp(-L/140));
-const tg=ctx.createLinearGradient(bx-tw,by,bx+tw,by);
-tg.addColorStop(0,ts.trunk[1]);tg.addColorStop(.45,ts.trunk[0]);tg.addColorStop(.6,ts.trunk[1]);tg.addColorStop(1,'#2a1d12');
-ctx.fillStyle=tg;ctx.beginPath();
-ctx.moveTo(bx-tw,by);ctx.quadraticCurveTo(bx-tw*.7+sw*.4,by-h*.55,bx-tw*.32+sw,by-h+3);
-ctx.lineTo(bx+tw*.32+sw,by-h+3);ctx.quadraticCurveTo(bx+tw*.7+sw*.4,by-h*.55,bx+tw,by);ctx.closePath();ctx.fill();
-ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;
-for(let k=0;k<4;k++){const yy=by-h*(0.2+k*0.2);ctx.beginPath();ctx.moveTo(bx-tw*.5+sw*(1-k*.2),yy);ctx.quadraticCurveTo(bx+sw*(1-k*.2),yy+3,bx+tw*.5+sw*(1-k*.2),yy);ctx.stroke();}
-const cX=bx+sw*1.35,cY=by-h;
-const BLOBS=[[0,.18,1],[-.62,.42,.72],[.62,.42,.72],[0,-.3,.8],[-.35,.05,.62],
-[.3,-.05,.55],[-.15,-.45,.42],[.45,-.32,.5],[-.5,-.25,.5],[.15,.3,.6],[-.8,.2,.45],[.8,.2,.45]];
-if(style==='mycelium'){ drawMycelium(ts,cX,cY,R,L,stage,sw); }
-else {
-// крона: объёмные blob с радиальными бликами (одинаковая проекция у всех)
-let count=Math.min(BLOBS.length,5+Math.floor(L/30));
-if(style==='rune')count=Math.min(BLOBS.length,6+Math.floor(L/30));
-for(let i=0;i<count;i++){const b=BLOBS[i];
-const px=cX+b[0]*R,py=cY+b[1]*R,br=b[2]*R;
-const ci=Math.min(3,Math.floor(i/3));
-ctx.fillStyle=radg(px-br*.3,py-br*.3,br*.1,br,
-[[0,ts.canopy[Math.min(3,ci+1)]],[.6,ts.canopy[ci]],[1,'rgba(10,20,12,.5)']]);
-ctx.beginPath();ctx.arc(px,py,br,0,TAU);ctx.fill();
+    const g=treeGeom(),L=g.L,h=g.h,R=g.R,stage=g.stage;
+    const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
+    const windSway=Math.sin(windT*1.3)*1.5+gust*3;
+    const shakeImp=treeShakeT>0?Math.sin(T*60)*4*treeShakeT:0;
+    const sw=Math.sin(T*1.05)*2.0+windSway+shakeImp+(flinch>0?Math.sin(T*55)*3*flinch:0);
+    const bx=cx,by=cy;
+    const style=ts.style;
+
+    // мягкая подсветка радиуса атаки
+    const rr2=rootReach();
+    ctx.fillStyle=radg(bx,by,rr2*.25,rr2,[[0,'rgba(143,214,138,0)'],[.8,'rgba(143,214,138,.05)'],[1,'rgba(143,214,138,.13)']]);
+    ctx.beginPath();ctx.ellipse(bx,by,rr2,rr2*ISO,0,0,TAU);ctx.fill();
+
+    // свечение кроны
+    ctx.fillStyle=radg(bx+sw,by-h,4,R*3.2,[[0,'rgba('+ts.glow+','+(.10+stage*.045+pulse*.5).toFixed(2)+')'],[1,'rgba('+ts.glow+',0)']]);
+    ctx.beginPath();ctx.arc(bx+sw,by-h,R*3.2,0,TAU);ctx.fill();
+
+    // тень под деревом
+    ctx.fillStyle='rgba(0,0,0,.42)';ell(bx,by+4,R*1.05,R*.44);
+
+    // --- НОВАЯ СИСТЕМА КОРНЕЙ ---
+    // Рекурсивная функция для рисования одного корня с ветвлением
+    function drawRootBranch(x, y, angle, len, width, depth, colorBase, colorTip, isGlowing) {
+        if (depth <= 0 || width < 0.5) return;
+        
+        const endX = x + Math.cos(angle) * len;
+        const endY = y + Math.sin(angle) * len * ISO; // Сжимаем по Y для изометрии
+        
+        // Рисуем сегмент корня с градиентом толщины
+        ctx.lineCap = 'round';
+        ctx.lineWidth = width;
+        
+        // Тень/Объем (темная сторона)
+        ctx.strokeStyle = colorBase; 
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        // Добавляем легкий изгиб для естественности
+        const midX = (x + endX) / 2 + Math.sin(depth * 2) * (len * 0.1);
+        const midY = (y + endY) / 2;
+        ctx.quadraticCurveTo(midX, midY, endX, endY);
+        ctx.stroke();
+
+        // Блик (светлая сторона) - только для толстых корней
+        if (width > 2 && !isGlowing) {
+            ctx.lineWidth = width * 0.4;
+            ctx.strokeStyle = colorTip || 'rgba(255,235,200,.15)';
+            ctx.beginPath();
+            ctx.moveTo(x, y - 1);
+            ctx.quadraticCurveTo(midX, midY - 1, endX, endY - 1);
+            ctx.stroke();
+        }
+
+        // Ветвление: если глубина позволяет, создаем ответвления
+        if (depth > 1 && len > 10) {
+            const branches = (depth === 3) ? 2 : (Math.random() > 0.4 ? 2 : 1); 
+            
+            for (let i = 0; i < branches; i++) {
+                const deviation = (Math.random() - 0.5) * (1.2 / depth); 
+                const newAngle = angle + deviation;
+                const newLen = len * (0.65 + Math.random() * 0.15);
+                const newWidth = width * 0.65;
+                
+                drawRootBranch(endX, endY, newAngle, newLen, newWidth, depth - 1, colorBase, colorTip, isGlowing);
+            }
+        }
+    }
+
+    // Запускаем генерацию основных корней
+    const rootPal = ts.roots || ['#3a2a1c', '#6b4f34'];
+    const rootCount = 5 + Math.min(6, Math.floor(L / 35)); 
+    
+    for (let k = 0; k < rootCount; k++) {
+        const baseAngle = Math.PI * (0.15 + 0.7 * (k / (rootCount - 1)));
+        const rootLen = R * (1.1 + 0.5 * (1 - Math.exp(-L / 200)));
+        const rootWidth = 6 + 4 * (1 - Math.exp(-L / 100)); 
+        
+        const startY = by + 2;
+        
+        let cBase = rootPal[0];
+        let cTip = rootPal[1];
+        let isGlow = false;
+        
+        // Специфичные настройки для скинов
+        if (style === 'ashvine') {
+            cBase = '#0b0b0e';
+            cTip = 'rgba(127,232,216,.3)'; 
+            isGlow = true;
+        } else if (style === 'mycelium') {
+            cBase = '#473a2a';
+            cTip = '#6b5a44';
+        } else if (style === 'rune') {
+            cBase = '#2a1d12';
+            cTip = 'rgba(127,232,216,.4)';
+            isGlow = true;
+        }
+
+        // Рисуем основной корень с глубиной рекурсии 3 или 4
+        drawRootBranch(bx, startY, baseAngle, rootLen, rootWidth, 4, cBase, cTip, isGlow);
+    }
+    // --- КОНЕЦ НОВОЙ СИСТЕМЫ КОРНЕЙ ---
+
+    // ствол с текстурой коры
+    const tw=4+5*(1-Math.exp(-L/140));
+    const tg=ctx.createLinearGradient(bx-tw,by,bx+tw,by);
+    tg.addColorStop(0,ts.trunk[1]);tg.addColorStop(.45,ts.trunk[0]);tg.addColorStop(.6,ts.trunk[1]);tg.addColorStop(1,'#2a1d12');
+    ctx.fillStyle=tg;ctx.beginPath();
+    ctx.moveTo(bx-tw,by);ctx.quadraticCurveTo(bx-tw*.7+sw*.4,by-h*.55,bx-tw*.32+sw,by-h+3);
+    ctx.lineTo(bx+tw*.32+sw,by-h+3);ctx.quadraticCurveTo(bx+tw*.7+sw*.4,by-h*.55,bx+tw,by);ctx.closePath();ctx.fill();
+    
+    // Текстура на стволе
+    ctx.strokeStyle='rgba(0,0,0,.25)';ctx.lineWidth=1;
+    for(let k=0;k<4;k++){const yy=by-h*(0.2+k*0.2);ctx.beginPath();ctx.moveTo(bx-tw*.5+sw*(1-k*.2),yy);ctx.quadraticCurveTo(bx+sw*(1-k*.2),yy+3,bx+tw*.5+sw*(1-k*.2),yy);ctx.stroke();}
+
+    const cX=bx+sw*1.35,cY=by-h;
+    const BLOBS=[[0,.18,1],[-.62,.42,.72],[.62,.42,.72],[0,-.3,.8],[-.35,.05,.62],
+    [.3,-.05,.55],[-.15,-.45,.42],[.45,-.32,.5],[-.5,-.25,.5],[.15,.3,.6],[-.8,.2,.45],[.8,.2,.45]];
+
+    if(style==='mycelium'){ drawMycelium(ts,cX,cY,R,L,stage,sw); }
+    else {
+        let count=Math.min(BLOBS.length,5+Math.floor(L/30));
+        if(style==='rune')count=Math.min(BLOBS.length,6+Math.floor(L/30));
+        for(let i=0;i<count;i++){const b=BLOBS[i];
+            const px=cX+b[0]*R,py=cY+b[1]*R,br=b[2]*R;
+            const ci=Math.min(3,Math.floor(i/3));
+            ctx.fillStyle=radg(px-br*.3,py-br*.3,br*.1,br,
+            [[0,ts.canopy[Math.min(3,ci+1)]],[.6,ts.canopy[ci]],[1,'rgba(10,20,12,.5)']]);
+            ctx.beginPath();ctx.arc(px,py,br,0,TAU);ctx.fill();
+        }
+        if(style==='sakura'&&stage>=1){ctx.fillStyle='#ffe3ee';
+        for(let i=0;i<6+stage*2;i++){const a=i*2.4+L;const fr=R*(0.55+0.3*((i*0.618)%1));
+            const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.6;
+            ctx.beginPath();ctx.arc(px,py,1.7,0,TAU);ctx.fill();}}
+        if(style==='willow'){
+            const n=9+Math.min(9,Math.floor(L/30));ctx.lineWidth=1.6;ctx.lineCap='round';
+            for(let i=0;i<n;i++){const f=i/(n-1),ax=cX+(f-.5)*R*2.05,ay=cY+R*.35+Math.sin(f*Math.PI)*R*.18;
+                const len=R*(1.15+.55*Math.abs(Math.sin(i*2.7)))+L*.04;const sw2=Math.sin(T*1.3+i*1.9)*4+windSway+shakeImp;
+                ctx.strokeStyle=ts.canopy[2];ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(ax,ay);
+                ctx.quadraticCurveTo(ax+sw2*.4,ay+len*.55,ax+sw2,ay+len);ctx.stroke();
+                ctx.fillStyle=ts.canopy[3];for(const tf of[.45,.75,1]){ctx.beginPath();ctx.arc(ax+sw2*tf,ay+len*tf,1.8,0,TAU);ctx.fill();}}
+            ctx.globalAlpha=1;
+        }
+        if(style==='rune'){ drawRuneEffects(ts,cX,cY,R,L,sw); }
+        if(style==='ashvine'){ drawAshvine(ts,cX,cY,R,L,stage,sw); }
+    }
+
+    // плоды/орбы на кроне
+    if(stage>=1){const n=Math.min(9,2+stage*2);
+    for(let i=0;i<n;i++){const a=i*2.4+T*.15;const fr=R*(0.6+0.35*((i*0.618)%1));
+        const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.62;
+        ctx.fillStyle=i%2?ts.fruit:ts.orb;ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=7;
+        ctx.beginPath();ctx.arc(px,py,2,0,TAU);ctx.fill();ctx.shadowBlur=0;}}
+    if(stage>=3){const n=style==='mycelium'?8+stage:3;
+    for(let i=0;i<n;i++){const a=T*.7+i*TAU/n;const fr=R*(1.35+0.4*((i*0.5)%1));
+        const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.62;
+        ctx.fillStyle=ts.orb;ctx.globalAlpha=.85;ctx.shadowColor=ts.orb;ctx.shadowBlur=9;
+        ctx.beginPath();ctx.arc(px,py,style==='mycelium'?1.7:2.4,0,TAU);ctx.fill();ctx.globalAlpha=1;ctx.shadowBlur=0;}}
+
+    if(branchFx>0&&abilPct('branch')>0){const r=60+8*ab('branch'),a0=branchAng,a1=branchAng+2.4*branchDir;
+    ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();ctx.ellipse(bx,by,r,r*ISO,0,Math.min(a0,a1),Math.max(a0,a1));ctx.stroke();}
+
+    // HP-бар
+    const pct=clamp(S.treeHp/treeMaxHp(),0,1);
+    ctx.fillStyle='rgba(8,12,9,.7)';rr(bx-38,by+16,76,6,3);ctx.fill();
+    if(pct>0){ctx.fillStyle=pct>.5?'#8fd68a':pct>.25?'#e8b64c':'#e0564f';rr(bx-37,by+17,Math.max(3,74*pct),4,2);ctx.fill();}
+    ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;rr(bx-38,by+16,76,6,3);ctx.stroke();
 }
-if(style==='sakura'&&stage>=1){ctx.fillStyle='#ffe3ee';
-for(let i=0;i<6+stage*2;i++){const a=i*2.4+L;const fr=R*(0.55+0.3*((i*0.618)%1));
-const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.6;
-ctx.beginPath();ctx.arc(px,py,1.7,0,TAU);ctx.fill();}}
-if(style==='willow'){
-const n=9+Math.min(9,Math.floor(L/30));ctx.lineWidth=1.6;ctx.lineCap='round';
-for(let i=0;i<n;i++){const f=i/(n-1),ax=cX+(f-.5)*R*2.05,ay=cY+R*.35+Math.sin(f*Math.PI)*R*.18;
-const len=R*(1.15+.55*Math.abs(Math.sin(i*2.7)))+L*.04;const sw2=Math.sin(T*1.3+i*1.9)*4+windSway+shakeImp;
-ctx.strokeStyle=ts.canopy[2];ctx.globalAlpha=.85;ctx.beginPath();ctx.moveTo(ax,ay);
-ctx.quadraticCurveTo(ax+sw2*.4,ay+len*.55,ax+sw2,ay+len);ctx.stroke();
-ctx.fillStyle=ts.canopy[3];for(const tf of[.45,.75,1]){ctx.beginPath();ctx.arc(ax+sw2*tf,ay+len*tf,1.8,0,TAU);ctx.fill();}}
-ctx.globalAlpha=1;
-}
-if(style==='rune'){ drawRuneEffects(ts,cX,cY,R,L,sw); }
-if(style==='ashvine'){ drawAshvine(ts,cX,cY,R,L,stage,sw); }
-}
-// плоды/орбы на кроне — распределённые радиусы
-if(stage>=1){const n=Math.min(9,2+stage*2);
-for(let i=0;i<n;i++){const a=i*2.4+T*.15;const fr=R*(0.6+0.35*((i*0.618)%1));
-const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.62;
-ctx.fillStyle=i%2?ts.fruit:ts.orb;ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=7;
-ctx.beginPath();ctx.arc(px,py,2,0,TAU);ctx.fill();ctx.shadowBlur=0;}}
-if(stage>=3){const n=style==='mycelium'?8+stage:3;
-for(let i=0;i<n;i++){const a=T*.7+i*TAU/n;const fr=R*(1.35+0.4*((i*0.5)%1));
-const px=cX+Math.cos(a)*fr,py=cY+Math.sin(a)*fr*.62;
-ctx.fillStyle=ts.orb;ctx.globalAlpha=.85;ctx.shadowColor=ts.orb;ctx.shadowBlur=9;
-ctx.beginPath();ctx.arc(px,py,style==='mycelium'?1.7:2.4,0,TAU);ctx.fill();ctx.globalAlpha=1;ctx.shadowBlur=0;}}
-if(branchFx>0&&abilPct('branch')>0){const r=60+8*ab('branch'),a0=branchAng,a1=branchAng+2.4*branchDir;
-ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';ctx.lineWidth=5;ctx.lineCap='round';
-ctx.beginPath();ctx.ellipse(bx,by,r,r*ISO,0,Math.min(a0,a1),Math.max(a0,a1));ctx.stroke();}
-// HP-бар
-const pct=clamp(S.treeHp/treeMaxHp(),0,1);
-ctx.fillStyle='rgba(8,12,9,.7)';rr(bx-38,by+16,76,6,3);ctx.fill();
-if(pct>0){ctx.fillStyle=pct>.5?'#8fd68a':pct>.25?'#e8b64c':'#e0564f';rr(bx-37,by+17,Math.max(3,74*pct),4,2);ctx.fill();}
-ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;rr(bx-38,by+16,76,6,3);ctx.stroke();
-}
+
 /* — Руническое древо: руны, орбы по краю кроны, молнии корней — */
 function drawRuneEffects(ts,cX,cY,R,L,sw){
-const bx=cx,by=cy;
-const runes=['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ'];
-ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
-for(let i=0;i<5;i++){const yy=by-12-i*9;const pulse=.5+.5*Math.sin(T*2+i);
-ctx.font='800 '+(8+i%2*2)+'px Unbounded';
-ctx.fillStyle='rgba(255,227,154,'+(0.45+0.4*pulse).toFixed(2)+')';
-ctx.shadowColor='#ffe39a';ctx.shadowBlur=8*pulse;
-ctx.fillText(runes[i],bx+sw*(1-i*.15)+(i%2?3:-3),yy);}
-ctx.restore();
-// висящие орбы — распределены по краю кроны
-for(let i=0;i<5;i++){const a=Math.PI*(0.15+0.7*(i/4))+Math.sin(T*0.7+i)*0.05;
-const fx=cX+Math.cos(a)*R*1.05;const anchorY=cY+Math.sin(a)*R*.5;
-const sway=Math.sin(T*1.2+i)*3.5;const fy=anchorY+10+Math.sin(T+i)*4+(i%2)*7;
-ctx.strokeStyle='rgba(120,90,60,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(fx,anchorY);ctx.lineTo(fx+sway,fy);ctx.stroke();
-ctx.save();ctx.globalCompositeOperation='lighter';
-ctx.fillStyle=radg(fx+sway,fy,0,7,[[0,'rgba(255,240,180,.95)'],[.5,'rgba(255,210,120,.5)'],[1,'rgba(255,210,120,0)']]);
-ctx.beginPath();ctx.arc(fx+sway,fy,7,0,TAU);ctx.fill();ctx.restore();
-ctx.fillStyle='#fff2c0';ctx.beginPath();ctx.arc(fx+sway,fy,2.4,0,TAU);ctx.fill();}
-// корни-молнии по земле (в изометрии)
-ctx.save();ctx.globalCompositeOperation='lighter';
-ctx.strokeStyle='rgba(127,232,216,'+(0.4+0.3*Math.sin(T*5)).toFixed(2)+')';
-ctx.lineWidth=1.8;ctx.shadowColor='#7fe8d8';ctx.shadowBlur=8;
-for(let k=0;k<6;k++){const a=Math.PI*(0.08+0.84*(k/5));const len=R*(1.5+0.35*Math.sin(T*2+k*1.7));
-ctx.beginPath();let px=bx,py=by+4;ctx.moveTo(px,py);
-for(let s=1;s<=4;s++){px=bx+Math.cos(a)*len*(s/4)+rand(-3,3);py=by+4+Math.sin(a)*len*.5*(s/4)+rand(-2,2);ctx.lineTo(px,py);}
-ctx.stroke();}
-ctx.restore();
-// светлячки — широкое кольцо вокруг кроны
-for(let i=0;i<8;i++){const a=T*0.4+i*(TAU/8);const rr2=R*(1.35+0.55*((i*0.618)%1));
-const fx=cX+Math.cos(a)*rr2+Math.sin(T*2+i)*6;const fy=cY+Math.sin(a)*rr2*0.62+Math.cos(T*1.5+i)*5;
-const tw=.4+.6*Math.abs(Math.sin(T*4+i*2));
-ctx.save();ctx.globalCompositeOperation='lighter';
-ctx.fillStyle=radg(fx,fy,0,5,[[0,'rgba(255,240,170,'+(0.8*tw).toFixed(2)+')'],[1,'rgba(255,240,170,0)']]);
-ctx.beginPath();ctx.arc(fx,fy,5,0,TAU);ctx.fill();ctx.restore();}
+    const bx=cx,by=cy;
+    const runes=['ᚠ','','ᚦ','ᚨ',''];
+    ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+    for(let i=0;i<5;i++){const yy=by-12-i*9;const pulse=.5+.5*Math.sin(T*2+i);
+    ctx.font='800 '+(8+i%2*2)+'px Unbounded';
+    ctx.fillStyle='rgba(255,227,154,'+(0.45+0.4*pulse).toFixed(2)+')';
+    ctx.shadowColor='#ffe39a';ctx.shadowBlur=8*pulse;
+    ctx.fillText(runes[i],bx+sw*(1-i*.15)+(i%2?3:-3),yy);}
+    ctx.restore();
+    // висящие орбы
+    for(let i=0;i<5;i++){const a=Math.PI*(0.15+0.7*(i/4))+Math.sin(T*0.7+i)*0.05;
+    const fx=cX+Math.cos(a)*R*1.05;const anchorY=cY+Math.sin(a)*R*.5;
+    const sway=Math.sin(T*1.2+i)*3.5;const fy=anchorY+10+Math.sin(T+i)*4+(i%2)*7;
+    ctx.strokeStyle='rgba(120,90,60,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(fx,anchorY);ctx.lineTo(fx+sway,fy);ctx.stroke();
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    ctx.fillStyle=radg(fx+sway,fy,0,7,[[0,'rgba(255,240,180,.95)'],[.5,'rgba(255,210,120,.5)'],[1,'rgba(255,210,120,0)']]);
+    ctx.beginPath();ctx.arc(fx+sway,fy,7,0,TAU);ctx.fill();ctx.restore();
+    ctx.fillStyle='#fff2c0';ctx.beginPath();ctx.arc(fx+sway,fy,2.4,0,TAU);ctx.fill();}
+    // корни-молнии по земле
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    ctx.strokeStyle='rgba(127,232,216,'+(0.4+0.3*Math.sin(T*5)).toFixed(2)+')';
+    ctx.lineWidth=1.8;ctx.shadowColor='#7fe8d8';ctx.shadowBlur=8;
+    for(let k=0;k<6;k++){const a=Math.PI*(0.08+0.84*(k/5));const len=R*(1.5+0.35*Math.sin(T*2+k*1.7));
+    ctx.beginPath();let px=bx,py=by+4;ctx.moveTo(px,py);
+    for(let s=1;s<=4;s++){px=bx+Math.cos(a)*len*(s/4)+rand(-3,3);py=by+4+Math.sin(a)*len*.5*(s/4)+rand(-2,2);ctx.lineTo(px,py);}
+    ctx.stroke();}
+    ctx.restore();
+    // светлячки
+    for(let i=0;i<8;i++){const a=T*0.4+i*(TAU/8);const rr2=R*(1.35+0.55*((i*0.618)%1));
+    const fx=cX+Math.cos(a)*rr2+Math.sin(T*2+i)*6;const fy=cY+Math.sin(a)*rr2*0.62+Math.cos(T*1.5+i)*5;
+    const tw=.4+.6*Math.abs(Math.sin(T*4+i*2));
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    ctx.fillStyle=radg(fx,fy,0,5,[[0,'rgba(255,240,170,'+(0.8*tw).toFixed(2)+')'],[1,'rgba(255,240,170,0)']]);
+    ctx.beginPath();ctx.arc(fx,fy,5,0,TAU);ctx.fill();ctx.restore();}
 }
+
 /* — Гриб-кристалл: крупная шляпка, распределённые эффекты — */
 function drawMycelium(ts,cX,cY,R,L,stage,sw){
-const bx=cx,by=cy;
-const capR=R*1.75, capH=R*1.05, capY=cY-capH*.28;
-// ножка объёмная
-const tg=ctx.createLinearGradient(bx-8,by,bx+8,by);
-tg.addColorStop(0,'#473a2a');tg.addColorStop(.5,'#6b5a44');tg.addColorStop(1,'#33271a');
-ctx.fillStyle=tg;ctx.beginPath();ctx.moveTo(bx-6.5,by);ctx.quadraticCurveTo(bx-5,by-capH*.5,bx-3.5,by-capH*.95);
-ctx.lineTo(bx+3.5,by-capH*.95);ctx.quadraticCurveTo(bx+5,by-capH*.5,bx+6.5,by);ctx.closePath();ctx.fill();
-// дымка по бокам — распределённая
-ctx.save();ctx.globalCompositeOperation='lighter';
-for(let s=-1;s<=1;s+=2){const dx=s*capR*.75;
-ctx.fillStyle=radg(cX+dx,capY,2,capR*.8,[[0,'rgba(180,140,255,'+(0.14+0.06*Math.sin(T*1.5+s)).toFixed(2)+')'],[1,'rgba(180,140,255,0)']]);
-ctx.beginPath();ctx.ellipse(cX+dx+Math.sin(T+s)*5,capY+Math.cos(T*1.3+s)*7,capR*.4,capR*.85,0,0,TAU);ctx.fill();}
-ctx.restore();
-// шляпка — крупная, с градиентом объёма
-ctx.fillStyle=radg(cX-capR*.25,capY-capH*.45,capR*.08,capR*1.25,[[0,'#7fe6d4'],[.45,'#2f9a8c'],[1,'#123830']]);
-ctx.beginPath();ctx.ellipse(cX,capY,capR,capH,0,Math.PI,TAU);ctx.ellipse(cX,capY,capR,capH*.32,0,0,Math.PI);ctx.fill();
-// пластины под шляпкой
-ctx.fillStyle='rgba(215,240,225,.5)';ctx.beginPath();ctx.ellipse(cX,capY,capR*.94,capH*.24,0,0,Math.PI);ctx.fill();
-// светящиеся пятна — по всей шляпке
-const spots=[[-.62,-.42,.2],[0,-.62,.26],[.58,-.4,.22],[-.3,-.75,.15],[.28,-.78,.17],[.78,-.18,.13],[-.8,-.15,.13],[.05,-.3,.18],[-.48,-.6,.12],[.5,-.62,.13]];
-for(let i=0;i<spots.length;i++){const sp=spots[i];const pulse=.5+.5*Math.sin(T*2+i*1.3);
-ctx.save();ctx.globalCompositeOperation='lighter';
-ctx.fillStyle=radg(cX+sp[0]*capR,capY+sp[1]*capH,0,sp[2]*capR,[[0,'rgba(174,240,228,'+(0.55+0.3*pulse).toFixed(2)+')'],[1,'rgba(174,240,228,0)']]);
-ctx.beginPath();ctx.arc(cX+sp[0]*capR,capY+sp[1]*capH,sp[2]*capR,0,TAU);ctx.fill();ctx.restore();}
-// парящие кристаллы — широкое кольцо
-for(let i=0;i<5;i++){const a=T*0.55+i*(TAU/5);const rr2=capR*(1.25+0.35*((i*0.618)%1));
-const fx=cX+Math.cos(a)*rr2;const fy=capY-capH*.3+Math.sin(a)*rr2*0.55-Math.abs(Math.sin(T*1.2+i))*9;
-ctx.save();ctx.translate(fx,fy);ctx.rotate(T*0.5+i);
-ctx.fillStyle='rgba(216,200,255,'+(0.5+0.3*Math.sin(T*3+i)).toFixed(2)+')';
-ctx.shadowColor='#d8c8ff';ctx.shadowBlur=6;
-ctx.beginPath();ctx.moveTo(0,-5.5);ctx.lineTo(3.4,0);ctx.lineTo(0,5.5);ctx.lineTo(-3.4,0);ctx.closePath();ctx.fill();
-ctx.restore();}
+    const bx=cx,by=cy;
+    const capR=R*1.75, capH=R*1.05, capY=cY-capH*.28;
+    // ножка объёмная
+    const tg=ctx.createLinearGradient(bx-8,by,bx+8,by);
+    tg.addColorStop(0,'#473a2a');tg.addColorStop(.5,'#6b5a44');tg.addColorStop(1,'#33271a');
+    ctx.fillStyle=tg;ctx.beginPath();ctx.moveTo(bx-6.5,by);ctx.quadraticCurveTo(bx-5,by-capH*.5,bx-3.5,by-capH*.95);
+    ctx.lineTo(bx+3.5,by-capH*.95);ctx.quadraticCurveTo(bx+5,by-capH*.5,bx+6.5,by);ctx.closePath();ctx.fill();
+    // дымка по бокам
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    for(let s=-1;s<=1;s+=2){const dx=s*capR*.75;
+    ctx.fillStyle=radg(cX+dx,capY,2,capR*.8,[[0,'rgba(180,140,255,'+(0.14+0.06*Math.sin(T*1.5+s)).toFixed(2)+')'],[1,'rgba(180,140,255,0)']]);
+    ctx.beginPath();ctx.ellipse(cX+dx+Math.sin(T+s)*5,capY+Math.cos(T*1.3+s)*7,capR*.4,capR*.85,0,0,TAU);ctx.fill();}
+    ctx.restore();
+    // шляпка
+    ctx.fillStyle=radg(cX-capR*.25,capY-capH*.45,capR*.08,capR*1.25,[[0,'#7fe6d4'],[.45,'#2f9a8c'],[1,'#123830']]);
+    ctx.beginPath();ctx.ellipse(cX,capY,capR,capH,0,Math.PI,TAU);ctx.ellipse(cX,capY,capR,capH*.32,0,0,Math.PI);ctx.fill();
+    // пластины под шляпкой
+    ctx.fillStyle='rgba(215,240,225,.5)';ctx.beginPath();ctx.ellipse(cX,capY,capR*.94,capH*.24,0,0,Math.PI);ctx.fill();
+    // светящиеся пятна
+    const spots=[[-.62,-.42,.2],[0,-.62,.26],[.58,-.4,.22],[-.3,-.75,.15],[.28,-.78,.17],[.78,-.18,.13],[-.8,-.15,.13],[.05,-.3,.18],[-.48,-.6,.12],[.5,-.62,.13]];
+    for(let i=0;i<spots.length;i++){const sp=spots[i];const pulse=.5+.5*Math.sin(T*2+i*1.3);
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    ctx.fillStyle=radg(cX+sp[0]*capR,capY+sp[1]*capH,0,sp[2]*capR,[[0,'rgba(174,240,228,'+(0.55+0.3*pulse).toFixed(2)+')'],[1,'rgba(174,240,228,0)']]);
+    ctx.beginPath();ctx.arc(cX+sp[0]*capR,capY+sp[1]*capH,sp[2]*capR,0,TAU);ctx.fill();ctx.restore();}
+    // парящие кристаллы
+    for(let i=0;i<5;i++){const a=T*0.55+i*(TAU/5);const rr2=capR*(1.25+0.35*((i*0.618)%1));
+    const fx=cX+Math.cos(a)*rr2;const fy=capY-capH*.3+Math.sin(a)*rr2*0.55-Math.abs(Math.sin(T*1.2+i))*9;
+    ctx.save();ctx.translate(fx,fy);ctx.rotate(T*0.5+i);
+    ctx.fillStyle='rgba(216,200,255,'+(0.5+0.3*Math.sin(T*3+i)).toFixed(2)+')';
+    ctx.shadowColor='#d8c8ff';ctx.shadowBlur=6;
+    ctx.beginPath();ctx.moveTo(0,-5.5);ctx.lineTo(3.4,0);ctx.lineTo(0,5.5);ctx.lineTo(-3.4,0);ctx.closePath();ctx.fill();
+    ctx.restore();}
 }
+
 /* — Пепельная лоза: объёмная тёмная крона, витые лозы, чёрные корни — */
 function drawAshvine(ts,cX,cY,R,L,stage,sw){
-const bx=cx,by=cy;
-// витые лозы на стволе (тень → тело → блик)
-ctx.lineCap='round';
-for(let s=-1;s<=1;s+=2){
-const pts=[];for(let k=0;k<=6;k++){pts.push([bx+s*Math.sin(k*1.15+T*0.25)*R*.42*(k/6+.3), by-R*1.5*(k/6)]);}
-const draw=(w,c)=>{ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
-for(let k=1;k<pts.length;k++)ctx.lineTo(pts[k][0],pts[k][1]);ctx.stroke();};
-draw(R*.42,'rgba(0,0,0,.5)');
-draw(R*.34,'#101013');
-draw(R*.2,'#232329');
-draw(R*.07,'rgba(127,232,216,.16)');
-}
-// трещины-молнии
-ctx.save();ctx.globalCompositeOperation='lighter';
-ctx.strokeStyle='rgba(127,232,216,'+(0.45+0.35*Math.sin(T*6)).toFixed(2)+')';ctx.lineWidth=1.5;ctx.shadowColor='#7fe8d8';ctx.shadowBlur=7;
-for(let i=0;i<7;i++){const yy=by-R*(0.12+i*0.19);const xx=bx+Math.sin(i*1.3+T*0.4)*R*.34;
-ctx.beginPath();ctx.moveTo(xx,yy);ctx.lineTo(xx+rand(-6,6),yy-5);ctx.lineTo(xx+rand(-8,8),yy-10);ctx.stroke();}
-ctx.restore();
-// чёрные мрачные корни с бирюзовыми прожилками
-for(let k=0;k<5;k++){const f=k/4;const ang=Math.PI*(0.12+0.76*f);const len=R*(1.5+0.3*Math.sin(k*2.9));
-const ex=bx+Math.cos(ang)*len,ey=by+Math.sin(ang)*len*.5+4;
-ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=8-k%2;
-ctx.beginPath();ctx.moveTo(bx,by-2);ctx.quadraticCurveTo(bx+(ex-bx)*.4,by+4,ex,ey+2);ctx.stroke();
-ctx.strokeStyle='#0b0b0e';ctx.lineWidth=6.5-k%2;
-ctx.beginPath();ctx.moveTo(bx,by-4);ctx.quadraticCurveTo(bx+(ex-bx)*.4,by+3,ex,ey);ctx.stroke();
-ctx.strokeStyle='rgba(127,232,216,'+(0.25+0.2*Math.sin(T*2+k)).toFixed(2)+')';ctx.lineWidth=1.2;
-ctx.beginPath();ctx.moveTo(bx,by-5);ctx.quadraticCurveTo(bx+(ex-bx)*.4,by+1.5,ex,ey-1);ctx.stroke();}
-// мрачная дымка у корней
-ctx.save();ctx.globalCompositeOperation='lighter';
-for(let i=0;i<4;i++){const a=Math.PI*(0.15+0.7*(i/3));const rx=bx+Math.cos(a)*R*1.3,ry=by+Math.sin(a)*R*.6+3;
-ctx.fillStyle=radg(rx,ry,1,R*.7,[[0,'rgba(90,200,180,'+(0.10+0.05*Math.sin(T*1.3+i)).toFixed(2)+')'],[1,'rgba(90,200,180,0)']]);
-ctx.beginPath();ctx.ellipse(rx,ry,R*.7,R*.3,0,0,TAU);ctx.fill();}
-ctx.restore();
-// дым-призрак — распределённый
-ctx.save();ctx.globalCompositeOperation='lighter';
-for(let i=0;i<5;i++){const a=i*1.9+T*0.2;const dx=Math.sin(a)*R*(0.8+0.5*((i*0.37)%1));const yy=cY-R*0.1-i*R*0.28;
-ctx.fillStyle=radg(bx+dx,yy,2,R*.55,[[0,'rgba(150,230,210,'+(0.10+0.05*Math.sin(T+i)).toFixed(2)+')'],[1,'rgba(150,230,210,0)']]);
-ctx.beginPath();ctx.ellipse(bx+dx,yy,R*.5,R*.7,0,0,TAU);ctx.fill();}
-ctx.restore();
-// пепельные искры — широко
-for(let i=0;i<8;i++){const a=T*0.7+i*0.9;const fx=bx+Math.sin(a*1.3)*R*(0.9+0.5*((i*.53)%1));const fy=by-R*(0.2+1.1*((T*0.16+i*0.13)%1));
-ctx.fillStyle='rgba(207,238,232,'+(0.35+0.3*Math.sin(T*3+i)).toFixed(2)+')';ctx.beginPath();ctx.arc(fx,fy,1.4,0,TAU);ctx.fill();}
+    const bx=cx,by=cy;
+    // витые лозы на стволе
+    ctx.lineCap='round';
+    for(let s=-1;s<=1;s+=2){
+    const pts=[];for(let k=0;k<=6;k++){pts.push([bx+s*Math.sin(k*1.15+T*0.25)*R*.42*(k/6+.3), by-R*1.5*(k/6)]);}
+    const draw=(w,c)=>{ctx.strokeStyle=c;ctx.lineWidth=w;ctx.beginPath();ctx.moveTo(pts[0][0],pts[0][1]);
+    for(let k=1;k<pts.length;k++)ctx.lineTo(pts[k][0],pts[k][1]);ctx.stroke();};
+    draw(R*.42,'rgba(0,0,0,.5)');
+    draw(R*.34,'#101013');
+    draw(R*.2,'#232329');
+    draw(R*.07,'rgba(127,232,216,.16)');
+    }
+    // трещины-молнии
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    ctx.strokeStyle='rgba(127,232,216,'+(0.45+0.35*Math.sin(T*6)).toFixed(2)+')';ctx.lineWidth=1.5;ctx.shadowColor='#7fe8d8';ctx.shadowBlur=7;
+    for(let i=0;i<7;i++){const yy=by-R*(0.12+i*0.19);const xx=bx+Math.sin(i*1.3+T*0.4)*R*.34;
+    ctx.beginPath();ctx.moveTo(xx,yy);ctx.lineTo(xx+rand(-6,6),yy-5);ctx.lineTo(xx+rand(-8,8),yy-10);ctx.stroke();}
+    ctx.restore();
+    // мрачная дымка у корней
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    for(let i=0;i<4;i++){const a=Math.PI*(0.15+0.7*(i/3));const rx=bx+Math.cos(a)*R*1.3,ry=by+Math.sin(a)*R*.6+3;
+    ctx.fillStyle=radg(rx,ry,1,R*.7,[[0,'rgba(90,200,180,'+(0.10+0.05*Math.sin(T*1.3+i)).toFixed(2)+')'],[1,'rgba(90,200,180,0)']]);
+    ctx.beginPath();ctx.ellipse(rx,ry,R*.7,R*.3,0,0,TAU);ctx.fill();}
+    ctx.restore();
+    // дым-призрак
+    ctx.save();ctx.globalCompositeOperation='lighter';
+    for(let i=0;i<5;i++){const a=i*1.9+T*0.2;const dx=Math.sin(a)*R*(0.8+0.5*((i*0.37)%1));const yy=cY-R*0.1-i*R*0.28;
+    ctx.fillStyle=radg(bx+dx,yy,2,R*.55,[[0,'rgba(150,230,210,'+(0.10+0.05*Math.sin(T+i)).toFixed(2)+')'],[1,'rgba(150,230,210,0)']]);
+    ctx.beginPath();ctx.ellipse(bx+dx,yy,R*.5,R*.7,0,0,TAU);ctx.fill();}
+    ctx.restore();
+    // пепельные искры
+    for(let i=0;i<8;i++){const a=T*0.7+i*0.9;const fx=bx+Math.sin(a*1.3)*R*(0.9+0.5*((i*.53)%1));const fy=by-R*(0.2+1.1*((T*0.16+i*0.13)%1));
+    ctx.fillStyle='rgba(207,238,232,'+(0.35+0.3*Math.sin(T*3+i)).toFixed(2)+')';ctx.beginPath();ctx.arc(fx,fy,1.4,0,TAU);ctx.fill();}
 }
 /* ═══════════════════════════════════════════════════════════════
 [ВИЗУАЛ] Враги — развёрнуты мордой к древу (не к камере),
