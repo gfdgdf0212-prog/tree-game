@@ -159,7 +159,7 @@ background:linear-gradient(180deg,#f4d083,#dfa93c);box-shadow:0 8px 24px rgba(23
 .btn-primary:active{transform:scale(.97)}
 .modal.shop.shake-lg,.panel.shake-lg{animation:shakeLg .55s}
 @keyframes shakeLg{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(3px,-1px)}30%,70%{transform:translate(-4px,2px)}40%,60%{transform:translate(4px,-2px)}50%{transform:translate(-3px,2px)}}
-#mulRow{position:sticky;top:0;z-index:3;margin:-10px -12px 10px;padding:6px 12px;
+#mulRow,#cardMulRow{position:sticky;top:0;z-index:3;margin:-10px -12px 10px;padding:6px 12px;
 background:linear-gradient(180deg,#1c2b22,#18251d);border-bottom:1px solid var(--line);display:flex;gap:5px}
 .mul-btn{flex:1;border:0;background:transparent;color:var(--muted);font:800 11px Manrope;padding:8px 2px;border-radius:8px;cursor:pointer;transition:color .2s,background .2s}
 .mul-btn.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--gold2)}
@@ -196,10 +196,9 @@ background:rgba(232,182,76,.09);border:1px solid rgba(232,182,76,.28);white-spac
 background:radial-gradient(circle,rgba(255,255,255,.25),transparent 70%);animation:buyFlash .5s ease-out forwards}
 @keyframes buyFlash{to{opacity:0}}
 .cards-stage{position:relative;height:270px;margin:4px 0 12px;perspective:900px}
-.cards-stage.shuffling .rcard{transition:transform .05s cubic-bezier(.4,0,.2,1),opacity .2s,filter .2s}
-.rcard{position:absolute;width:70px;height:108px;left:50%;top:50%;cursor:default;
-transform-style:preserve-3d;transition:transform .15s cubic-bezier(.34,1.2,.5,1),opacity .25s,filter .2s;will-change:transform}
-.rcard .face,.rcard .back{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
+.cards-stage.shuffling .cards-stage.no-trans .rcard,.cards-stage.no-trans .rcard .face,.cards-stage.no-trans .rcard .back{transition:none !important} .rcard{transition:transform .05s cubic-bezier(.4,0,.2,1),opacity .2s,filter .2s}
+.cards-stage.no-trans .rcard,.cards-stage.no-trans .rcard .face,.cards-stage.no-trans .rcard .back{transition:none !important}.rcard{position:absolute;width:70px;height:108px;left:50%;top:50%;cursor:default;
+transform-style:preserve-3d;transition:transform .28s cubic-bezier(.34,1.2,.5,1),opacity .25s,filter .2s;will-change:transform}.rcard .face,.rcard .back{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;
 display:flex;flex-direction:column;align-items:center;padding:8px 6px;
 border:2px solid rgba(150,200,160,.42);box-shadow:0 8px 22px rgba(0,0,0,.5)}
 .rcard .back{background:radial-gradient(circle at 50% 38%,rgba(150,200,160,.16),transparent 60%),linear-gradient(160deg,#234032,#16241b);transform:rotateY(180deg)}
@@ -212,6 +211,17 @@ border:2px solid rgba(150,200,160,.42);box-shadow:0 8px 22px rgba(0,0,0,.5)}
 .rcard.pickable{cursor:pointer}
 .rcard.pickable:hover .back{box-shadow:0 0 16px rgba(150,200,160,.6),0 8px 22px rgba(0,0,0,.5)}
 .rcard.picked .face{box-shadow:0 0 24px rgba(var(--tg),.55),0 8px 22px rgba(0,0,0,.5);border-color:var(--tc)}
+#cardMarks{position:absolute;inset:0;z-index:10;pointer-events:none}
+#cardMarks svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.cmk{position:absolute;width:70px;height:108px;left:50%;top:50%;border-radius:13px;
+  transform:translate(-50%,-50%) scale(.86);opacity:0;animation:cmkIn .14s ease-out forwards}
+@keyframes cmkIn{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.cmk.hole{border:1.5px dashed rgba(150,200,160,.32);background:rgba(0,0,0,.28);
+  box-shadow:inset 0 3px 9px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.25)}
+.cmk.hole::after{content:'';position:absolute;inset:9px;border-radius:9px;border:1px solid rgba(150,200,160,.12)}
+.ctrail{fill:none;stroke:rgba(143,214,138,.7);stroke-width:2.4;stroke-linecap:round;
+  filter:drop-shadow(0 0 4px rgba(143,214,138,.5))}
+@keyframes ctrailDraw{to{stroke-dashoffset:0;opacity:0}}
 .rcard.dim{opacity:.3;filter:grayscale(.5)}
 .rcard.fly-up{animation:flyUp .35s ease-in forwards;pointer-events:none}
 .rcard.fly-down{animation:flyDown .4s ease-out forwards;pointer-events:none}
@@ -322,6 +332,12 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border:0;border-radiu
 .lang-sw button.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--ink)}
 .tog{border:0;background:rgba(0,0,0,.25);color:var(--muted);font:800 12px Manrope;padding:8px 16px;border-radius:10px;cursor:pointer;min-width:64px;transition:color .2s,background .2s}
 .tog.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--leaf)}
+.speed-row{display:flex;align-items:center;gap:8px}
+.speed-btn{border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--muted);font:800 11px Manrope;padding:6px 10px;border-radius:8px;cursor:pointer;transition:color .2s,background .2s,border-color .2s}
+.speed-btn.on{background:linear-gradient(180deg,#2a3d2f,#1d2b22);color:var(--gold2);border-color:var(--gold)}
+.speed-btn.locked{opacity:.4;cursor:default}
+.set-btn-danger{width:100%;border:1px solid rgba(224,86,79,.5);background:rgba(224,86,79,.08);color:#e8a49b;font:800 12px Manrope;padding:10px;border-radius:10px;cursor:pointer;transition:background .15s}
+.set-btn-danger:active{transform:scale(.97)}
 #cheatFab{position:fixed;right:10px;top:50%;transform:translateY(-50%);z-index:100;width:46px;height:46px;border-radius:50%;
 display:grid;place-items:center;cursor:pointer;font-size:22px;background:linear-gradient(180deg,#3a2418,#241410);border:1px solid rgba(224,112,79,.55);box-shadow:0 8px 22px rgba(0,0,0,.5);transition:transform .15s}
 #cheatFab:active{transform:translateY(-50%) scale(.92)}
@@ -379,7 +395,7 @@ padding:12px;background:rgba(10,16,12,.96);border:1px solid rgba(224,112,79,.5);
 <button class="tabpill t-upg" id="navUpg" title="Улучшения"><svg viewBox="0 0 16 16"><path d="M8 13V4M8 4 4.5 7.5M8 4l3.5 3.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tp-lab">Буст</span></button>
 <button class="tabpill t-rou" id="navRoulette" title="Карты"><svg viewBox="0 0 16 16"><rect x="3" y="2" width="7.5" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M5.5 4.5h2.5M5.5 6.5h2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M6 14.5h5.5l1.5-9" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tp-lab">Карты</span></button>
 <button class="tabpill t-ski" id="navTree" title="Древо прокачки"><svg viewBox="0 0 16 16"><path d="M8 14V8M8 8C8 5 5.5 3.5 3 3.5 3 6.5 5.5 8 8 8Zm0 0c0-3 2.5-4.5 5-4.5 0 3-2.5 4.5-5 4.5Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg><span class="tp-lab">Ветки</span></button>
-<button class="tabpill t-abi" id="navAbilities" title="Способности"><svg viewBox="0 0 16 16"><path d="M8 1.5 9.6 5.4 13.8 5.7 10.6 8.4 11.6 12.5 8 10.3 4.4 12.5 5.4 8.4 2.2 5.7 6.4 5.4 8 1.5Z" fill="currentColor"/></svg><span class="tp-lab">Силы</span></button>
+<button class="tabpill t-abi" id="navAbilities" title="Скиллы"><svg viewBox="0 0 16 16"><path d="M8 1.5 9.6 5.4 13.8 5.7 10.6 8.4 11.6 12.5 8 10.3 4.4 12.5 5.4 8.4 2.2 5.7 6.4 5.4 8 1.5Z" fill="currentColor"/></svg><span class="tp-lab">Скиллы</span></button>
 <button class="tabpill t-que" id="navQuests" title="Задания"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="tp-lab">Задания</span></button>
 <button class="tabpill t-sho" id="shopBtn" title="Магазин скинов"><svg viewBox="0 0 16 16"><path d="M3.5 6h9l1.2 8H2.3l1.2-8Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M5.8 6V4.6a2.2 2.2 0 0 1 4.4 0V6" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><span class="tp-lab">Лавка</span></button>
 </div>
@@ -411,6 +427,11 @@ padding:12px;background:rgba(10,16,12,.96);border:1px solid rgba(224,112,79,.5);
 <div class="panel-grip"></div>
 <div class="panel-head"><h2>Карты способностей</h2><button class="panel-close" id="rouletteClose">✕</button></div>
 <div class="panel-body">
+<div id="cardMulRow">
+<button class="mul-btn on" data-cmul="1">×1</button>
+<button class="mul-btn" data-cmul="10">×10</button>
+<button class="mul-btn" data-cmul="50">×50</button>
+</div>
 <div class="cards-stage" id="cardsStage"></div>
 <button class="btn-spin" id="spinBtn"></button>
 <button class="btn-claim" id="claimBtn" style="display:none">Забрать</button>
@@ -429,7 +450,7 @@ padding:12px;background:rgba(10,16,12,.96);border:1px solid rgba(224,112,79,.5);
 <div class="sheet" id="abilitiesOverlay">
 <div class="panel">
 <div class="panel-grip"></div>
-<div class="panel-head"><h2>Способности</h2><button class="panel-close" id="abilitiesClose">✕</button></div>
+<div class="panel-head"><h2>Скиллы</h2><button class="panel-close" id="abilitiesClose">✕</button></div>
 <div class="panel-body">
 <div class="ab-head"><span>Экипировано</span> <b id="abCount">0/2</b></div>
 <div class="abil-grid" id="abilGrid"></div>
@@ -465,9 +486,19 @@ padding:12px;background:rgba(10,16,12,.96);border:1px solid rgba(224,112,79,.5);
 <div class="panel-grip"></div>
 <div class="panel-head"><h2>Настройки</h2><button class="panel-close" id="setClose">✕</button></div>
 <div class="panel-body">
-<div class="set-row"><label>Громкость</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="volRange" min="0" max="100" value="100"><span class="val" id="volVal">100%</span></div></div>
+<div class="set-row"><label>Эффекты</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="volRange" min="0" max="100" value="100"><span class="val" id="volVal">100%</span></div></div>
+<div class="set-row"><label>Музыка</label><div style="display:flex;align-items:center;gap:10px"><input type="range" id="musicRange" min="0" max="100" value="0"><span class="val" id="musicVal">0%</span></div></div>
+<div class="set-row"><label>Скорость игры</label>
+<div class="speed-row">
+<button class="speed-btn on" data-speed="1">×1</button>
+<button class="speed-btn locked" data-speed="2" id="speed2Btn">×2</button>
+<button class="speed-btn" data-speed="4" id="speed4Btn">×4</button>
+</div>
+</div>
 <div class="set-row"><label>Тряска экрана</label><button class="tog on" id="shakeTog">Вкл</button></div>
+<div class="set-row"><label>Частицы</label><button class="tog on" id="qualityTog">Вкл</button></div>
 <div class="set-row"><label>Язык</label><div class="lang-sw"><button id="langRu" class="on">RU</button><button id="langEn">EN</button></div></div>
+<div class="set-row"><button class="set-btn-danger" id="resetProgressBtn">Сбросить прогресс</button></div>
 </div>
 </div>
 </div>
@@ -723,7 +754,8 @@ treeHp:100,muted:false,shake:true,vol:1,lang:'ru',lastSeen:0,bestWave:1,seen:tru
 abilities:{},equip:[],treeSkins:['oak'],treeSkin:'oak',skill:{},
 dailyDate:0,dailyDone:{},dailyProg:{kills:0,waves:0,spins:0,crits:0,upg:0},
 waveQ:{prog:0,done:false,claimed:false},onceDone:{},chaptersCleared:0,huntKills:0,huntDone:0,
-passDone:{},tutorialDone:false,tutPhase:'new'};
+passDone:{},tutorialDone:false,tutPhase:'new',
+speed:1,speed4Bought:false,musicVol:0,quality:true,speedTutShown:false};
 if(d&&d.v===1){
 const s=Object.assign(base,d);
 ['dmgLvl','spdLvl','hpLvl','radLvl','ccLvl','cdLvl','wave','killed','totalKills','bestWave','amberTier','chaptersCleared','huntKills','huntDone']
@@ -748,6 +780,11 @@ s.treeSkin=(d.treeSkin&&TREE_SKINS[d.treeSkin])?d.treeSkin:'oak';
 if(s.vol==null||isNaN(s.vol))s.vol=1;
 if(s.shake==null)s.shake=true;
 if(!s.lang)s.lang='ru';
+if(s.speed==null)s.speed=1;
+if(s.speed4Bought==null)s.speed4Bought=false;
+if(s.musicVol==null)s.musicVol=0;
+if(s.quality==null)s.quality=true;
+if(s.speedTutShown==null)s.speedTutShown=false;
 const L=s.dmgLvl+s.spdLvl+s.hpLvl+s.radLvl+s.ccLvl+s.cdLvl;
 if(d.amber===undefined){s.amberTier=Math.floor(L/50);s.amber=5*s.amberTier;}
 if(s.treeHp<=0||isNaN(s.treeHp))s.treeHp=maxHpOf(s);
@@ -765,7 +802,8 @@ amberTier:S.amberTier,abilities:S.abilities,equip:S.equip,treeSkins:S.treeSkins,
 dailyDate:S.dailyDate,dailyDone:S.dailyDone,dailyProg:S.dailyProg,
 waveQ:S.waveQ,onceDone:S.onceDone,chaptersCleared:S.chaptersCleared,
 huntKills:S.huntKills,huntDone:S.huntDone,passDone:S.passDone,
-tutorialDone:S.tutorialDone,tutPhase:S.tutPhase}));}catch(e){}}
+tutorialDone:S.tutorialDone,tutPhase:S.tutPhase,
+speed:S.speed,speed4Bought:S.speed4Bought,musicVol:S.musicVol,quality:S.quality,speedTutShown:S.speedTutShown}));}catch(e){}}
 const treeDmgPct=()=>0.10*statCount('sRoot')+0.25*statCount('sAllDmg');
 const treeSpdPct=()=>0.08*statCount('sSpd')+0.20*statCount('sAllSpd');
 const treeHpPct=()=>0.15*statCount('sHp');
@@ -867,8 +905,16 @@ sp:t.sp*rand(.92,1.08),dmg,rw:Math.round(t.rw*enemyScaleRW(ch)),
 r:t.r,phase:rand(0,TAU),flash:0,atk:rand(.3,.8),dead:false,born:0,lift:0,bleed:0,bleedT:0,held:0,tut:false,
 vx:0,vy:0});}
 let AC=null;const lastSnd={};
+let ambGain=null;
+function ensureAmbient(){if(!AC||ambGain)return;try{
+ambGain=AC.createGain();ambGain.gain.value=0;
+const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;
+ambGain.connect(lp);lp.connect(AC.destination);
+[[110,0.5],[164.81,0.3],[220,0.12]].forEach(([f,g])=>{const o=AC.createOscillator();o.type='sine';o.frequency.value=f;const gg=AC.createGain();gg.gain.value=g;o.connect(gg);gg.connect(ambGain);o.start();});
+}catch(e){ambGain=null;}}
+function applyMusicVol(){if(ambGain&&AC)try{ambGain.gain.setTargetAtTime((S.musicVol||0)*0.06,AC.currentTime,0.3);}catch(e){}}
 function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
-if(AC.state==='suspended')AC.resume();}catch(e){}return AC;}
+if(AC.state==='suspended')AC.resume();ensureAmbient();applyMusicVol();}catch(e){}return AC;}
 function tone(f,d,type,v,slide,delay){if(S.muted)return;const a=ac();if(!a)return;
 v=(v||.1)*(S.vol==null?1:S.vol);if(v<=0)return;
 const t0=a.currentTime+(delay||0),o=a.createOscillator(),g=a.createGain();
@@ -922,10 +968,10 @@ function closeAllSheets(){SHEETS.forEach(s=>closeSheet(s));}
 function anySheetOpen(){return SHEETS.some(s=>$(s).classList.contains('open'));}
 function allowedSheets(){
 const p=S.tutPhase;
-if(p==='new')return [];
-if(p==='boost'||p==='play')return ['#upgOverlay'];
-if(p==='cards')return ['#rouletteOverlay'];
-if(p==='powers')return ['#abilitiesOverlay'];
+if(p==='new')return ['#setOverlay'];
+if(p==='boost'||p==='play')return ['#upgOverlay','#setOverlay'];
+if(p==='cards')return ['#rouletteOverlay','#setOverlay'];
+if(p==='powers')return ['#abilitiesOverlay','#setOverlay'];
 return SHEETS.slice();}
 const SUBS={ru:['тьма сгущается…','лес шепчет…','они всё ближе…','стойте до конца…','корни помнят…'],
 en:['darkness thickens…','the forest whispers…','they draw near…','hold to the end…','roots remember…']};
@@ -1028,7 +1074,7 @@ function renderPass(){
 try{
 const ch=S.chaptersCleared;const all=passMilestones();
 const done=all.filter(m=>m<=ch);
-const next=all.filter(m=>m>ch).slice(0,12);
+const next=all.filter(m>ch).slice(0,12);
 const row=m=>{const claimed=!!S.passDone[m];const can=m<=ch&&!claimed;const rew=passReward(m);
 const right=claimed?`<span class="q-claimed">${t('qDone')}</span>`
 :can?`<button class="q-claim" data-pass="${m}"><span class="q-rew"><svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#7cc9e8"/></svg>${rew}</span></button>`
@@ -1053,7 +1099,7 @@ if(!allowedSheets().includes('#passOverlay'))return;
 const was=$('#passOverlay').classList.contains('open');
 closeAllSheets();
 if(!was){open('#passOverlay');renderPass();}});
-let cards=[],cardPhase='idle',pickedCount=0,cardTimer=null,spinToken=0;
+let cards=[],cardPhase='idle',pickedCount=0,cardTimer=null,spinToken=0,cardMul=1;
 function cardEl(id){return $('#cardsStage').querySelector(`[data-id="${id}"]`);}
 function pickAbility(){
 const stage=tierStage();const weights=CONFIG.TIER_WEIGHTS[stage-1];
@@ -1063,21 +1109,22 @@ for(const tk in weights){if(r<weights[tk]){tier=tk;break;}r-=weights[tk];}
 const list=ABIL.filter(a=>a.tier===tier&&a.k!=='multishot');
 return list[Math.floor(Math.random()*list.length)];}
 function stageW(){return ($('#cardsStage').clientWidth||340);}
-function finalPos(slot){const row=slot<4?0:1;const col=slot<4?slot:slot-4;const cnt=row?3:4;
-const off=col-(cnt-1)/2;const sp=clamp((stageW()-74)/3,32,66);
-return {x:off*sp*1.12,y:row?58:-58,rot:off*4,scale:1};}
-function pilePos(i){return {x:(i-3)*15,y:0,rot:(i-3)*1.2,scale:1};}
+function finalPos(slot){const row=slot<5?0:1;const col=row?slot-5:slot;const cnt=row?4:5;
+const off=col-(cnt-1)/2;const sp=clamp((stageW()-74)/(cnt-1||1),24,52);
+return {x:off*sp,y:row?60:-60,rot:off*3,scale:1};}
+function pilePos(i){return {x:(i-4)*11,y:0,rot:(i-4)*1.2,scale:1};}
 function posTF(pos,lifted,flipped){
 const y=pos.y+(lifted?-44:0);const sc=lifted?1.15:pos.scale;
 return `translate(-50%,-50%) translate(${pos.x}px,${y}px) rotate(${pos.rot}deg) scale(${sc})`+(flipped?' rotateY(180deg)':'');}
-function setCard(c,pos,lifted,z,flipped){const elc=cardEl(c.id);if(!elc)return;
+function setCard(c,pos,lifted,z,flipped){c.cur=pos;const elc=cardEl(c.id);if(!elc)return;
 elc.style.transform=posTF(pos,lifted,flipped);if(z!=null)elc.style.zIndex=z;}
+function refreshCardFaces(){const st=$('#cardsStage');st.querySelectorAll('.rcard').forEach(elc=>{const c=cards.find(x=>x.id==+elc.dataset.id);if(c){const pl=elc.querySelector('.plus');if(pl)pl.textContent='+'+(c.plus*cardMul);}});}
 function renderCards(){
 const st=$('#cardsStage');
 if(st.children.length!==cards.length){
 st.innerHTML=cards.map(c=>{const tr=TIERS[c.a.tier];
 return `<div class="rcard t-${c.a.tier}" data-id="${c.id}">
-<div class="face"><span class="nm">${LN(c.a.n)}</span><span class="plus">+${c.plus}</span><span class="ti">${LN(tr.name)}</span></div>
+<div class="face"><span class="nm">${LN(c.a.n)}</span><span class="plus">+${c.plus*cardMul}</span><span class="ti">${LN(tr.name)}</span></div>
 <div class="back"></div></div>`;}).join('');
 st.querySelectorAll('.rcard').forEach(elc=>{elc.addEventListener('click',()=>onCardClick(+elc.dataset.id));});}
 const drive=cardPhase==='gather'||cardPhase==='shuffle'||cardPhase==='deal';
@@ -1105,9 +1152,9 @@ r.forEach(c=>{const elc=cardEl(c.id);if(elc)elc.classList.add('fly-down');});
 $('#claimBtn').style.display='none';
 setTimeout(()=>{
 let bestTier='common';
-r.forEach(c=>{const a=c.a,k=a.k,plus=c.plus,tier=a.tier;
+r.forEach(c=>{const a=c.a,k=a.k,gain=c.plus*cardMul,tier=a.tier;
 const isNew=!S.abilities[k];
-S.abilities[k]=(S.abilities[k]||0)+plus;
+S.abilities[k]=(S.abilities[k]||0)+gain;
 if(k!=='multishot'&&isNew&&S.equip.length<slotCap()){S.equip.push(k);setTimeout(()=>toast(LN(a.n)+t('newAbil')),700);}
 if(TIERS[tier].idx>TIERS[bestTier].idx)bestTier=tier;});
 if(bestTier==='legendary'||bestTier==='mythic'){
@@ -1125,10 +1172,11 @@ if(cards.some(c=>c.revealed))claimCards();
 }
 function genCards(){
 const tut=S.tutPhase==='cards';
-const plus=tut?[1,1,1,1,1,1,1]:[1,1,1,1,3,3,5];
+const plus=tut?[1,1,1,1,1,1,1,1,1]:[1,1,1,1,1,1,3,3,5];
 const ms=ABIL_BY_K['multishot'];
 cards=plus.map((p,i)=>({id:i,a:tut?ms:pickAbility(),plus:p,slot:i,pile:i,picked:false,revealed:false}));
 cardPhase='show';pickedCount=0;
+cardMul=1;const cmr=$('#cardMulRow');if(cmr)cmr.querySelectorAll('.mul-btn').forEach(x=>x.classList.toggle('on',x.dataset.cmul==='1'));
 $('#cardsStage').innerHTML='';$('#claimBtn').style.display='none';$('#spinBtn').style.display='flex';
 $('#cardsStage').classList.remove('shuffling');
 renderCards();updateSpinBtn();
@@ -1145,40 +1193,236 @@ a.pile=pb;b.pile=pa;
 setCard(a,pilePos(a.pile),false,a.pile,true);setCard(b,pilePos(b.pile),false,b.pile,true);
 cb&&cb();},CONFIG.ROULETTE.SETTLE_MS);
 },CONFIG.ROULETTE.LIFT_MS);}
-function runSwaps(list,idx,myToken,done){
+function runSwaps(pairs,i,myToken,cb){
 if(spinToken!==myToken)return;
-if(idx>=list.length){done();return;}
-swapStep(list[idx][0],list[idx][1],myToken,()=>runSwaps(list,idx+1,myToken,done));}
+if(i>=pairs.length){cb&&cb();return;}
+const pr=pairs[i];
+swapStep(pr[0],pr[1],myToken,()=>runSwaps(pairs,i+1,myToken,cb));
+}
+// ── 4 новые анимации тасовки (rAF + easing + метки, как в референсе v7) ──
+const EASE={outQ:t=>1-(1-t)*(1-t),outC:t=>1-Math.pow(1-t,3),inOutC:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2};
+const SP=30,LEFT=-90,RIGHT=90,CENTER=0,CY=2,MARK_DIST=14,TRAIL_MAX=4;
+const rint=n=>Math.floor(Math.random()*n);
+function shuffleIdx(n){const a=Array.from({length:n},(_,i)=>i);for(let i=n-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function randParts(n,max){const out=[];let r=n;while(r>0){const v=Math.min(1+rint(max),r);out.push(v);r-=v;}return out;}
+function randSplit(arr){const A=[],B=[];const idx=shuffleIdx(arr.length);for(let i=0;i<arr.length;i++)(Math.random()<.5?A:B).push(arr[idx[i]]);if(!A.length){B.pop();A.push(arr[idx[0]]);}if(!B.length){A.pop();B.push(arr[idx[arr.length-1]]);}return[A,B];}
+const interleave=(a,b)=>{const o=[],m=Math.max(a.length,b.length);for(let i=0;i<m;i++){if(i<a.length)o.push(a[i]);if(i<b.length)o.push(b[i]);}return o;};
+
+function ensureCardMarks(){let cm=$('#cardMarks');if(!cm){cm=document.createElement('div');cm.id='cardMarks';$('#cardsStage').appendChild(cm);}return cm;}
+function clearCardMarks(){const cm=$('#cardMarks');if(cm)cm.innerHTML='';}
+
+function animCard(c,tgt,durMs,easeName,myToken){
+const elc=cardEl(c.id);if(!elc)return;
+const s={...c.cur};const efn=EASE[easeName]||EASE.inOutC;const t0=performance.now();
+const tR=(tgt.rotY==null?(s.rotY||0):tgt.rotY);
+const dx=tgt.x-s.x,dy=tgt.y-s.y,len=Math.hypot(dx,dy)||1;
+const px=-dy/len,py=dx/len;const arc=(tgt.arc||0)*(tgt.arcDir||1);
+(function f(now){
+if(spinToken!==myToken)return;
+let p=(now-t0)/durMs;if(p>1)p=1;const k=efn(p);const bow=Math.sin(Math.PI*p)*arc;
+c.cur={x:s.x+dx*k+px*bow,y:s.y+dy*k+py*bow,
+rot:(s.rot||0)+((tgt.rot||0)-(s.rot||0))*k,
+rotY:(s.rotY||0)+(tR-(s.rotY||0))*k,
+sc:(s.sc||1)+((tgt.sc||1)-(s.sc||1))*k,
+z:(s.z||1)+((tgt.z||1)-(s.z||1))*k};
+elc.style.transform=`translate(-50%,-50%) translate(${c.cur.x}px,${c.cur.y}px) rotate(${c.cur.rot}deg) rotateY(${c.cur.rotY||0}deg) scale(${c.cur.sc})`;
+elc.style.zIndex=Math.round(c.cur.z)+20;
+if(p<1)requestAnimationFrame(f);
+})(t0);}
+
+function paintCardMarks(items,p,myToken){
+const cm=ensureCardMarks();cm.innerHTML='';
+const flagged=items.map(it=>{const c=cards[it.id];const d=Math.hypot(it.tgt.x-(c.cur.x||0),it.tgt.y-(c.cur.y||0));return{it,c,d,on:d>MARK_DIST};});
+const onCount=flagged.filter(f=>f.on).length;
+const drawTrail=(p.trail!==false)&&onCount>0&&onCount<=TRAIL_MAX;
+const W=$('#cardsStage').clientWidth||340,H=270,cxp=W/2,cyp=H/2;
+let paths='';
+flagged.forEach((f,k)=>{
+if(!f.on)return;
+const from=f.c.cur,to=f.it.tgt;
+const hole=document.createElement('div');hole.className='cmk hole';
+hole.style.transform=`translate(calc(-50% + ${from.x}px), calc(-50% + ${from.y}px)) rotate(${from.rot||0}deg)`;
+hole.style.animationDelay=(k*0.012)+'s';cm.appendChild(hole);
+const tgt=document.createElement('div');tgt.className='cmk target';
+tgt.style.transform=`translate(calc(-50% + ${to.x}px), calc(-50% + ${to.y}px)) rotate(${to.rot||0}deg)`;
+tgt.style.animationDelay=(k*0.012)+'s';cm.appendChild(tgt);
+if(drawTrail){
+const dx=to.x-from.x,dy=to.y-from.y,len=Math.hypot(dx,dy)||1;
+const px=-dy/len,py=dx/len;const mag=Math.min(46,Math.max(14,len*0.3));const dir=(f.it.id%2?1:-1);
+f.it.tgt.arc=mag;f.it.tgt.arcDir=dir;
+const ctrlX=(from.x+to.x)/2+px*2*mag*dir;const ctrlY=(from.y+to.y)/2+py*2*mag*dir;
+const approxLen=len*1.35;
+paths+=`<path class="ctrail" d="M ${cxp+from.x} ${cyp+from.y} Q ${cxp+ctrlX} ${cyp+ctrlY} ${cxp+to.x} ${cyp+to.y}" stroke-dasharray="${approxLen}" stroke-dashoffset="${approxLen}" style="animation:ctrailDraw ${p.dur}s linear ${k*0.012}s forwards"></path>`;
+}});
+if(paths){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.innerHTML=paths;cm.insertBefore(svg,cm.firstChild);}}
+
+function makePhase(ids,getPos,o){o=o||{};return{cards:ids.slice(),pos:function(id){return getPos(id);},dur:o.dur||.4,ease:o.ease||'inOutC',stagger:o.stagger||0,gap:o.gap!=null?o.gap:90,onEnter:o.onEnter,trail:o.trail};}
+
+function playPhases(ph,done,myToken){
+let i=0;
+(function step(){
+if(spinToken!==myToken)return;
+if(i>=ph.length){clearCardMarks();done&&done();return;}
+const p=ph[i++];
+const items=p.cards.map(function(id){return{id:id,tgt:p.pos(id)};});
+if(p.onEnter)p.onEnter();
+const st=p.stagger||0;let max=0;
+items.forEach(function(it,seq){const t=seq*st;max=Math.max(max,t+p.dur*1000);
+setTimeout(function(){animCard(cards[it.id],it.tgt,p.dur*1000,p.ease,myToken);},t);});
+setTimeout(step,max+(p.gap!=null?p.gap:90));
+})();}
+
+function gameSpread(slot){return{x:(slot-4)*SP,y:0,rot:(slot-4)*3,rotY:180,sc:1,z:slot+1};}
+function gameStack(cx,seq,n,rotY){rotY=rotY!=null?rotY:180;return{x:cx+seq*1.5,y:CY+(seq-(n-1)/2)*2.4,rot:0,rotY:rotY,sc:1,z:(n-seq)+12};}
+function spreadPhase(order){return makePhase(cards.map(function(c){return c.id;}),function(id){return gameSpread(order.indexOf(id));},{dur:.5,ease:'outC',stagger:24,gap:0});}
+
+function makePeek(peekId){
+if(peekId==null||!cards[peekId])return [];
+const homeOf=()=>{const c=cards[peekId];return (c.cur&&isFinite(c.cur.x))?c.cur:{x:pilePos(c.pile).x,y:pilePos(c.pile).y,rot:0};};
+const open={cards:[peekId],dur:.3,ease:'outC',stagger:0,gap:380,
+onEnter:()=>{},
+pos:()=>{const h=homeOf();return {x:h.x,y:h.y-40,rot:0,rotY:0,sc:1.16,z:240};}};
+const close={cards:[peekId],dur:.26,ease:'inOutC',stagger:0,gap:150,
+onEnter:()=>{},
+pos:()=>{const c=cards[peekId];const cx=(c.cur&&isFinite(c.cur.x))?c.cur.x:pilePos(c.pile).x;const cy=(c.cur&&isFinite(c.cur.y))?c.cur.y:(pilePos(c.pile).y-40);return {x:cx,y:cy+40,rot:0,rotY:180,sc:1,z:40};}};
+return [open,close];}
+
+function shuffleCascade(myToken,peekId,done){
+const order=cards.map(function(c){return c.pile;});
+let L=order.slice(),R=[];const ph=[];
+const snap=function(Larr,Rarr,lift){const m={};
+Larr.forEach(function(id,seq){m[id]=gameStack(LEFT,seq,Larr.length);});
+Rarr.forEach(function(id,seq){m[id]=gameStack(RIGHT,seq,Rarr.length);});
+if(lift){const n=lift.length;const topY=Larr.length?(CY+(-(Larr.length-1)/2)*2.4):CY;
+lift.forEach(function(id,k){const off=k-(n-1)/2;m[id]={x:LEFT+off*5,y:topY-30-k*1.5,rot:off*6,rotY:180+off*9,sc:1.06,z:80+k};});}
+return m;};
+const sizes=randParts(order.length,3);
+for(const sz of sizes){if(!L.length)break;const pkt=L.splice(0,sz);
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){return snap(L,R,pkt)[id];},{dur:.34,ease:'outC',stagger:18,gap:55}));
+R=pkt.concat(R);
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){return snap(L,R,null)[id];},{dur:.34,ease:'inOutC',stagger:16,gap:65,trail:false}));}
+ph.push.apply(ph,makePeek(peekId));
+const deck=R.concat(L);const cut=1+rint(deck.length-2);
+const cA=deck.slice(0,cut),cB=deck.slice(cut);
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){const i=deck.indexOf(id);return gameStack(CENTER,i,deck.length);},{dur:.34,ease:'inOutC',stagger:14,gap:60,trail:false}));
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){const ia=cA.indexOf(id);if(ia>=0)return{x:CENTER+34+ia*1.5,y:CY-22+(ia-(cA.length-1)/2)*2.4,rot:5,rotY:180+14,sc:1,z:30-ia};const ib=cB.indexOf(id);return{x:CENTER-34+ib*1.5,y:CY+22+(ib-(cB.length-1)/2)*2.4,rot:-5,rotY:180-14,sc:1,z:20-ib};},{dur:.34,ease:'outC',stagger:16,gap:70,trail:false}));
+const order2=(Math.random()<.5?cB.concat(cA):cA.concat(cB));
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){return gameStack(CENTER,order2.indexOf(id),order2.length);},{dur:.34,ease:'inOutC',stagger:14,gap:70,trail:false}));
+playPhases(ph,function(){order2.forEach(function(id,slot){cards[id].pile=slot;cards[id].slot=slot;});done();},myToken);}
+
+function shuffleDomino(myToken,done){
+const order=cards.map(function(c){return c.pile;});
+const order2=shuffleIdx(order.length).map(function(i){return order[i];});
+const fallQ=shuffleIdx(order.length).map(function(i){return order[i];});
+const riseQ=shuffleIdx(order.length).map(function(i){return order2[i];});
+const ph=[
+makePhase(fallQ,function(id){const s=order.indexOf(id),sp=gameSpread(s);return{x:sp.x,y:sp.y,rot:sp.rot+62,rotY:180,sc:1,z:s+1};},{dur:.3,ease:'inOutC',stagger:48,gap:50,trail:false}),
+makePhase(riseQ,function(id){const s=order2.indexOf(id),sp=gameSpread(s);return{x:sp.x,y:sp.y,rot:sp.rot,rotY:180,sc:1,z:s+1};},{dur:.34,ease:'inOutC',stagger:48,gap:50,trail:false}),
+makePhase(riseQ,function(id){const s=order2.indexOf(id),sp=gameSpread(s);return{x:sp.x,y:sp.y-12,rot:sp.rot,rotY:180,sc:1.06,z:s+30};},{dur:.22,ease:'outC',stagger:42,gap:30,trail:false}),
+makePhase(riseQ,function(id){const s=order2.indexOf(id),sp=gameSpread(s);return{x:sp.x,y:sp.y,rot:sp.rot,rotY:180,sc:1,z:s+1};},{dur:.26,ease:'inOutC',stagger:42,gap:60,trail:false})];
+playPhases(ph,function(){order2.forEach(function(id,slot){cards[id].pile=slot;cards[id].slot=slot;});done();},myToken);}
+
+function shuffleAccordion(myToken,done){
+const order=cards.map(function(c){return c.pile;});
+const sizes=randParts(order.length,3);const nF=sizes.length;
+const foldXc=sizes.map(function(_,i){return(i-(nF-1)/2)*26;});
+const foldX=sizes.map(function(_,i){return(i-(nF-1)/2)*81;});
+const folds=[];let cur=0;sizes.forEach(function(sz){folds.push(order.slice(cur,cur+sz));cur+=sz;});
+const foldOf=function(id){return folds.findIndex(function(f){return f.includes(id);});};
+const kOf=function(id){return folds[foldOf(id)].indexOf(id);};
+const lenOf=function(id){return folds[foldOf(id)].length;};
+const yOf=function(id){const k=kOf(id),n=lenOf(id);return CY+(k-(n-1)/2)*2.4;};
+const p1={};cards.forEach(function(c){const id=c.id,f=foldOf(id);p1[id]={x:foldX[f]+kOf(id)*0.8,y:yOf(id),rot:0,rotY:180+(f%2?24:-24),sc:1,z:f*10+kOf(id)};});
+const p2={};cards.forEach(function(c){const id=c.id,f=foldOf(id);p2[id]={x:foldXc[f]+kOf(id)*0.8,y:yOf(id),rot:0,rotY:180+(f%2?34:-34),sc:1,z:f*10+kOf(id)};});
+const fp=shuffleIdx(nF);const newFolds=fp.map(function(i){return folds[i];});
+const p3={};cards.forEach(function(c){const id=c.id,f=foldOf(id),nf=newFolds.indexOf(folds[f]);p3[id]={x:foldXc[nf]+kOf(id)*0.8,y:yOf(id),rot:0,rotY:180+(nf%2?34:-34),sc:1,z:nf*10+kOf(id)};});
+const order2=newFolds.flat();
+const p4={};order2.forEach(function(id,slot){const a=(slot-4)*16*Math.PI/180;p4[id]={x:Math.sin(a)*104,y:-Math.cos(a)*64+34,rot:a*34,rotY:180,sc:1,z:slot+1};});
+const ph=[
+makePhase(cards.map(function(c){return c.id;}),function(id){return p1[id];},{dur:.42,ease:'inOutC',stagger:20,gap:60,trail:false}),
+makePhase(cards.map(function(c){return c.id;}),function(id){return p2[id];},{dur:.34,ease:'inOutC',stagger:18,gap:60,trail:false}),
+makePhase(cards.map(function(c){return c.id;}),function(id){return p3[id];},{dur:.46,ease:'inOutC',stagger:24,gap:70,trail:false}),
+makePhase(cards.map(function(c){return c.id;}),function(id){return p4[id];},{dur:.42,ease:'outC',stagger:24,gap:60,trail:false})];
+playPhases(ph,function(){order2.forEach(function(id,slot){cards[id].pile=slot;cards[id].slot=slot;});done();},myToken);}
+
+function shufflePendulum(myToken,peekId,done){
+const order=cards.map(function(c){return c.pile;});
+const split=randSplit(order);const even=split[0],odd=split[1];
+const beats=2+rint(3);const ph=[];
+let leftEven=Math.random()<.5;
+for(let b=0;b<beats;b++){
+const amp=100*Math.pow(0.62,b);const ay=26*Math.pow(0.62,b);
+const le=leftEven;
+ph.push(makePhase(cards.map(function(c){return c.id;}),function(id){const m={};const lg=le?even:odd,rg=le?odd:even;
+const place=function(g,side){const n=g.length;g.forEach(function(id2,k){const off=k-(n-1)/2;
+m[id2]={x:(side<0?-amp:amp)+off*3,y:-ay+off*4,rot:side<0?-14:14,rotY:180,sc:1,z:(side<0?k:k+20)};});};
+place(lg,-1);place(rg,1);return m[id];},{dur:.38,ease:'inOutC',stagger:16,gap:30,trail:false}));
+leftEven=!leftEven;}
+const peekPhases=makePeek(peekId);
+const mid=Math.ceil(beats/2);
+ph.splice.apply(ph,[mid,0].concat(peekPhases));
+const order2=interleave(even,odd);
+playPhases(ph,function(){order2.forEach(function(id,slot){cards[id].pile=slot;cards[id].slot=slot;});done();},myToken);}
+function dealCardsSmooth(myToken,done){
+const st=$('#cardsStage');
+st.classList.add('no-trans');
+const ids=cards.map(c=>c.id);
+const ph=makePhase(ids,function(id){
+const c=cards[id];const fp=finalPos(c.slot);
+return {x:fp.x,y:fp.y,rot:fp.rot,rotY:180,sc:1,z:c.slot+1};
+},{dur:.45,ease:'outC',stagger:28,gap:60,trail:false});
+playPhases([ph],function(){
+st.classList.remove('no-trans');
+done&&done();
+},myToken);
+}
 function startSpin(){
-const free=S.tutPhase==='cards';
-if(cardPhase!=='memorize')return;
-if(!free&&S.dew<CONFIG.SPIN_COST)return;
-if(!free)S.dew-=CONFIG.SPIN_COST;
-if(S.dailyProg)S.dailyProg.spins=(S.dailyProg.spins||0)+1;
-save();updateHUD();
-const myToken=++spinToken;
-cardPhase='gather';$('#cardsStage').classList.add('shuffling');
-cards.forEach(c=>{c.revealed=false;c.picked=false;setCard(c,pilePos(c.id),false,c.id,true);});
+const free=S.tutPhase==='cards';if(cardPhase!=='memorize')return;if(!free&&S.dew<CONFIG.SPIN_COST)return;if(!free)S.dew-=CONFIG.SPIN_COST;if(S.dailyProg)S.dailyProg.spins=(S.dailyProg.spins||0)+1;save();updateHUD();const myToken=++spinToken;cardPhase='gather';$('#cardsStage').classList.add('shuffling');$('#cardsStage').classList.add('no-trans');cards.forEach(c=>{c.revealed=false;c.picked=false;setCard(c,pilePos(c.id),false,c.id,true);});sfx.flip();setTimeout(()=>{if(spinToken!==myToken)return;cardPhase='shuffle';
+  // выбор анимации с весами
+  const r = Math.random();
+  let chosen, peekId = null;
+if(r < 0.30){ chosen = 'swaps'; }
+else if(r < 0.60){ chosen = 'domino'; }
+else if(r < 0.90){ chosen = 'accordion'; }
+else if(r < 0.95){ chosen = 'cascade'; peekId = cards.find(c=>c.plus===5)?.id; }
+else { chosen = 'pendulum'; peekId = cards.find(c=>c.plus===5)?.id; }
+$('#cardsStage').classList.remove('shuffling');
+$('#cardsStage').classList.add('no-trans');
+const runAnim = (cb) => {
+    if(chosen==='swaps'){
+      const pairs=[];for(let s=0;s<CONFIG.ROULETTE.SWAP_COUNT;s++){let i=Math.floor(Math.random()*cards.length),j=Math.floor(Math.random()*cards.length);let guard=0;while(j===i&&guard<8){j=Math.floor(Math.random()*cards.length);guard++;}pairs.push([cards[i],cards[j]]);}
+      runSwaps(pairs,0,myToken,cb);
+    } else if(chosen==='cascade'){
+      shuffleCascade(myToken, peekId, cb);
+    } else if(chosen==='domino'){
+      shuffleDomino(myToken, cb);
+    } else if(chosen==='accordion'){
+      shuffleAccordion(myToken, cb);
+    } else if(chosen==='pendulum'){
+      shufflePendulum(myToken, peekId, cb);
+    }
+  };
+  
+runAnim(()=>{if(spinToken!==myToken)return;cardPhase='deal';$('#cardsStage').classList.remove('shuffling');
+cards.forEach(c=>{c.slot=c.pile;});
 sfx.flip();
-setTimeout(()=>{if(spinToken!==myToken)return;
-cardPhase='shuffle';
-const pairs=[];
-for(let s=0;s<CONFIG.ROULETTE.SWAP_COUNT;s++){let i=Math.floor(Math.random()*cards.length),j=Math.floor(Math.random()*cards.length);
-let guard=0;while(j===i&&guard<8){j=Math.floor(Math.random()*cards.length);guard++;}
-pairs.push([cards[i],cards[j]]);}
-runSwaps(pairs,0,myToken,()=>{if(spinToken!==myToken)return;
-cardPhase='deal';$('#cardsStage').classList.remove('shuffling');
-cards.forEach(c=>{c.slot=c.pile;setCard(c,finalPos(c.slot),false,c.slot,true);});
-sfx.flip();
-setTimeout(()=>{if(spinToken!==myToken)return;cardPhase='pick';renderCards();updateSpinBtn();},CONFIG.ROULETTE.DEAL_MS);
-});
-},CONFIG.ROULETTE.GATHER_MS);}
+const ids=cards.map(c=>c.id);
+const ph=makePhase(ids,function(id){
+const c=cards[id];const fp=finalPos(c.slot);
+return {x:fp.x,y:fp.y,rot:fp.rot,rotY:180,sc:1,z:c.slot+1};
+},{dur:.45,ease:'outC',stagger:28,gap:60,trail:false});
+playPhases([ph],function(){
+$('#cardsStage').classList.remove('no-trans');
+if(spinToken!==myToken)return;cardPhase='pick';renderCards();updateSpinBtn();
+},myToken);
+});},CONFIG.ROULETTE.GATHER_MS);}
 function updateSpinBtn(){
 const sb=$('#spinBtn');
 const free=S.tutPhase==='cards';
-const can=cardPhase==='memorize'&&(free||S.dew>=CONFIG.SPIN_COST);
+const cost=free?0:CONFIG.SPIN_COST*cardMul;
+const can=cardPhase==='memorize'&&(free||S.dew>=cost);
 sb.disabled=!can;sb.classList.toggle('can',can);
-sb.innerHTML=free?'Перемешать · бесплатно':('Перемешать · <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> '+CONFIG.SPIN_COST);}
+sb.innerHTML=free?'Перемешать · бесплатно':('Перемешать · <svg viewBox="0 0 16 16"><path d="M8 1.5C8 1.5 3.5 6.5 3.5 9.8a4.5 4.5 0 0 0 9 0C12.5 6.5 8 1.5 8 1.5Z" fill="#0a5a6e"/></svg> '+fmt(cost));}
 let abilTip=null,lpTimer=null,lpFired=false;
 function showAbilTip(e,a,l){
 hideAbilTip();
@@ -1425,13 +1669,14 @@ S.treeSkin=k;sfx.claim();pulse=1;leafBurst();
 save();renderSkins();updateHUD();applyTreeSkin();}
 $('#skinGrid').addEventListener('click',e=>{const c=e.target.closest('[data-tree]');if(c)pickTree(c.dataset.tree);});
 function renderShop(){renderSkins();}
-function burst(x,y,r,c){const n=Math.min(26,8+r);
+function burst(x,y,r,c){let n=Math.min(26,8+r);if(!S.quality)n=Math.max(2,Math.round(n*0.3));
 for(let i=0;i<n;i++){const a=rand(0,TAU),v=rand(20,90+r*3);
 parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-20,l:rand(.35,.7),ml:.7,sz:rand(1.5,3.2),c});}
 parts.push({ring:true,x,y,l:.3,ml:.3,r0:r*.4,r1:r*2.2,c});}
 function puff(x,y){for(let i=0;i<4;i++)parts.push({x,y,vx:rand(-20,20),vy:rand(-20,20),l:.25,ml:.25,sz:1.6,c:'255,217,138'});}
 function leafBurst(){const g=treeGeom(),ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
-for(let i=0;i<14;i++)parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),
+const ln=S.quality?14:4;
+for(let i=0;i<ln;i++)parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),
 x:rand(-g.R,g.R)*.9,y:-g.h+rand(-g.R*.4,g.R*.3),vy:rand(16,28),l:rand(1,1.8),ml:1.8,c:ts.leafC});
 parts.push({ring:true,x:0,y:-g.h,l:.45,ml:.45,r0:g.R*.5,r1:g.R*2.4,c:ts.glow});}
 function gainDew(n,x,y,quiet){S.dew+=n;bump('#dewPill');
@@ -1466,6 +1711,8 @@ S.wave++;S.bestWave=Math.max(S.bestWave,S.wave);
 S.killed=0;spawned=0;bossActive=false;betweenT=2.6;
 S.waveQ={prog:0,done:false,claimed:false};
 if(S.dailyProg)S.dailyProg.waves=(S.dailyProg.waves||0)+1;
+if(chapterOf(S.bestWave)>=20 && !S.speedTutShown){S.speedTutShown=true;
+toast(S.lang==='ru'?'⚡ Скорость ×2 разблокирована в настройках!':'⚡ ×2 speed unlocked in settings!');}
 if(finishedWave%7===0){const ch=chapterOf(finishedWave);
 if(S.chaptersCleared<ch){S.chaptersCleared=ch;
 banner(t('chap')+' '+stageOf(finishedWave)+'!', (S.lang==='ru'?'награда в пропуске':'pass reward'), 'chap');}}
@@ -1773,7 +2020,7 @@ leafT-=dt;
 if(leafT<=0){
 leafT=(ts.leafKind==='petal'||ts.leafKind==='leaf')?rand(.7,1.6):rand(1.1,2.2);
 const up=ts.leafKind==='spark';
-parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),x:rand(-g.R,g.R)*.8,y:-g.h+rand(-g.R*.4,g.R*.3),
+if(S.quality)parts.push({leaf:true,lk:ts.leafKind,ph:rand(0,TAU),x:rand(-g.R,g.R)*.8,y:-g.h+rand(-g.R*.4,g.R*.3),
 vy:up?rand(-18,-10):rand(14,26),l:rand(1.2,2.2),ml:2.2,c:ts.leafC});}
 for(let i=parts.length-1;i>=0;i--){const p=parts[i];p.l-=dt;
 if(p.l<=0){parts.splice(i,1);continue;}
@@ -1948,6 +2195,7 @@ function ensureAssets(){
 if(!barkMat){
 barkMat=new THREE.MeshStandardMaterial({color:0x6b5138,roughness:0.85});
 barkDarkMat=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:0.9});
+if(THREE.Plane){barkDarkMat.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,1,0),0.25)];barkDarkMat.clipShadows=true;}
 leafMaterial=new THREE.MeshStandardMaterial({color:0x4b9463,roughness:0.4,side:THREE.DoubleSide});
 const s=new THREE.Shape();
 s.moveTo(0,-0.5);s.bezierCurveTo(0.2,-0.3,0.3,0.3,0,0.5);s.bezierCurveTo(-0.3,0.3,-0.2,-0.3,0,-0.5);
@@ -1959,11 +2207,12 @@ try{
 canvas=document.createElement('canvas');canvas.width=SIZE;canvas.height=SIZE;
 renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,preserveDrawingBuffer:true});
 renderer.setSize(SIZE,SIZE);renderer.setPixelRatio(1);
+renderer.localClippingEnabled=true;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
 scene=new THREE.Scene();
 camera=new THREE.PerspectiveCamera(45,1,0.5,80);
-camera.position.set(8.5,6,12.5);camera.lookAt(0,2,0);
+camera.position.set(7,9,10.5);camera.lookAt(0,1.3,0);
 scene.add(new THREE.AmbientLight(0x8db2c4,0.9));
 const sun=new THREE.DirectionalLight(0xfff5e6,4.5);
 sun.position.set(10,15,5);sun.castShadow=true;
@@ -2084,7 +2333,7 @@ const len=branchLength*(0.7+randFn()*0.5);
 const rad=branchRadius*(0.7+randFn()*0.5);
 addBranches(new THREE.Vector3(0,startY,0),len,rad,angleY,angleZ,0,2,randFn,leafAccum,cfg);
 }
-const rootStartY=0.15;const startRadius=0.25;
+const rootStartY=0.0;const startRadius=0.25;
 for(let i=0;i<cfg.rootCount;i++){
 const baseAngle=(i/cfg.rootCount)*Math.PI*2;
 const angle=baseAngle+(randFn()-0.5)*0.5;
@@ -2112,8 +2361,10 @@ function render(t,time,shake){
 if(!ready)return null;
 const tq=Math.round(t*50)/50;
 if(tq!==builtT)build(tq);
-treeGroup.rotation.z=Math.sin(time*1.3)*0.015+(shake||0)*0.02*Math.sin(time*60);
-treeGroup.rotation.x=Math.cos(time*0.9)*0.008;
+const tiltX=-0.12+Math.cos(time*0.9)*0.008;
+const tiltZ=Math.sin(time*1.3)*0.015+(shake||0)*0.02*Math.sin(time*60);
+treeGroup.rotation.x=tiltX;treeGroup.rotation.z=tiltZ;
+rootsGroup.rotation.x=tiltX;rootsGroup.rotation.z=tiltZ;
 renderer.render(scene,camera);
 return canvas;
 }
@@ -2346,10 +2597,13 @@ drawSquirrel();drawShots();drawParts();drawFloats();
 ctx.restore();}
 let last=performance.now();
 function loop(now){requestAnimationFrame(loop);
-let dt=(now-last)/1000;last=now;if(dt>.05)dt=.05;T+=dt;
+let dt=(now-last)/1000;last=now;if(dt>.05)dt=.05;
+const frozen=['boost','cards','powers','new'].includes(S.tutPhase);
+const gdt=dt*((!S.over&&!frozen)?(S.speed||1):1);
+T+=gdt;
 FRR=rootReach();
-try{ if(!S.over)simulate(dt); }catch(err){ if(!loop.errS){loop.errS=true;console.error('sim:',err);} }
-try{ updateFx(dt);render(dt); }catch(err){ if(!loop.errR){loop.errR=true;console.error('render:',err);} }
+try{ if(!S.over)simulate(gdt); }catch(err){ if(!loop.errS){loop.errS=true;console.error('sim:',err);} }
+try{ updateFx(gdt);render(gdt); }catch(err){ if(!loop.errR){loop.errR=true;console.error('render:',err);} }
 dispSeeds+=(S.seeds-dispSeeds)*Math.min(1,dt*10);
 if(Math.abs(S.seeds-dispSeeds)<.5)dispSeeds=S.seeds;
 const s=fmt(dispSeeds);if(s!==lastStr){lastStr=s;el.seeds.textContent=s;}}
@@ -2421,6 +2675,12 @@ $('#shopClose').addEventListener('click',()=>closeSheet('#shopOverlay'));
 $('#setClose').addEventListener('click',()=>closeSheet('#setOverlay'));
 $('#spinBtn').addEventListener('click',startSpin);
 $('#claimBtn').addEventListener('click',claimCards);
+$('#cardMulRow').addEventListener('click',e=>{const b=e.target.closest('[data-cmul]');if(!b)return;cardMul=+b.dataset.cmul;$('#cardMulRow').querySelectorAll('.mul-btn').forEach(x=>x.classList.toggle('on',x===b));refreshCardFaces();updateSpinBtn();});
+function syncSpeedUI(){const ch=chapterOf(S.bestWave);const s2=$('#speed2Btn'),s4=$('#speed4Btn');if(s2)s2.classList.toggle('locked',ch<20);if(s4)s4.classList.remove('locked');document.querySelectorAll('.speed-btn').forEach(b=>b.classList.toggle('on',+b.dataset.speed===(S.speed||1)));}
+document.querySelector('.speed-row').addEventListener('click',e=>{const b=e.target.closest('.speed-btn');if(!b||b.classList.contains('locked'))return;const spd=+b.dataset.speed;
+if(spd===4&&!S.speed4Bought){if(S.amber>=50){if(confirm(S.lang==='ru'?'Купить скорость ×4 за 50 янтаря?':'Buy ×4 speed for 50 amber?')){S.amber-=50;S.speed4Bought=true;S.speed=4;bump('#amberPill');save();updateHUD();syncSpeedUI();}}else{toast(S.lang==='ru'?'Недостаточно янтаря':'Not enough amber');}return;}
+if(spd===2&&chapterOf(S.bestWave)<20){return;}
+S.speed=spd;syncSpeedUI();save();});
 let treeDrag=null;
 function initTreeDrag(){
 const container=$('#skillTreeContainer');const tree=$('#skillTree');
@@ -2454,9 +2714,15 @@ const was=$('#setOverlay').classList.contains('open');
 closeAllSheets();
 if(!was){open('#setOverlay');
 $('#volRange').value=Math.round((S.vol==null?1:S.vol)*100);$('#volVal').textContent=$('#volRange').value+'%';
-const st=$('#shakeTog');st.textContent=S.shake?'Вкл':'Выкл';st.classList.toggle('on',S.shake);}});
+$('#musicRange').value=Math.round((S.musicVol||0)*100);$('#musicVal').textContent=$('#musicRange').value+'%';
+const st=$('#shakeTog');st.textContent=S.shake?(S.lang==='ru'?'Вкл':'On'):(S.lang==='ru'?'Выкл':'Off');st.classList.toggle('on',S.shake);
+const q=$('#qualityTog');q.textContent=S.quality?(S.lang==='ru'?'Вкл':'On'):(S.lang==='ru'?'Выкл':'Off');q.classList.toggle('on',S.quality);
+syncSpeedUI();}});
 $('#volRange').addEventListener('input',e=>{S.vol=+e.target.value/100;$('#volVal').textContent=e.target.value+'%';save();});
-$('#shakeTog').addEventListener('click',()=>{S.shake=!S.shake;const st=$('#shakeTog');st.textContent=S.shake?'Вкл':'Выкл';st.classList.toggle('on',S.shake);save();});
+$('#musicRange').addEventListener('input',e=>{S.musicVol=+e.target.value/100;$('#musicVal').textContent=e.target.value+'%';applyMusicVol();save();});
+$('#shakeTog').addEventListener('click',()=>{S.shake=!S.shake;const st=$('#shakeTog');st.textContent=S.shake?(S.lang==='ru'?'Вкл':'On'):(S.lang==='ru'?'Выкл':'Off');st.classList.toggle('on',S.shake);save();});
+$('#qualityTog').addEventListener('click',()=>{S.quality=!S.quality;const q=$('#qualityTog');q.textContent=S.quality?(S.lang==='ru'?'Вкл':'On'):(S.lang==='ru'?'Выкл':'Off');q.classList.toggle('on',S.quality);save();});
+$('#resetProgressBtn').addEventListener('click',()=>{if(confirm(t('resetConfirm'))){if(confirm(t('resetConfirm'))){fullReset();closeSheet('#setOverlay');}}});
 $('#langRu').addEventListener('click',()=>{S.lang='ru';save();applyLang();});
 $('#langEn').addEventListener('click',()=>{S.lang='en';save();applyLang();});
 function applyLang(){document.documentElement.lang=S.lang;
@@ -2489,11 +2755,13 @@ S.abilities={};S.equip=[];S.treeSkins=['oak'];S.treeSkin='oak';S.skill={};
 S.dailyDate=0;S.dailyDone={};S.dailyProg={kills:0,waves:0,spins:0,crits:0,upg:0};
 S.waveQ={prog:0,done:false,claimed:false};S.onceDone={};S.chaptersCleared=0;
 S.huntKills=0;S.huntDone=0;S.passDone={};S.tutorialDone=false;S.tutPhase='new';S.over=false;
+S.speed=1;S.speed4Bought=false;S.musicVol=0;S.quality=true;S.speedTutShown=false;
 S.treeHp=maxHpOf(S);
 enemies.length=0;shots.length=0;roots.length=0;zones.length=0;parts.length=0;floats.length=0;
 spawned=0;bossActive=false;betweenT=2.4;spawnT=1.4;
-runKills=0;runSeeds=0;dispSeeds=S.seeds;lastStr='';buyMul=1;tutStep='tab';
+runKills=0;runSeeds=0;dispSeeds=S.seeds;lastStr='';buyMul=1;cardMul=1;tutStep='tab';
 $('#mulRow').querySelectorAll('.mul-btn').forEach(x=>x.classList.toggle('on',x.dataset.mul==='1'));
+const cmr=$('#cardMulRow');if(cmr)cmr.querySelectorAll('.mul-btn').forEach(x=>x.classList.toggle('on',x.dataset.cmul==='1'));
 refreshTutUI();updateTutHighlights();applyTreeSkin();save();updateHUD();toast('Прогресс сброшен');
 }
 $('#resetBtn').addEventListener('click',()=>{if(confirm(t('resetConfirm'))){fullReset();}});
