@@ -2197,6 +2197,7 @@ ctx.stroke();}}
 function drawRadiusIndicator(){
 if(!showRadiusCheat)return;
 const rx=FRR, ry=FRR*ISO;
+/* Эллипс радиуса */
 ctx.strokeStyle='rgba(255,255,100,.85)';
 ctx.lineWidth=2;
 ctx.setLineDash([8,4]);
@@ -2204,10 +2205,25 @@ ctx.beginPath();
 ctx.ellipse(cx,cy,rx,ry,0,0,TAU);
 ctx.stroke();
 ctx.setLineDash([]);
+/* Центр: крестик */
+const cs=10;
+ctx.strokeStyle='rgba(255,80,80,.95)';
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.moveTo(cx-cs,cy);ctx.lineTo(cx+cs,cy);
+ctx.moveTo(cx,cy-cs);ctx.lineTo(cx,cy+cs);
+ctx.stroke();
+/* Центр: точка */
+ctx.fillStyle='rgba(255,80,80,1)';
+ctx.beginPath();ctx.arc(cx,cy,3,0,TAU);ctx.fill();
+/* Подписи */
 ctx.fillStyle='rgba(255,255,100,.7)';
 ctx.font='700 11px Manrope, sans-serif';
 ctx.textAlign='center';
-ctx.fillText('R='+Math.round(FRR),cx,cy-ry-8);}
+ctx.fillText('R='+Math.round(FRR),cx,cy-ry-8);
+ctx.fillStyle='rgba(255,80,80,.9)';
+ctx.font='700 9px Manrope, sans-serif';
+ctx.fillText('ЦЕНТР',cx,cy+cs+12);}
 function drawZones(){
 for(const z of zones){
 if(z.kind==='vine'){
