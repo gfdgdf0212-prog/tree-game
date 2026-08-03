@@ -857,7 +857,6 @@ for(let i=0;i<10;i++)edges.push({x:r()*W,y:r()*H*0.14});
 for(let i=0;i<12;i++)edges.push({x:r()*W,y:H-r()*H*0.16});
 edges.forEach((p)=>{const big=r()<.5;
 scenery.push({type:big?'tree':'bush',x:p.x,y:p.y,s:big?(.7+r()*.6):(.6+r()*.5),ph:r()*TAU,sw:big?(.5+r()*.5):(.8+r()*.6)});});
-for(let i=0;i<80;i++)scenery.push({type:'grass',x:r()*W,y:r()*H,s:.6+r()*.8,ph:r()*TAU});
 }
 function makeGround(){
 ground=document.createElement('canvas');ground.width=cv.width;ground.height=cv.height;
@@ -2035,19 +2034,6 @@ function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h
 ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function radg(x,y,r0,r1,stops){const g=ctx.createRadialGradient(x,y,r0,x,y,r1);
 for(const s of stops)g.addColorStop(s[0],s[1]);return g;}
-function drawGrass(){
-const swayBase=Math.sin(windT*.7)*3+gust*7;
-ctx.strokeStyle='rgba(96,140,102,.5)';ctx.lineWidth=1.4;ctx.lineCap='round';
-ctx.beginPath();
-for(const s of scenery){
-if(s.type!=='grass')continue;
-const sway=(Math.sin(windT*1.1+s.ph)*2+swayBase)*s.sw;
-const h=8*s.s;
-for(let k=-1;k<=1;k++){ctx.moveTo(s.x+k*2.4,s.y);
-ctx.quadraticCurveTo(s.x+k*2.4+sway*.4,s.y-h*.6,s.x+k*3+sway,s.y-h);}
-}
-ctx.stroke();
-}
 function drawSceneryObj(s){
 const swayBase=Math.sin(windT*.7)*3+gust*7;
 const sway=(Math.sin(windT*1.1+s.ph)*2+swayBase)*s.sw;
@@ -2158,217 +2144,617 @@ const pr=clamp(p.t,0,1);ctx.fillStyle='rgba(92,66,40,'+(0.4*pr).toFixed(2)+')';e
 }
 }
 }
-function drawAttackRing(){
-const rr2=FRR;const n=110;
-ctx.lineCap='round';
-for(let i=0;i<n;i++){
-const a=i/n*TAU+Math.sin(i*7.31)*.05;
-const rad=rr2+Math.sin(i*3.7)*3;
-const x=cx+Math.cos(a)*rad,y=cy+Math.sin(a)*rad*ISO;
-const hgt=5+4*Math.abs(Math.sin(i*2.9));
-const sway=Math.sin(windT*1.4+i)*1.8+gust*5;
-const al=.35+.3*Math.abs(Math.sin(i*1.7));
-ctx.strokeStyle='rgba(158,208,128,'+al.toFixed(2)+')';ctx.lineWidth=1.5;
-ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+sway*.4,y-hgt*.6,x+sway,y-hgt);ctx.stroke();
-const x2=cx+Math.cos(a+0.028)*rad,y2=cy+Math.sin(a+0.028)*rad*ISO;
-ctx.strokeStyle='rgba(110,160,96,'+(al*.8).toFixed(2)+')';ctx.lineWidth=1.2;
-ctx.beginPath();ctx.moveTo(x2,y2);ctx.quadraticCurveTo(x2+sway*.3,y2-hgt*.5,x2+sway*.8,y2-hgt*.8);ctx.stroke();
-}}
-function drawRootKnobs(){
-const g=treeGeom(),rr2=FRR;const kn=rng(4242);
-for(let i=0;i<14;i++){
-const a=kn()*TAU,d=g.R*1.6+kn()*Math.max(20,rr2*0.85-g.R*1.6);
-const kx=cx+Math.cos(a)*d,ky=cy+Math.sin(a)*d*ISO;
-const kw=4+kn()*5,kh=kw*.45;
-ctx.fillStyle='rgba(0,0,0,.3)';ell(kx,ky+1.5,kw,kh);
-ctx.fillStyle='#3a2c1c';ctx.beginPath();ctx.ellipse(kx,ky,kw,kh,0,Math.PI,TAU);ctx.fill();
-ctx.fillStyle='#5d4830';ctx.beginPath();ctx.ellipse(kx-kw*.2,ky-kh*.4,kw*.5,kh*.4,0,Math.PI,TAU);ctx.fill();
-}}
-/* ═══════════ 3D-ДЕРЕВО (Three.js) ═══════════ */
+/* ═══════════ 3D-ДЕРЕВО + 3D-ТРАВА + СТАТИЧНЫЕ ТЕНИ ═══════════ */
 const Tree3D=(()=>{
 const SIZE=448, BASE_Y=0.57;
-let renderer,scene,camera,treeGroup,rootsGroup,leafInstancedMesh=null,canvas=null,builtT=-1,ready=false;
-let barkMat,barkDarkMat,leafMaterial,leafGeom;
-function pseudoRandom(seed){let s=seed;return()=>{s=(s*16807+0)%2147483647;return (s-1)/2147483646;};}
+
+let renderer,scene,camera;
+let treeGroup,rootsGroup,grassGroup,ground;
+let leafInstancedMesh=null,grassInstancedMesh=null;
+let glCanvas=null,groundCanvas=null,treeCanvas=null,gctx=null,tctx=null;
+let builtT=-1,ready=false,needGround=true;
+
+let barkMat,barkDarkMat,leafMaterial,leafGeom,grassMaterial;
+
+function pseudoRandom(seed){
+  let s=seed;
+  return()=>{s=(s*16807+0)%2147483647;return (s-1)/2147483646;};
+}
 function percentToAmplitude(p){return (p/100)*0.15;}
+
 function ensureAssets(){
-if(!barkMat){
-barkMat=new THREE.MeshStandardMaterial({color:0x6b5138,roughness:0.85});
-barkDarkMat=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:0.9});
-if(THREE.Plane){barkDarkMat.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,1,0),0.25)];barkDarkMat.clipShadows=true;}
-leafMaterial=new THREE.MeshStandardMaterial({color:0x4b9463,roughness:0.4,side:THREE.DoubleSide});
-const s=new THREE.Shape();
-s.moveTo(0,-0.5);s.bezierCurveTo(0.2,-0.3,0.3,0.3,0,0.5);s.bezierCurveTo(-0.3,0.3,-0.2,-0.3,0,-0.5);
-leafGeom=new THREE.ShapeGeometry(s);leafGeom.scale(0.35,0.35,1);
-}}
+  if(!barkMat){
+    barkMat=new THREE.MeshStandardMaterial({color:0x6b5138,roughness:0.85});
+    barkDarkMat=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:0.9});
+
+    if(THREE.Plane){
+      barkDarkMat.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,1,0),0.25)];
+      barkDarkMat.clipShadows=true;
+    }
+
+    leafMaterial=new THREE.MeshStandardMaterial({color:0x4b9463,roughness:0.4,side:THREE.DoubleSide});
+    grassMaterial=new THREE.MeshStandardMaterial({color:0x2c4a32,roughness:0.7});
+
+    const s=new THREE.Shape();
+    s.moveTo(0,-0.5);
+    s.bezierCurveTo(0.2,-0.3,0.3,0.3,0,0.5);
+    s.bezierCurveTo(-0.3,0.3,-0.2,-0.3,0,-0.5);
+    leafGeom=new THREE.ShapeGeometry(s);
+    leafGeom.scale(0.35,0.35,1);
+  }
+}
+
 function init(){
-if(!THREE){ready=false;return;}
-try{
-canvas=document.createElement('canvas');canvas.width=SIZE;canvas.height=SIZE;
-renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,preserveDrawingBuffer:true});
-renderer.setSize(SIZE,SIZE);renderer.setPixelRatio(1);
-renderer.localClippingEnabled=true;
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;
-scene=new THREE.Scene();
-camera=new THREE.PerspectiveCamera(45,1,0.5,80);
-camera.position.set(7,9,10.5);camera.lookAt(0,1.3,0);
-scene.add(new THREE.AmbientLight(0x8db2c4,0.9));
-const sun=new THREE.DirectionalLight(0xfff5e6,4.5);
-sun.position.set(10,15,5);sun.castShadow=true;
-sun.shadow.mapSize.width=1024;sun.shadow.mapSize.height=1024;
-sun.shadow.camera.near=0.5;sun.shadow.camera.far=60;
-sun.shadow.camera.left=-12;sun.shadow.camera.right=12;
-sun.shadow.camera.top=12;sun.shadow.camera.bottom=-6;
-sun.shadow.bias=-0.0002;sun.shadow.normalBias=0.02;
-scene.add(sun);
-const fill=new THREE.DirectionalLight(0xb3d0e0,1.0);fill.position.set(-5,2,-3);scene.add(fill);
-treeGroup=new THREE.Group();rootsGroup=new THREE.Group();
-scene.add(treeGroup);scene.add(rootsGroup);
-ensureAssets();ready=true;
-}catch(e){ready=false;console.warn('3D init failed',e);}
+  if(!THREE){ready=false;return;}
+  try{
+    glCanvas=document.createElement('canvas');
+    glCanvas.width=SIZE;
+    glCanvas.height=SIZE;
+
+    renderer=new THREE.WebGLRenderer({
+      canvas:glCanvas,
+      alpha:true,
+      antialias:true,
+      preserveDrawingBuffer:true
+    });
+
+    renderer.setSize(SIZE,SIZE);
+    renderer.setPixelRatio(1);
+    renderer.setClearColor(0x000000,0);
+
+    renderer.localClippingEnabled=true;
+
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    // Статичные тени: не пересчитываем каждый кадр
+    renderer.shadowMap.autoUpdate=false;
+
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.2;
+
+    scene=new THREE.Scene();
+
+    camera=new THREE.PerspectiveCamera(45,1,0.5,80);
+    camera.position.set(7,9,10.5);
+    camera.lookAt(0,1.3,0);
+
+    scene.add(new THREE.AmbientLight(0x8db2c4,0.9));
+
+    const sun=new THREE.DirectionalLight(0xfff5e6,4.5);
+    sun.position.set(10,15,5);
+    sun.castShadow=true;
+
+    sun.shadow.mapSize.width=1024;
+    sun.shadow.mapSize.height=1024;
+    sun.shadow.camera.near=0.5;
+    sun.shadow.camera.far=60;
+    sun.shadow.camera.left=-12;
+    sun.shadow.camera.right=12;
+    sun.shadow.camera.top=12;
+    sun.shadow.camera.bottom=-6;
+    sun.shadow.bias=-0.0002;
+    sun.shadow.normalBias=0.02;
+    scene.add(sun);
+
+    const fill=new THREE.DirectionalLight(0xb3d0e0,1.0);
+    fill.position.set(-5,2,-3);
+    scene.add(fill);
+
+    // Невидимая земля: только принимает тени
+    ground=new THREE.Mesh(
+      new THREE.CircleGeometry(40,48),
+      new THREE.ShadowMaterial({opacity:0.42})
+    );
+    ground.rotation.x=-Math.PI/2;
+    ground.position.y=0;
+    ground.receiveShadow=true;
+    scene.add(ground);
+
+    treeGroup=new THREE.Group();
+    rootsGroup=new THREE.Group();
+    grassGroup=new THREE.Group();
+
+    scene.add(treeGroup);
+    scene.add(rootsGroup);
+    scene.add(grassGroup);
+
+    groundCanvas=document.createElement('canvas');
+    groundCanvas.width=SIZE;
+    groundCanvas.height=SIZE;
+    gctx=groundCanvas.getContext('2d');
+
+    treeCanvas=document.createElement('canvas');
+    treeCanvas.width=SIZE;
+    treeCanvas.height=SIZE;
+    tctx=treeCanvas.getContext('2d');
+
+    ensureAssets();
+    ready=true;
+  }catch(e){
+    ready=false;
+    console.warn('3D init failed',e);
+  }
 }
-function clearGroup(g){while(g.children.length>0){const c=g.children[0];g.remove(c);if(c.geometry)c.geometry.dispose();}}
+
+function clearGroup(g){
+  while(g.children.length){
+    const c=g.children[0];
+    g.remove(c);
+    if(c.geometry && c.geometry!==leafGeom)c.geometry.dispose();
+    if(c.dispose && c!==leafInstancedMesh && c!==grassInstancedMesh){
+      try{c.dispose();}catch(e){}
+    }
+  }
+}
+
+function disposeGrass(){
+  if(grassInstancedMesh){
+    grassGroup.remove(grassInstancedMesh);
+    if(grassInstancedMesh.geometry)grassInstancedMesh.geometry.dispose();
+    if(grassInstancedMesh.dispose)grassInstancedMesh.dispose();
+    grassInstancedMesh=null;
+  }
+}
+function buildCollar(baseR,randFn){
+  // Расширяющийся конус-«юбка»: закрывает стык качающегося ствола со статичными корнями
+  const pts=[];
+  const h=baseR*2.0;
+  for(let i=0;i<=6;i++){
+    const tt=i/6;
+    pts.push(new THREE.Vector2(
+      baseR*0.75+baseR*0.85*(1-Math.pow(tt,0.65)),
+      tt*h
+    ));
+  }
+  const collar=new THREE.Mesh(new THREE.LatheGeometry(pts,12),barkDarkMat);
+  collar.castShadow=collar.receiveShadow=true;
+  rootsGroup.add(collar);
+
+  // Корневые наплывы поверх стыка
+  for(let k=0;k<5;k++){
+    const a=(k/5)*Math.PI*2+randFn()*0.7;
+    const bulge=new THREE.Mesh(new THREE.SphereGeometry(baseR*0.55,6,5),barkDarkMat);
+    bulge.position.set(Math.cos(a)*baseR*1.15,baseR*0.22,Math.sin(a)*baseR*1.15);
+    bulge.scale.set(1.35,0.55,1.35);
+    bulge.rotation.y=randFn()*Math.PI;
+    bulge.castShadow=bulge.receiveShadow=true;
+    rootsGroup.add(bulge);
+  }
+}
 function createRootWithDolphins(start,directionAngle,straightLength,numDolphins,randFn,cfg){
-const points=[];const segments=24;
-const dirX=Math.cos(directionAngle),dirZ=Math.sin(directionAngle);
-const baseAmp=percentToAmplitude(cfg.baseWavinessPercent);
-const tipAmp=cfg.tipWaviness;const baseTh=cfg.baseThickness;
-const dolphinPositions=[];
-if(numDolphins>0){for(let i=0;i<numDolphins;i++){const tt=(i+0.5)/numDolphins+(randFn()-0.5)*0.2/numDolphins;dolphinPositions.push(Math.max(0.1,Math.min(0.9,tt)));}dolphinPositions.sort((a,b)=>a-b);}
-for(let i=0;i<=segments;i++){
-const tt=i/segments;const dist=tt*straightLength;
-const x=start.x+dirX*dist;const z=start.z+dirZ*dist;
-let y=start.y-tt*0.6-Math.pow(tt,2)*0.4;
-const transition=tt<0.3?0:(tt-0.3)/0.4;
-const amplitude=baseAmp+(tipAmp-baseAmp)*Math.min(1,transition);
-const vertWave=Math.sin(tt*Math.PI*2.5+randFn()*6)*amplitude;
-const lateralWave=Math.cos(tt*Math.PI*3.2+randFn()*5)*0.25;
-y+=vertWave;
-for(const dp of dolphinPositions){const dtd=Math.abs(tt-dp);const width=0.12/numDolphins+0.08;if(dtd<width){const factor=Math.cos((dtd/width)*Math.PI*0.5);const height=0.2+amplitude*2.5;y+=height*factor;}}
-const perpX=-dirZ,perpZ=dirX;
-points.push(new THREE.Vector3(x+perpX*lateralWave,y,z+perpZ*lateralWave));
+  const points=[];
+  const segments=20;
+
+  const dirX=Math.cos(directionAngle),dirZ=Math.sin(directionAngle);
+  const baseAmp=percentToAmplitude(cfg.baseWavinessPercent);
+  const tipAmp=cfg.tipWaviness;
+  const baseTh=cfg.baseThickness;
+
+  const dolphinPositions=[];
+  if(numDolphins>0){
+    for(let i=0;i<numDolphins;i++){
+      const tt=(i+0.5)/numDolphins+(randFn()-0.5)*0.2/numDolphins;
+      dolphinPositions.push(Math.max(0.1,Math.min(0.9,tt)));
+    }
+    dolphinPositions.sort((a,b)=>a-b);
+  }
+
+  for(let i=0;i<=segments;i++){
+    const tt=i/segments;
+    const dist=tt*straightLength;
+
+    const x=start.x+dirX*dist;
+    const z=start.z+dirZ*dist;
+
+    let y=start.y-tt*0.6-Math.pow(tt,2)*0.4;
+
+    const transition=tt<0.3?0:(tt-0.3)/0.4;
+    const amplitude=baseAmp+(tipAmp-baseAmp)*Math.min(1,transition);
+
+    const vertWave=Math.sin(tt*Math.PI*2.5+randFn()*6)*amplitude;
+    const lateralWave=Math.cos(tt*Math.PI*3.2+randFn()*5)*0.25;
+
+    y+=vertWave;
+
+    for(const dp of dolphinPositions){
+      const dtd=Math.abs(tt-dp);
+      const width=0.12/numDolphins+0.08;
+      if(dtd<width){
+        const factor=Math.cos((dtd/width)*Math.PI*0.5);
+                const height=(0.2+amplitude*2.5)*0.7;
+        y+=height*factor;
+      }
+    }
+
+    const perpX=-dirZ,perpZ=dirX;
+    points.push(new THREE.Vector3(
+      x+perpX*lateralWave,
+      y,
+      z+perpZ*lateralWave
+    ));
+  }
+
+  const curve=new THREE.CatmullRomCurve3(points);
+  const tube=new THREE.Mesh(
+    new THREE.TubeGeometry(curve,segments,baseTh*0.5,5,false),
+    barkDarkMat
+  );
+
+  tube.castShadow=tube.receiveShadow=true;
+  return tube;
 }
-const curve=new THREE.CatmullRomCurve3(points);
-const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,segments*2,baseTh*0.5,6,false),barkDarkMat);
-tube.castShadow=tube.receiveShadow=true;
-return tube;
-}
+
 function createBranchMesh(start,length,radius,angleY,angleZ){
-const dir=new THREE.Vector3(Math.cos(angleY)*Math.sin(angleZ),Math.cos(angleZ),Math.sin(angleY)*Math.sin(angleZ)).normalize();
-const end=start.clone().add(dir.clone().multiplyScalar(length));
-const mid=start.clone().add(end).multiplyScalar(0.5);
-const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*0.8,radius,length,6),barkMat);
-mesh.position.copy(mid);
-mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
-mesh.castShadow=mesh.receiveShadow=true;
-return{mesh,end,dir};
+  const dir=new THREE.Vector3(
+    Math.cos(angleY)*Math.sin(angleZ),
+    Math.cos(angleZ),
+    Math.sin(angleY)*Math.sin(angleZ)
+  ).normalize();
+
+  const end=start.clone().add(dir.clone().multiplyScalar(length));
+  const mid=start.clone().add(end).multiplyScalar(0.5);
+
+  const mesh=new THREE.Mesh(
+    new THREE.CylinderGeometry(radius*0.8,radius,length,5),
+    barkMat
+  );
+
+  mesh.position.copy(mid);
+  mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
+  mesh.castShadow=mesh.receiveShadow=true;
+
+  return {mesh,end,dir};
 }
+
 function addBranches(start,length,radius,angleY,angleZ,depth,maxDepth,randFn,leafAcc,cfg){
-const{mesh,end}=createBranchMesh(start,length,radius,angleY,angleZ);
-treeGroup.add(mesh);
-if(depth===maxDepth){
-const leafCount=Math.floor((20+length*18)*cfg.leafDensity);
-const clusterRadius=(0.5+length*0.4)*cfg.leafDensity;
-const subClusters=4;const perSub=Math.floor(leafCount/subClusters);
-for(let s=0;s<subClusters;s++){
-const a=(s/subClusters)*Math.PI*2;const dist=clusterRadius*0.5;
-const scx=end.x+Math.cos(a)*dist;const scy=end.y+(Math.random()-0.5)*clusterRadius*0.8;const scz=end.z+Math.sin(a)*dist;
-for(let i=0;i<perSub;i++){
-const pos=new THREE.Vector3(scx+(Math.random()-0.5)*clusterRadius,scy+(Math.random()-0.5)*clusterRadius*0.8,scz+(Math.random()-0.5)*clusterRadius);
-const rot=new THREE.Euler(Math.random()*Math.PI,Math.random()*Math.PI,Math.random()*Math.PI);
-leafAcc.push({pos,rot});
-}}}else{
-const numChildren=depth===0?3:2;
-for(let i=0;i<numChildren;i++){
-const childLen=length*(0.5+randFn()*0.3);
-const childRadius=radius*0.7;
-const childAngleY=angleY+(randFn()-0.5)*1.2;
-const childAngleZ=angleZ+(randFn()-0.5)*0.8;
-addBranches(end,childLen,childRadius,childAngleY,childAngleZ,depth+1,maxDepth,randFn,leafAcc,cfg);
-}}}
+  const {mesh,end}=createBranchMesh(start,length,radius,angleY,angleZ);
+  treeGroup.add(mesh);
+
+  if(depth===maxDepth){
+    const leafCount=Math.floor((20+length*18)*cfg.leafDensity);
+    const clusterRadius=(0.5+length*0.4)*cfg.leafDensity;
+    const subClusters=4;
+    const perSub=Math.floor(leafCount/subClusters);
+
+    for(let s=0;s<subClusters;s++){
+      const a=(s/subClusters)*Math.PI*2;
+      const dist=clusterRadius*0.5;
+
+      const scx=end.x+Math.cos(a)*dist;
+      const scy=end.y+(randFn()-0.5)*clusterRadius*0.8;
+      const scz=end.z+Math.sin(a)*dist;
+
+      for(let i=0;i<perSub;i++){
+        const pos=new THREE.Vector3(
+          scx+(randFn()-0.5)*clusterRadius,
+          scy+(randFn()-0.5)*clusterRadius*0.8,
+          scz+(randFn()-0.5)*clusterRadius
+        );
+
+        const rot=new THREE.Euler(
+          randFn()*Math.PI,
+          randFn()*Math.PI,
+          randFn()*Math.PI
+        );
+
+        leafAcc.push({pos,rot});
+      }
+    }
+  }else{
+    const numChildren=depth===0?3:2;
+
+    for(let i=0;i<numChildren;i++){
+      const childLen=length*(0.5+randFn()*0.3);
+      const childRadius=radius*0.7;
+      const childAngleY=angleY+(randFn()-0.5)*1.2;
+      const childAngleZ=angleZ+(randFn()-0.5)*0.8;
+
+      addBranches(
+        end,
+        childLen,
+        childRadius,
+        childAngleY,
+        childAngleZ,
+        depth+1,
+        maxDepth,
+        randFn,
+        leafAcc,
+        cfg
+      );
+    }
+  }
+}
+
 function buildLeafInstancedMesh(leafData){
-if(leafInstancedMesh){treeGroup.remove(leafInstancedMesh);leafInstancedMesh=null;}
-if(!leafData.length)return;
-leafInstancedMesh=new THREE.InstancedMesh(leafGeom,leafMaterial,leafData.length);
-leafInstancedMesh.castShadow=true;
-const dummy=new THREE.Object3D();
-leafData.forEach((d,i)=>{dummy.position.copy(d.pos);dummy.rotation.copy(d.rot);dummy.updateMatrix();leafInstancedMesh.setMatrixAt(i,dummy.matrix);});
-leafInstancedMesh.instanceMatrix.needsUpdate=true;
-treeGroup.add(leafInstancedMesh);
+  if(leafInstancedMesh){
+    treeGroup.remove(leafInstancedMesh);
+    if(leafInstancedMesh.dispose)leafInstancedMesh.dispose();
+    leafInstancedMesh=null;
+  }
+
+  if(!leafData.length)return;
+
+  leafInstancedMesh=new THREE.InstancedMesh(leafGeom,leafMaterial,leafData.length);
+  leafInstancedMesh.castShadow=true;
+  leafInstancedMesh.receiveShadow=false;
+
+  const dummy=new THREE.Object3D();
+
+  leafData.forEach((d,i)=>{
+    dummy.position.copy(d.pos);
+    dummy.rotation.copy(d.rot);
+    dummy.updateMatrix();
+    leafInstancedMesh.setMatrixAt(i,dummy.matrix);
+  });
+
+  leafInstancedMesh.instanceMatrix.needsUpdate=true;
+  treeGroup.add(leafInstancedMesh);
 }
+
+function buildGrassRing(cfg){
+  disposeGrass();
+
+  const R=cfg.attackRadius;
+  const count=80;
+  const bladesPerClump=4;
+  const totalBlades=count*bladesPerClump;
+
+  const geom=new THREE.CylinderGeometry(0.02,0.04,0.7,3);
+
+  grassInstancedMesh=new THREE.InstancedMesh(geom,grassMaterial,totalBlades);
+
+  // Трава отбрасывает статичные тени
+  grassInstancedMesh.castShadow=true;
+  grassInstancedMesh.receiveShadow=false;
+
+  const dummy=new THREE.Object3D();
+  const randFn=pseudoRandom(43);
+
+  for(let i=0;i<count;i++){
+    const angle=(i/count)*Math.PI*2;
+    const x=Math.cos(angle)*R;
+    const z=Math.sin(angle)*R;
+
+    for(let j=0;j<bladesPerClump;j++){
+      const dx=(randFn()-0.5)*0.3;
+      const dz=(randFn()-0.5)*0.3;
+
+      dummy.position.set(x+dx,0.35,z+dz);
+      dummy.scale.set(1,0.8+randFn()*0.4,1);
+      dummy.rotation.set(
+        (randFn()-0.5)*0.3,
+        randFn()*Math.PI,
+        (randFn()-0.5)*0.3
+      );
+
+      dummy.updateMatrix();
+      grassInstancedMesh.setMatrixAt(i*bladesPerClump+j,dummy.matrix);
+    }
+  }
+
+  grassInstancedMesh.instanceMatrix.needsUpdate=true;
+  grassGroup.add(grassInstancedMesh);
+}
+
 function build(t){
-ensureAssets();
-if(leafInstancedMesh){treeGroup.remove(leafInstancedMesh);leafInstancedMesh=null;}
-clearGroup(treeGroup);clearGroup(rootsGroup);
-const cfg={
-attackRadius:3.2+(5.5-3.2)*t,
-rootCount:Math.round(12+(30-12)*t),
-baseThickness:0.14+(0.2-0.14)*t,
-baseWavinessPercent:0,
-tipWaviness:0.12+(0.15-0.12)*t,
-dolphinFrequency:0.5+(0.7-0.5)*t,
-leafDensity:0.5+(1.8-0.5)*t
-};
-const randFn=pseudoRandom(42);
-const R=cfg.attackRadius;
-const treeScale=0.5;
-const trunkHeight=(3.5+R*0.7)*treeScale;
-const trunkBaseRadius=(0.35+R*0.04)*treeScale;
-const trunkTopRadius=0.08*treeScale;
-const mainBranchCount=Math.floor(6+R*2.5);
-const branchLength=(R*0.45)*treeScale;
-const branchRadius=(0.1+R*0.01)*treeScale;
-const trunkPts=[];
-for(let i=0;i<=15;i++){const tt=i/15;trunkPts.push(new THREE.Vector2(trunkBaseRadius+(trunkTopRadius-trunkBaseRadius)*Math.pow(tt,0.6),tt*trunkHeight));}
-const trunk=new THREE.Mesh(new THREE.LatheGeometry(trunkPts,16),barkMat);
-trunk.castShadow=trunk.receiveShadow=true;
-treeGroup.add(trunk);
-const leafAccum=[];
-for(let i=0;i<mainBranchCount;i++){
-const startY=trunkHeight*(0.4+(i/mainBranchCount)*0.5);
-const angleY=(i/mainBranchCount)*Math.PI*2+(randFn()-0.5)*0.5;
-const angleZ=0.6+randFn()*0.5;
-const len=branchLength*(0.7+randFn()*0.5);
-const rad=branchRadius*(0.7+randFn()*0.5);
-addBranches(new THREE.Vector3(0,startY,0),len,rad,angleY,angleZ,0,2,randFn,leafAccum,cfg);
+  ensureAssets();
+
+  if(leafInstancedMesh){
+    treeGroup.remove(leafInstancedMesh);
+    if(leafInstancedMesh.dispose)leafInstancedMesh.dispose();
+    leafInstancedMesh=null;
+  }
+
+  clearGroup(treeGroup);
+  clearGroup(rootsGroup);
+  disposeGrass();
+
+  const cfg={
+    attackRadius:3.2+(5.5-3.2)*t,
+    rootCount:Math.round(12+(30-12)*t),
+    baseThickness:0.14+(0.2-0.14)*t,
+    baseWavinessPercent:0,
+    tipWaviness:0.12+(0.15-0.12)*t,
+    dolphinFrequency:0.5+(0.7-0.5)*t,
+    leafDensity:0.5+(1.8-0.5)*t
+  };
+
+  const randFn=pseudoRandom(42);
+
+  const R=cfg.attackRadius;
+  const treeScale=0.5;
+
+  const trunkHeight=(3.5+R*0.7)*treeScale;
+  const trunkBaseRadius=(0.35+R*0.04)*treeScale;
+  const trunkTopRadius=0.08*treeScale;
+
+  const mainBranchCount=Math.floor(6+R*2.5);
+  const branchLength=(R*0.45)*treeScale;
+  const branchRadius=(0.1+R*0.01)*treeScale;
+
+  const trunkPts=[];
+  for(let i=0;i<=12;i++){
+    const tt=i/12;
+    trunkPts.push(new THREE.Vector2(
+      trunkBaseRadius+(trunkTopRadius-trunkBaseRadius)*Math.pow(tt,0.6),
+      tt*trunkHeight
+    ));
+  }
+
+  const trunk=new THREE.Mesh(new THREE.LatheGeometry(trunkPts,12),barkMat);
+  trunk.castShadow=trunk.receiveShadow=true;
+  treeGroup.add(trunk);
+
+  const leafAccum=[];
+
+  for(let i=0;i<mainBranchCount;i++){
+    const startY=trunkHeight*(0.4+(i/mainBranchCount)*0.5);
+    const angleY=(i/mainBranchCount)*Math.PI*2+(randFn()-0.5)*0.5;
+    const angleZ=0.6+randFn()*0.5;
+
+    const len=branchLength*(0.7+randFn()*0.5);
+    const rad=branchRadius*(0.7+randFn()*0.5);
+
+    addBranches(
+      new THREE.Vector3(0,startY,0),
+      len,
+      rad,
+      angleY,
+      angleZ,
+      0,
+      2,
+      randFn,
+      leafAccum,
+      cfg
+    );
+  }
+
+  const rootStartY=-0.06;   // притопили корни, чтобы не лежали «сверху»
+  const startRadius=0.25;
+
+  for(let i=0;i<cfg.rootCount;i++){
+    const baseAngle=(i/cfg.rootCount)*Math.PI*2;
+    const angle=baseAngle+(randFn()-0.5)*0.5;
+
+    const straightLength=R*(0.75+randFn()*0.35);
+    const numDolphins=Math.max(0,Math.round(straightLength*cfg.dolphinFrequency));
+
+    const start=new THREE.Vector3(
+      Math.cos(angle)*startRadius,
+      rootStartY,
+      Math.sin(angle)*startRadius
+    );
+
+    rootsGroup.add(createRootWithDolphins(start,angle,straightLength,numDolphins,randFn,cfg));
+
+    if(randFn()<0.4){
+      const branchAngle=angle+(randFn()-0.5)*1.0;
+      const branchLength=straightLength*0.5;
+
+      const branchStart=new THREE.Vector3(
+        start.x+Math.cos(angle)*straightLength*0.35,
+        rootStartY-0.2,
+        start.z+Math.sin(angle)*straightLength*0.35
+      );
+
+      const branchDolphins=Math.max(0,Math.round(branchLength*cfg.dolphinFrequency*0.7));
+
+      rootsGroup.add(createRootWithDolphins(branchStart,branchAngle,branchLength,branchDolphins,randFn,cfg));
+    }
+  }
+  buildCollar(trunkBaseRadius,randFn);   // ← статичный воротник
+  buildLeafInstancedMesh(leafAccum);
+  buildGrassRing(cfg);
+
+  builtT=t;
+
+  // Пересчитать статичные тени один раз после перестроения
+  renderer.shadowMap.needsUpdate=true;
+  needGround=true;
 }
-const rootStartY=0.0;const startRadius=0.25;
-for(let i=0;i<cfg.rootCount;i++){
-const baseAngle=(i/cfg.rootCount)*Math.PI*2;
-const angle=baseAngle+(randFn()-0.5)*0.5;
-const straightLength=R*(0.75+randFn()*0.35);
-const numDolphins=Math.max(0,Math.round(straightLength*cfg.dolphinFrequency));
-const start=new THREE.Vector3(Math.cos(angle)*startRadius,rootStartY,Math.sin(angle)*startRadius);
-rootsGroup.add(createRootWithDolphins(start,angle,straightLength,numDolphins,randFn,cfg));
-if(randFn()<0.4){
-const branchAngle=angle+(randFn()-0.5)*1.0;
-const bl=straightLength*0.5;
-const branchStart=new THREE.Vector3(start.x+Math.cos(angle)*straightLength*0.35,rootStartY-0.2,start.z+Math.sin(angle)*straightLength*0.35);
-const bd=Math.max(0,Math.round(bl*cfg.dolphinFrequency*0.7));
-rootsGroup.add(createRootWithDolphins(branchStart,branchAngle,bl,bd,randFn,cfg));
-}}
-buildLeafInstancedMesh(leafAccum);
-builtT=t;
-}
+
 function setColors(trunkHex,leafHex,rootHex){
-if(!ready)return;ensureAssets();
-barkMat.color.set(trunkHex);
-leafMaterial.color.set(leafHex);
-barkDarkMat.color.set(rootHex||trunkHex);
+  if(!ready)return;
+  ensureAssets();
+
+  barkMat.color.set(trunkHex);
+  leafMaterial.color.set(leafHex);
+  barkDarkMat.color.set(rootHex||trunkHex);
+
+  needGround=true;
 }
-function render(t,time,shake){
-if(!ready)return null;
-const tq=Math.round(t*50)/50;
-if(tq!==builtT)build(tq);
-const tiltX=-0.12+Math.cos(time*0.9)*0.008;
-const tiltZ=Math.sin(time*1.3)*0.015+(shake||0)*0.02*Math.sin(time*60);
-treeGroup.rotation.x=tiltX;treeGroup.rotation.z=tiltZ;
-rootsGroup.rotation.x=tiltX;rootsGroup.rotation.z=tiltZ;
-renderer.render(scene,camera);
-return canvas;
+
+function setTreePose(time,shake,staticPose){
+  const tiltX=-0.12+(staticPose?0:Math.cos(time*0.9)*0.008);
+  const tiltZ=staticPose
+    ?0
+    :Math.sin(time*1.3)*0.015+(shake||0)*0.02*Math.sin(time*60);
+
+  // Крона и ствол качаются (ось вращения — у основания, низ почти неподвижен)
+  treeGroup.rotation.x=tiltX;
+  treeGroup.rotation.z=tiltZ;
+
+  // Корни намертво в земле: НИКАКОГО вращения,
+  // иначе дальние кончики приподнимаются и «вылазят» из земли
+  rootsGroup.rotation.x=0;
+  rootsGroup.rotation.z=0;
 }
-return{init,render,setColors,isReady:()=>ready,BASE_Y};
+
+function setTreeColorWrite(v){
+  [barkMat,barkDarkMat,leafMaterial].forEach(m=>{
+    if(m){
+      m.colorWrite=v;
+      m.depthWrite=v;
+    }
+  });
+}
+
+function renderGround(t){
+  if(!ready)return null;
+
+  const tq=Math.round(t*50)/50;
+  if(tq!==builtT)build(tq);
+
+  if(needGround){
+    // Статичный кадр для земли/травы/теней
+    setTreePose(0,0,true);
+
+    ground.visible=true;
+    grassGroup.visible=true;
+    treeGroup.visible=true;
+    rootsGroup.visible=true;
+
+    // Дерево и корни в этом проходе не рисуются цветом,
+    // но участвуют в тенях.
+    setTreeColorWrite(false);
+
+    renderer.render(scene,camera);
+
+    gctx.clearRect(0,0,SIZE,SIZE);
+    gctx.drawImage(glCanvas,0,0,SIZE,SIZE);
+
+    setTreeColorWrite(true);
+
+    needGround=false;
+  }
+
+  return groundCanvas;
+}
+
+function renderTree(t,time,shake){
+  if(!ready)return null;
+
+  const tq=Math.round(t*50)/50;
+  if(tq!==builtT)build(tq);
+
+  if(needGround)renderGround(tq);
+
+  setTreePose(time,shake,false);
+
+  ground.visible=false;
+  grassGroup.visible=false;
+  treeGroup.visible=true;
+  rootsGroup.visible=true;
+
+  setTreeColorWrite(true);
+
+  renderer.render(scene,camera);
+
+  tctx.clearRect(0,0,SIZE,SIZE);
+  tctx.drawImage(glCanvas,0,0,SIZE,SIZE);
+
+  return treeCanvas;
+}
+
+return {
+  init,
+  renderGround,
+  renderTree,
+  setColors,
+  isReady:()=>ready,
+  BASE_Y
+};
 })();
 function applyTreeSkin(){
 const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
@@ -2386,28 +2772,77 @@ ctx.lineTo(bx+tw*.3,by-h);ctx.quadraticCurveTo(bx+tw*.6,by-h*.5,bx+tw,by);ctx.cl
 ctx.fillStyle=radg(bx,by-h,R*.2,R,[[0,ts.canopy[3]],[.6,ts.canopy[1]],[1,'rgba(10,20,12,.4)']]);
 ctx.beginPath();ctx.arc(bx,by-h,R,0,TAU);ctx.fill();
 }
-function drawTree(){
-const g=treeGeom(),L=g.L;
-const t=1-Math.exp(-L/250);
-const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
-const bx=cx,by=cy;
-drawAttackRing();
-drawRootKnobs();
-ctx.fillStyle=radg(bx,by-60,10,150,[[0,'rgba('+ts.glow+','+(0.10+pulse*0.45).toFixed(2)+')'],[1,'rgba('+ts.glow+',0)']]);
-ctx.beginPath();ctx.arc(bx,by-60,150,0,TAU);ctx.fill();
-ctx.fillStyle='rgba(0,0,0,.35)';ell(bx,by+4,70,26);
-const shake=(treeShakeT>0?treeShakeT:0)+(flinch>0?flinch*0.6:0);
-const c=Tree3D.render(t,T,shake);
-if(c){
-const draw=Math.min(300+70*t, Math.min(W,H)*0.62);
-ctx.drawImage(c,bx-draw/2,by-Tree3D.BASE_Y*draw,draw,draw);
-}else{
-drawTree2DFallback(g,ts,bx,by,t);
+function drawTreeGround(){
+  const g=treeGeom();
+  const t=1-Math.exp(-g.L/250);
+
+  const c=Tree3D.renderGround(t);
+  if(!c)return;
+
+  const draw=Math.min(300+70*t, Math.min(W,H)*0.62);
+  ctx.drawImage(
+    c,
+    cx-draw/2,
+    cy-Tree3D.BASE_Y*draw,
+    draw,
+    draw
+  );
 }
-if(branchFx>0&&abilPct('branch')>0){const r=60+8*ab('branch'),a0=branchAng,a1=branchAng+2.4*branchDir;
-ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';ctx.lineWidth=5;ctx.lineCap='round';
-ctx.beginPath();ctx.ellipse(bx,by,r,r*ISO,0,Math.min(a0,a1),Math.max(a0,a1));ctx.stroke();}
-drawTreeHp(bx,by);
+function drawTree(){
+  const g=treeGeom(),L=g.L;
+  const t=1-Math.exp(-L/250);
+  const ts=TREE_SKINS[S.treeSkin]||TREE_SKINS.oak;
+  const bx=cx,by=cy;
+
+  // Мягкое свечение кроны
+  ctx.fillStyle=radg(bx,by-60,10,150,[
+    [0,'rgba('+ts.glow+','+(0.10+pulse*0.45).toFixed(2)+')'],
+    [1,'rgba('+ts.glow+',0)']
+  ]);
+  ctx.beginPath();
+  ctx.arc(bx,by-60,150,0,TAU);
+  ctx.fill();
+
+  const shake=(treeShakeT>0?treeShakeT:0)+(flinch>0?flinch*0.6:0);
+
+  const c=Tree3D.renderTree(t,T,shake);
+
+  if(c){
+    const draw=Math.min(300+70*t, Math.min(W,H)*0.62);
+    ctx.drawImage(
+      c,
+      bx-draw/2,
+      by-Tree3D.BASE_Y*draw,
+      draw,
+      draw
+    );
+  }else{
+    drawTree2DFallback(g,ts,bx,by,t);
+  }
+
+  if(branchFx>0&&abilPct('branch')>0){
+    const r=60+8*ab('branch');
+    const a0=branchAng;
+    const a1=branchAng+2.4*branchDir;
+
+    ctx.strokeStyle='rgba(160,120,70,'+(branchFx*.8).toFixed(2)+')';
+    ctx.lineWidth=5;
+    ctx.lineCap='round';
+
+    ctx.beginPath();
+    ctx.ellipse(
+      bx,
+      by,
+      r,
+      r*ISO,
+      0,
+      Math.min(a0,a1),
+      Math.max(a0,a1)
+    );
+    ctx.stroke();
+  }
+
+  drawTreeHp(bx,by);
 }
 function drawTreeHp(bx,by){
 const pct=clamp(S.treeHp/treeMaxHp(),0,1);
@@ -2573,20 +3008,29 @@ else if(p.lk==='spark'){ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.shado
 else{ctx.save();ctx.translate(x,y);ctx.rotate(p.l*4+p.ph);ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';
 ctx.beginPath();ctx.ellipse(0,0,p.lk==='petal'?2.8:3.4,p.lk==='petal'?1.9:1.6,0,0,TAU);ctx.fill();ctx.restore();}}
 else{ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.beginPath();ctx.arc(x,y,p.sz*a+.4,0,TAU);ctx.fill();}}}
-function drawFloats(){
-ctx.textAlign='center';
-for(const f of floats){const a=clamp(f.l/f.ml,0,1);const x=cx+f.x,y=cy+f.y-(1-a)*26;
-ctx.globalAlpha=a;ctx.font='800 '+f.sz+'px Manrope, sans-serif';
-ctx.strokeStyle='rgba(6,10,7,.8)';ctx.lineWidth=3;ctx.strokeText(f.txt,x,y);ctx.fillStyle=f.c;ctx.fillText(f.txt,x,y);}
-ctx.globalAlpha=1;}
 function render(dt){
 ctx.setTransform(DPR,0,0,DPR,0,0);
+
 if(ground)ctx.drawImage(ground,0,0,W,H);
 else{ctx.fillStyle='#0a120d';ctx.fillRect(0,0,W,H);}
-drawGrass();drawFlies(dt);
+
+// Старая 2D-трава удалена
+// drawGrass();
+
+drawFlies(dt);
+
 ctx.save();
-if(shakeM>0){shakeM=Math.max(0,shakeM-dt*20);if(S.shake)ctx.translate(rand(-1,1)*shakeM,rand(-1,1)*shakeM);}
-drawZones();drawRoots();
+
+if(shakeM>0){
+  shakeM=Math.max(0,shakeM-dt*20);
+  if(S.shake)ctx.translate(rand(-1,1)*shakeM,rand(-1,1)*shakeM);
+}
+
+// Новый 3D-слой: трава + статичные тени
+drawTreeGround();
+
+drawZones();
+drawRoots();
 const objs=[];
 for(const s of scenery){if(s.type!=='grass')objs.push({y:s.y,fn:()=>drawSceneryObj(s)});}
 for(const e of enemies)objs.push({y:e.y,fn:()=>drawEnemy(e)});
