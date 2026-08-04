@@ -2826,6 +2826,7 @@ let treeGroup,rootsGroup,ground;
 let leafInstancedMesh=null;
 let glCanvas=null,groundCanvas=null,treeCanvas=null,gctx=null,tctx=null;
 let builtT=-1,ready=false,needGround=true;
+let lastTreeRender=0,treeDirty=true;
 let barkMat,barkDarkMat,leafMaterial,leafGeom;
 function pseudoRandom(seed){let s=seed;return()=>{s=(s*16807+0)%2147483647;return(s-1)/2147483646;};}
 function percentToAmplitude(p){return(p/100)*0.15;}
@@ -2838,11 +2839,32 @@ leafMaterial=new THREE.MeshStandardMaterial({color:0x4b9463,roughness:0.4,side:T
 const s=new THREE.Shape();s.moveTo(0,-0.5);s.bezierCurveTo(0.2,-0.3,0.3,0.3,0,0.5);s.bezierCurveTo(-0.3,0.3,-0.2,-0.3,0,-0.5);
 leafGeom=new THREE.ShapeGeometry(s);leafGeom.scale(0.35,0.35,1);}
 }
+/* ── склейка геометрий в один меш: меньше draw calls, та же картинка ── */
+function mergeGeoms(list){
+if(!list.length)return null;
+let vCount=0,iCount=0;
+for(const g of list){vCount+=g.attributes.position.count;iCount+=g.index?g.index.count:0;}
+const pos=new Float32Array(vCount*3),nor=new Float32Array(vCount*3),uv=new Float32Array(vCount*2);
+const idx=vCount>65535?new Uint32Array(iCount):new Uint16Array(iCount);
+let vOff=0,iOff=0;
+for(const g of list){
+pos.set(g.attributes.position.array,vOff*3);
+if(g.attributes.normal)nor.set(g.attributes.normal.array,vOff*3);
+if(g.attributes.uv)uv.set(g.attributes.uv.array,vOff*2);
+if(g.index){for(let i=0;i<g.index.count;i++)idx[iOff+i]=g.index.getX(i)+vOff;iOff+=g.index.count;}
+vOff+=g.attributes.position.count;
+g.dispose();}
+const out=new THREE.BufferGeometry();
+out.setAttribute('position',new THREE.BufferAttribute(pos,3));
+out.setAttribute('normal',new THREE.BufferAttribute(nor,3));
+out.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+if(iCount)out.setIndex(new THREE.BufferAttribute(idx,1));
+return out;}
 function init(){
 if(!THREE){ready=false;return;}
 try{
 glCanvas=document.createElement('canvas');glCanvas.width=SIZE;glCanvas.height=SIZE;
-renderer=new THREE.WebGLRenderer({canvas:glCanvas,alpha:true,antialias:true,preserveDrawingBuffer:true});
+renderer=new THREE.WebGLRenderer({canvas:glCanvas,alpha:true,antialias:true,preserveDrawingBuffer:false});
 renderer.setSize(SIZE,SIZE);renderer.setPixelRatio(1);renderer.setClearColor(0x000000,0);
 renderer.localClippingEnabled=true;
 renderer.shadowMap.enabled=S.gfx.shadows;
@@ -2871,19 +2893,20 @@ ensureAssets();ready=true;
 }catch(e){ready=false;console.warn('3D init failed',e);}
 }
 function clearGroup(g){while(g.children.length){const c=g.children[0];g.remove(c);
-if(c.geometry&&c.geometry!==leafGeom)c.geometry.dispose();
-if(c.dispose&&c!==leafInstancedMesh){try{c.dispose();}catch(e){}}}}
-function buildCollar(baseR,randFn){
+if(c.geometry&&c.geometry!==leafGeom)c.geometry.dispose();}}
+function buildCollar(baseR,randFn,darkList){
 const pts=[];const h=baseR*2.0;
 for(let i=0;i<=6;i++){const tt=i/6;pts.push(new THREE.Vector2(baseR*0.75+baseR*0.85*(1-Math.pow(tt,0.65)),tt*h));}
-const collar=new THREE.Mesh(new THREE.LatheGeometry(pts,12),barkDarkMat);
-collar.castShadow=collar.receiveShadow=true;rootsGroup.add(collar);
+darkList.push(new THREE.LatheGeometry(pts,12));
+const up=new THREE.Vector3(0,1,0);
 for(let k=0;k<5;k++){const a=(k/5)*Math.PI*2+randFn()*0.7;
-const bulge=new THREE.Mesh(new THREE.SphereGeometry(baseR*0.55,6,5),barkDarkMat);
-bulge.position.set(Math.cos(a)*baseR*1.15,baseR*0.22,Math.sin(a)*baseR*1.15);
-bulge.scale.set(1.35,0.55,1.35);bulge.rotation.y=randFn()*Math.PI;
-bulge.castShadow=bulge.receiveShadow=true;rootsGroup.add(bulge);}}
-function createRootWithDolphins(start,directionAngle,straightLength,numDolphins,randFn,cfg){
+const g=new THREE.SphereGeometry(baseR*0.55,6,5);
+const m=new THREE.Matrix4().compose(
+new THREE.Vector3(Math.cos(a)*baseR*1.15,baseR*0.22,Math.sin(a)*baseR*1.15),
+new THREE.Quaternion().setFromAxisAngle(up,randFn()*Math.PI),
+new THREE.Vector3(1.35,0.55,1.35));
+g.applyMatrix4(m);darkList.push(g);}}
+function createRootGeom(start,directionAngle,straightLength,numDolphins,randFn,cfg){
 const points=[];const segments=20;const dirX=Math.cos(directionAngle),dirZ=Math.sin(directionAngle);
 const baseAmp=percentToAmplitude(cfg.baseWavinessPercent);const tipAmp=cfg.tipWaviness;const baseTh=cfg.baseThickness;
 const dolphinPositions=[];
@@ -2902,18 +2925,14 @@ if(dtd<width){const factor=Math.cos((dtd/width)*Math.PI*0.5);const height=(0.2+a
 const perpX=-dirZ,perpZ=dirX;
 points.push(new THREE.Vector3(x+perpX*lateralWave,y,z+perpZ*lateralWave));}
 const curve=new THREE.CatmullRomCurve3(points);
-const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,segments,baseTh*0.5,5,false),barkDarkMat);
-tube.castShadow=tube.receiveShadow=true;return tube;}
-function createBranchMesh(start,length,radius,angleY,angleZ){
+return new THREE.TubeGeometry(curve,segments,baseTh*0.5,5,false);}
+function addBranches(start,length,radius,angleY,angleZ,depth,maxDepth,randFn,leafAcc,cfg,barkList){
 const dir=new THREE.Vector3(Math.cos(angleY)*Math.sin(angleZ),Math.cos(angleZ),Math.sin(angleY)*Math.sin(angleZ)).normalize();
 const end=start.clone().add(dir.clone().multiplyScalar(length));
 const mid=start.clone().add(end).multiplyScalar(0.5);
-const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius*0.8,radius,length,5),barkMat);
-mesh.position.copy(mid);mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);
-mesh.castShadow=mesh.receiveShadow=true;return{mesh,end,dir};}
-function addBranches(start,length,radius,angleY,angleZ,depth,maxDepth,randFn,leafAcc,cfg){
-const{mesh,end}=createBranchMesh(start,length,radius,angleY,angleZ);
-treeGroup.add(mesh);
+const g=new THREE.CylinderGeometry(radius*0.8,radius,length,5);
+g.applyMatrix4(new THREE.Matrix4().compose(mid,new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),dir),new THREE.Vector3(1,1,1)));
+barkList.push(g);
 if(depth===maxDepth){
 const leafCount=Math.floor((20+length*18)*cfg.leafDensity);
 const clusterRadius=(0.5+length*0.4)*cfg.leafDensity;const subClusters=4;const perSub=Math.floor(leafCount/subClusters);
@@ -2928,12 +2947,13 @@ const numChildren=depth===0?3:2;
 for(let i=0;i<numChildren;i++){
 const childLen=length*(0.5+randFn()*0.3);const childRadius=radius*0.7;
 const childAngleY=angleY+(randFn()-0.5)*1.2;const childAngleZ=angleZ+(randFn()-0.5)*0.8;
-addBranches(end,childLen,childRadius,childAngleY,childAngleZ,depth+1,maxDepth,randFn,leafAcc,cfg);}}}
+addBranches(end,childLen,childRadius,childAngleY,childAngleZ,depth+1,maxDepth,randFn,leafAcc,cfg,barkList);}}}
 function buildLeafInstancedMesh(leafData){
 if(leafInstancedMesh){treeGroup.remove(leafInstancedMesh);if(leafInstancedMesh.dispose)leafInstancedMesh.dispose();leafInstancedMesh=null;}
 if(!leafData.length)return;
 leafInstancedMesh=new THREE.InstancedMesh(leafGeom,leafMaterial,leafData.length);
 leafInstancedMesh.castShadow=S.gfx.shadows;leafInstancedMesh.receiveShadow=false;
+leafInstancedMesh.matrixAutoUpdate=false;
 const dummy=new THREE.Object3D();
 leafData.forEach((d,i)=>{dummy.position.copy(d.pos);dummy.rotation.copy(d.rot);dummy.updateMatrix();leafInstancedMesh.setMatrixAt(i,dummy.matrix);});
 leafInstancedMesh.instanceMatrix.needsUpdate=true;treeGroup.add(leafInstancedMesh);}
@@ -2957,38 +2977,44 @@ const trunkTopRadius=0.08*treeScale;
 const mainBranchCount=Math.floor(6+gR*2.5);
 const branchLength=(gR*0.45)*treeScale;
 const branchRadius=(0.1+gR*0.01)*treeScale;
+const barkList=[],darkList=[];
 const trunkPts=[];
 for(let i=0;i<=12;i++){const tt=i/12;
 trunkPts.push(new THREE.Vector2(trunkBaseRadius+(trunkTopRadius-trunkBaseRadius)*Math.pow(tt,0.6),tt*trunkHeight));}
-const trunk=new THREE.Mesh(new THREE.LatheGeometry(trunkPts,12),barkMat);
-trunk.castShadow=trunk.receiveShadow=true;treeGroup.add(trunk);
+barkList.push(new THREE.LatheGeometry(trunkPts,12));
 const leafAccum=[];
 for(let i=0;i<mainBranchCount;i++){
 const startY=trunkHeight*(0.2+(i/mainBranchCount)*0.5);
 const angleY=(i/mainBranchCount)*Math.PI*2+(randFn()-0.5)*0.5;
 const angleZ=0.6+randFn()*0.5;
 const len=branchLength*(0.7+randFn()*0.5);const rad=branchRadius*(0.7+randFn()*0.5);
-addBranches(new THREE.Vector3(0,startY,0),len,rad,angleY,angleZ,0,2,randFn,leafAccum,cfg);}
+addBranches(new THREE.Vector3(0,startY,0),len,rad,angleY,angleZ,0,2,randFn,leafAccum,cfg,barkList);}
 const rootStartY=-0.06;const startRadius=0.25;
 for(let i=0;i<cfg.rootCount;i++){
 const baseAngle=(i/cfg.rootCount)*Math.PI*2;const angle=baseAngle+(randFn()-0.5)*0.5;
 const straightLength=gR*(0.75+randFn()*0.35);
 const numDolphins=Math.max(0,Math.round(straightLength*cfg.dolphinFrequency));
 const start=new THREE.Vector3(Math.cos(angle)*startRadius,rootStartY,Math.sin(angle)*startRadius);
-rootsGroup.add(createRootWithDolphins(start,angle,straightLength,numDolphins,randFn,cfg));
+darkList.push(createRootGeom(start,angle,straightLength,numDolphins,randFn,cfg));
 if(randFn()<0.4){
-const branchAngle=angle+(randFn()-0.5)*1.0;const branchLength=straightLength*0.5;
+const branchAngle=angle+(randFn()-0.5)*1.0;const bLen=straightLength*0.5;
 const branchStart=new THREE.Vector3(start.x+Math.cos(angle)*straightLength*0.35,rootStartY-0.2,start.z+Math.sin(angle)*straightLength*0.35);
-const branchDolphins=Math.max(0,Math.round(branchLength*cfg.dolphinFrequency*0.7));
-rootsGroup.add(createRootWithDolphins(branchStart,branchAngle,branchLength,branchDolphins,randFn,cfg));}}
-buildCollar(trunkBaseRadius,randFn);
+const branchDolphins=Math.max(0,Math.round(bLen*cfg.dolphinFrequency*0.7));
+darkList.push(createRootGeom(branchStart,branchAngle,bLen,branchDolphins,randFn,cfg));}}
+buildCollar(trunkBaseRadius,randFn,darkList);
+/* 2 слитых меша вместо сотен отдельных — те же вершины, те же материалы */
+const barkGeo=mergeGeoms(barkList);
+if(barkGeo){const m=new THREE.Mesh(barkGeo,barkMat);m.castShadow=m.receiveShadow=true;m.matrixAutoUpdate=false;treeGroup.add(m);}
+const darkGeo=mergeGeoms(darkList);
+if(darkGeo){const m=new THREE.Mesh(darkGeo,barkDarkMat);m.castShadow=m.receiveShadow=true;m.matrixAutoUpdate=false;rootsGroup.add(m);}
 buildLeafInstancedMesh(leafAccum);
-builtT=t;
+builtT=t;treeDirty=true;
 if(S.gfx.shadows)renderer.shadowMap.needsUpdate=true;
 needGround=true;}
 function setColors(trunkHex,leafHex,rootHex){
 if(!ready)return;ensureAssets();
-barkMat.color.set(trunkHex);leafMaterial.color.set(leafHex);barkDarkMat.color.set(rootHex||trunkHex);needGround=true;}
+barkMat.color.set(trunkHex);leafMaterial.color.set(leafHex);barkDarkMat.color.set(rootHex||trunkHex);
+needGround=true;treeDirty=true;}
 function setTreePose(time,shake,staticPose){
 const tiltX=-0.12+(staticPose?0:Math.cos(time*0.9)*0.008);
 const tiltZ=staticPose?0:Math.sin(time*1.3)*0.015+(shake||0)*0.02*Math.sin(time*60);
@@ -3014,6 +3040,11 @@ if(!ready)return null;
 const tq=Math.round(t*50)/50;
 if(tq!==builtT)build(tq);
 if(needGround)renderShadow(tq);
+/* 3D ~30 Гц: покачивание ±0.01 рад неразличимо; между апдейтами — кэш.
+   Тряска, пересборка или смена скина → рендер сразу. */
+const now=performance.now();
+if(!treeDirty&&shake<=0&&now-lastTreeRender<33)return treeCanvas;
+lastTreeRender=now;treeDirty=false;
 try{
 setTreePose(time,shake,false);
 ground.visible=false;treeGroup.visible=true;rootsGroup.visible=true;
