@@ -1079,9 +1079,9 @@ function mutEnemySpdMul(){let m=1;
 
 /* HP обычных врагов */
 function mutEnemyHpMul(){let m=1;
- if(M('m_siege')) m*=1.20;
- return m;}
-
+if(M('m_siege')) m*=1.20;
+return m;}
+const mutProjMul=()=>1;
 function waveQuota(w){return Math.round(CONFIG.QUOTA(w)*(M('m_siege')?1.15:1));}
 const TREE_SKINS={
 oak:{name:{ru:'Древо-хранитель',en:'Guardian Tree'},style:'oak',cost:0,
@@ -3050,15 +3050,15 @@ const pr=clamp(p.t,0,1);ctx.fillStyle='rgba(92,66,40,'+(0.4*pr).toFixed(2)+')';e
 /* ── 3D-дерево + 3D-ТРАВА (инстансинг модели; модель меняется одной константой) ── */
 const Tree3D=(()=>{
 const SIZE=448, BASE_Y=0.57;
-/* СЛОТ ПОД АССЕТ ЗАКАЗЧИКА: замените фабрику геометрии — вся трава перестроится автоматически */
-const GRASS_MODEL=()=>new THREE.CylinderGeometry(0.02,0.05,0.7,4);
+/* ТРАВА ТЕПЕРЬ 2D-ИЗОМЕТРИЧЕСКАЯ на основном canvas (см. drawGrassRing ниже);
+3D-модуль отвечает только за дерево и тени. */
 let renderer,scene,camera;
-let treeGroup,rootsGroup,grassGroup,ground;
-let leafInstancedMesh=null,grassMesh=null,grassData=[];
+let treeGroup,rootsGroup,ground;
+let leafInstancedMesh=null;
 let glCanvas=null,groundCanvas=null,treeCanvas=null,gctx=null,tctx=null;
 let builtT=-1,ready=false,needGround=true;
 let lastTreeRender=0,treeDirty=true;
-let barkMat,barkDarkMat,leafMaterial,leafGeom,grassMat;
+let barkMat,barkDarkMat,leafMaterial,leafGeom;
 function pseudoRandom(seed){let s=seed;return()=>{s=(s*16807+0)%2147483647;return(s-1)/2147483646;};}
 function percentToAmplitude(p){return(p/100)*0.15;}
 function ensureAssets(){
@@ -3067,7 +3067,6 @@ barkMat=new THREE.MeshStandardMaterial({color:0x6b5138,roughness:0.85});
 barkDarkMat=new THREE.MeshStandardMaterial({color:0x4a3826,roughness:0.9});
 if(THREE.Plane){barkDarkMat.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,1,0),0.25)];barkDarkMat.clipShadows=true;}
 leafMaterial=new THREE.MeshStandardMaterial({color:0x4b9463,roughness:0.4,side:THREE.DoubleSide});
-grassMat=new THREE.MeshStandardMaterial({color:0x3a5a2a,roughness:0.7});
 const s=new THREE.Shape();s.moveTo(0,-0.5);s.bezierCurveTo(0.2,-0.3,0.3,0.3,0,0.5);s.bezierCurveTo(-0.3,0.3,-0.2,-0.3,0,-0.5);
 leafGeom=new THREE.ShapeGeometry(s);leafGeom.scale(0.35,0.35,0.35);}}
 function mergeGeoms(list){
@@ -3104,6 +3103,7 @@ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.
 scene=new THREE.Scene();
 camera=new THREE.PerspectiveCamera(45,1,0.5,80);
 camera.position.set(7,9,10.5);camera.lookAt(0,1.3,0);
+camera.updateMatrixWorld(true);
 scene.add(new THREE.AmbientLight(0x8db2c4,0.9));
 const sun=new THREE.DirectionalLight(0xfff5e6,4.5);
 sun.position.set(10,15,5);sun.castShadow=S.gfx.shadows;
@@ -3116,8 +3116,8 @@ scene.add(sun);
 const fill=new THREE.DirectionalLight(0xb3d0e0,1.0);fill.position.set(-5,2,-3);scene.add(fill);
 ground=new THREE.Mesh(new THREE.CircleGeometry(40,48),new THREE.ShadowMaterial({opacity:0.42}));
 ground.rotation.x=-Math.PI/2;ground.position.y=0;ground.receiveShadow=true;scene.add(ground);
-treeGroup=new THREE.Group();rootsGroup=new THREE.Group();grassGroup=new THREE.Group();
-scene.add(treeGroup);scene.add(rootsGroup);scene.add(grassGroup);
+treeGroup=new THREE.Group();rootsGroup=new THREE.Group();
+scene.add(treeGroup);scene.add(rootsGroup);
 groundCanvas=document.createElement('canvas');groundCanvas.width=SIZE;groundCanvas.height=SIZE;gctx=groundCanvas.getContext('2d');
 treeCanvas=document.createElement('canvas');treeCanvas.width=SIZE;treeCanvas.height=SIZE;tctx=treeCanvas.getContext('2d');
 ensureAssets();ready=true;
@@ -3125,37 +3125,6 @@ ensureAssets();ready=true;
 }
 function clearGroup(g){while(g.children.length){const c=g.children[0];g.remove(c);
 if(c.geometry&&c.geometry!==leafGeom)c.geometry.dispose();}}
-/* ── 3D-трава: кольцо по эллипсу радиуса, наклон/масштаб/зеркало, фаза, ветер ── */
-function buildGrass(gR){
-if(!THREE)return;
-if(grassMesh){grassGroup.remove(grassMesh);if(grassMesh.dispose)grassMesh.dispose();grassMesh=null;}
-grassData=[];
-const q=S.gfx.particles;
-const clumps=q==='low'?40:q==='high'?120:80;
-const per=4,total=clumps*per;
-grassMesh=new THREE.InstancedMesh(GRASS_MODEL(),grassMat,total);
-grassMesh.castShadow=S.gfx.shadows;grassMesh.receiveShadow=false;
-for(let i=0;i<clumps;i++){
-const a=(i/clumps)*Math.PI*2;
-const x=Math.cos(a)*gR,z=Math.sin(a)*gR;
-for(let j=0;j<per;j++){
-const dx=(Math.random()-.5)*.3,dz=(Math.random()-.5)*.3;
-grassData.push({bx:x+dx,bz:z+dz,a,sc:.8+Math.random()*.5,mx:Math.random()<.5?-1:1,ph:Math.random()*6.28});}}
-grassGroup.add(grassMesh);
-updateGrass(0);}
-function updateGrass(time){
-if(!grassMesh)return;
-const dummy=new THREE.Object3D();
-for(let i=0;i<grassData.length;i++){
-const p=grassData[i];
-const sway=Math.sin(time*2.5+p.a*3+p.ph)*0.12+(gust||0)*0.25;
-const sway2=Math.cos(time*2.0+p.a*2)*0.08;
-dummy.position.set(p.bx,0.35,p.bz);
-dummy.rotation.set(sway2,0,sway);
-dummy.scale.set(p.mx,p.sc,1);
-dummy.updateMatrix();
-grassMesh.setMatrixAt(i,dummy.matrix);}
-grassMesh.instanceMatrix.needsUpdate=true;}
 function buildCollar(baseR,randFn,darkList){
 const pts=[];const h=baseR*2.0;
 for(let i=0;i<=6;i++){const tt=i/6;pts.push(new THREE.Vector2(baseR*0.75+baseR*0.85*(1-Math.pow(tt,0.65)),tt*h));}
@@ -3223,7 +3192,7 @@ leafInstancedMesh.instanceMatrix.needsUpdate=true;treeGroup.add(leafInstancedMes
 function build(t){
 ensureAssets();
 if(leafInstancedMesh){treeGroup.remove(leafInstancedMesh);if(leafInstancedMesh.dispose)leafInstancedMesh.dispose();leafInstancedMesh=null;}
-clearGroup(treeGroup);clearGroup(rootsGroup);clearGroup(grassGroup);grassMesh=null;grassData=[];
+clearGroup(treeGroup);clearGroup(rootsGroup);
 const cfg={
 rootCount:Math.round(12+(30-12)*t),
 baseThickness:0.14+(0.2-0.14)*t,
@@ -3270,7 +3239,6 @@ if(barkGeo){const m=new THREE.Mesh(barkGeo,barkMat);m.castShadow=m.receiveShadow
 const darkGeo=mergeGeoms(darkList);
 if(darkGeo){const m=new THREE.Mesh(darkGeo,barkDarkMat);m.castShadow=m.receiveShadow=true;m.matrixAutoUpdate=false;rootsGroup.add(m);}
 buildLeafInstancedMesh(leafAccum);
-buildGrass(gR);
 builtT=t;treeDirty=true;
 if(S.gfx.shadows)renderer.shadowMap.needsUpdate=true;
 needGround=true;}
@@ -3291,7 +3259,7 @@ if(tq!==builtT)build(tq);
 if(needGround){
 try{
 setTreePose(0,0,true);
-ground.visible=true;treeGroup.visible=true;rootsGroup.visible=true;grassGroup.visible=true;
+ground.visible=true;treeGroup.visible=true;rootsGroup.visible=true;
 setTreeColorWrite(false);
 renderer.render(scene,camera);
 gctx.clearRect(0,0,SIZE,SIZE);gctx.drawImage(glCanvas,0,0,SIZE,SIZE);
@@ -3308,8 +3276,7 @@ if(!treeDirty&&shake<=0&&now-lastTreeRender<33)return treeCanvas;
 lastTreeRender=now;treeDirty=false;
 try{
 setTreePose(time,shake,false);
-updateGrass(time);
-ground.visible=false;treeGroup.visible=true;rootsGroup.visible=true;grassGroup.visible=true;
+ground.visible=false;treeGroup.visible=true;rootsGroup.visible=true;
 setTreeColorWrite(true);
 renderer.render(scene,camera);
 tctx.clearRect(0,0,SIZE,SIZE);tctx.drawImage(glCanvas,0,0,SIZE,SIZE);
@@ -3410,8 +3377,8 @@ ctx.beginPath();ctx.arc(0,0,r*2*(1-sp*0.5),0,TAU);ctx.fill();ctx.restore();}
 if(e.slow>0){ctx.strokeStyle='rgba(124,201,232,.5)';ctx.lineWidth=1.5;
 ctx.beginPath();ctx.arc(0,0,r*1.15,0,TAU);ctx.stroke();}
 if(e.freeze>0){ctx.strokeStyle='rgba(124,201,232,.7)';ctx.lineWidth=2;
- ctx.beginPath();ctx.arc(0,0,r*1.25,0,TAU);ctx.stroke();
- ctx.fillStyle='rgba(124,201,232,.15)';ctx.beginPath();ctx.arc(0,0,r*1.25,0,TAU);ctx.fill();}
+ctx.beginPath();ctx.arc(0,0,r*1.25,0,TAU);ctx.stroke();
+ctx.fillStyle='rgba(124,201,232,.15)';ctx.beginPath();ctx.arc(0,0,r*1.25,0,TAU);ctx.fill();}
 if(e.burn>0){ctx.fillStyle='rgba(255,140,60,.25)';
 ctx.beginPath();ctx.arc(0,0,r*1.1,0,TAU);ctx.fill();}
 try{
@@ -3564,13 +3531,84 @@ if(p.lk==='snow'){ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.beginPath()
 else if(p.lk==='spark'){ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.shadowColor='rgb('+p.c+')';ctx.shadowBlur=S.gfx.glow?6:0;ctx.beginPath();ctx.arc(x,y,1.6,0,TAU);ctx.fill();ctx.shadowBlur=0;}
 else{ctx.save();ctx.translate(x,y);ctx.rotate(p.l*4+p.ph);ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';
 ctx.beginPath();ctx.ellipse(0,0,p.lk==='petal'?2.8:3.4,p.lk==='petal'?1.9:1.6,0,0,TAU);ctx.fill();ctx.restore();}}
-else{ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.beginPath();ctx.arc(x,y,p.sz*a+.4,0,TAU);ctx.fill();}}}
+else{ctx.fillStyle='rgba('+p.c+','+a.toFixed(2)+')';ctx.beginPath();ctx.arc(x,y,p.sz*a+.4,0,TAU);ctx.fill();}
+}
+}
 function drawFloats(){
 ctx.textAlign='center';
 for(const f of floats){const a=clamp(f.l/f.ml,0,1),x=cx+f.x,y=cy+f.y-(1-a)*26;
 ctx.globalAlpha=a;ctx.font='800 '+f.sz+'px Manrope, sans-serif';
 ctx.strokeStyle='rgba(6,10,7,.8)';ctx.lineWidth=3;ctx.strokeText(f.txt,x,y);ctx.fillStyle=f.c;ctx.fillText(f.txt,x,y);}
 ctx.globalAlpha=1;}
+/* ── ТРАВА: сплошное изометрическое кольцо по радиусу атаки ──
+   Кэш травинок пересчитывается при смене радиуса/качества/размера;
+   в кадре травинки участвуют в общем depth-сорте по Y (как мобы и древо). */
+const GRASS_PAL=[[58,96,48],[74,118,58],[92,142,70],[116,168,86]];
+let grassCacheKey='',grassBlades=[];
+function ensureGrassCache(){
+const key=Math.round(FRR)+'|'+S.gfx.particles+'|'+W+'|'+H;
+if(key===grassCacheKey)return;
+grassCacheKey=key;
+const rx=FRR,ry=FRR*ISO;
+const q=S.gfx.particles;
+const step=q==='low'?4.6:q==='high'?2.2:3.1;
+const rows=q==='low'?1:q==='high'?3:2;
+const P=Math.PI*(3*(rx+ry)-Math.sqrt((3*rx+ry)*(rx+3*ry)));
+const n=clamp(Math.round(P/step),60,1500);
+grassBlades.length=0;
+for(let r=0;r<rows;r++){
+const off=(r-(rows-1)/2)*3.4;
+const depth=rows>1?r/(rows-1):0.5;
+for(let i=0;i<n;i++){
+const a=((i+(r%2?0.5:0))/n)*TAU;
+const hsh=((i*73856093)^((r+7)*19349663))>>>0;
+const r1=(hsh&1023)/1023,r2=((hsh>>10)&1023)/1023,r3=((hsh>>20)&1023)/1023;
+const x=cx+Math.cos(a)*(rx+off+(r1-.5)*2.6);
+const y=cy+Math.sin(a)*(ry+off*ISO+(r1-.5)*1.5);
+const ps=0.7+0.3*clamp(y/H,0,1);
+const ns=Math.sin(a*3.1+r*1.7)+0.5*Math.sin(a*7.3+r*0.6)+0.25*Math.sin(a*15.7+r*2.3);
+grassBlades.push({
+x,y,ps,
+h:(7+ns*1.6+r3*4.5)*ps,
+lean:ns*0.22+(r1-.5)*0.55,
+w:(1.05+r2*0.75)*ps,
+ci:clamp(Math.round((0.25+depth*0.35+r3*0.4+ns*0.08)*3),0,3),
+al:0.55+r2*0.3,
+lw:0.7*ps,
+hl:q!=='low'&&((hsh>>5)&3)===0,
+ph:r2*6.28,
+wy:(y-cy)/ISO});   // тот же ключ сортировки, что у мобов (e.y) и декораций
+}
+}
+grassBlades.sort((a,b)=>a.wy-b.wy); // дальние раньше — для слияния в кадре
+}
+/* подстилка: всегда под всеми объектами */
+function drawGrassBed(){
+const rx=FRR,ry=FRR*ISO;
+ctx.strokeStyle='rgba(46,74,40,.35)';ctx.lineWidth=8;
+ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,TAU);ctx.stroke();
+ctx.strokeStyle='rgba(74,110,60,.28)';ctx.lineWidth=4;
+ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,TAU);ctx.stroke();}
+function drawGrassBlade(b,wind){
+const wave=Math.sin(T*2.2+b.ph+b.x*0.05+b.y*0.03);
+const sway=(wave*1.6+wind*2.4)*b.ps;
+const tx=b.x+b.lean*b.h+sway,ty=b.y-b.h;
+const mx=b.x+b.lean*b.h*0.45+sway*0.38,my=b.y-b.h*0.55;
+const c=GRASS_PAL[b.ci];
+ctx.fillStyle='rgba('+c[0]+','+c[1]+','+c[2]+','+b.al.toFixed(2)+')';
+ctx.beginPath();
+ctx.moveTo(b.x-b.w,b.y);
+ctx.quadraticCurveTo(mx-b.w*0.65,my,tx,ty);
+ctx.quadraticCurveTo(mx+b.w*0.65,my,b.x+b.w,b.y);
+ctx.closePath();
+ctx.fill();
+if(b.hl){
+ctx.strokeStyle='rgba(168,216,128,'+(0.35*b.ps).toFixed(2)+')';
+ctx.lineWidth=b.lw;
+ctx.beginPath();ctx.moveTo(b.x,b.y-0.6);
+ctx.quadraticCurveTo(mx,my,tx,ty);
+ctx.stroke();}
+}
 function render(dt){
 ctx.setTransform(DPR,0,0,DPR,0,0);
 if(ground)ctx.drawImage(ground,0,0,W,H);
@@ -3581,7 +3619,7 @@ if(shakeM>0){
 shakeM=Math.max(0,shakeM-dt*20);
 if(S.shake)ctx.translate(rand(-1,1)*shakeM,rand(-1,1)*shakeM);}
 drawTreeGround();
-if(!(S.gfx.use3d&&Tree3D.isReady()))drawGrassRing();
+drawGrassBed();
 drawZones();
 drawRoots();
 const objs=[];
@@ -3589,7 +3627,15 @@ for(const s of scenery){if(s.type!=='grass')objs.push({y:(s.y-cy)/ISO,fn:()=>dra
 for(const e of enemies)objs.push({y:e.y,fn:()=>drawEnemy(e)});
 objs.push({y:0,fn:drawTree});
 objs.sort((a,b)=>a.y-b.y);
-for(const o of objs){try{o.fn();}catch(err){if(!render.objErr){render.objErr=true;console.error('obj draw:',err);}}}
+/* слияние отсортированных травинок с отсортированными объектами:
+   каждая травинка рисуется строго в своём Y-порядке */
+ensureGrassCache();
+const wind=Math.sin(T*0.8)*0.7+gust*1.6;
+const GB=grassBlades;let gi=0;
+for(const o of objs){
+while(gi<GB.length&&GB[gi].wy<=o.y){drawGrassBlade(GB[gi++],wind);}
+try{o.fn();}catch(err){if(!render.objErr){render.objErr=true;console.error('obj draw:',err);}}}
+while(gi<GB.length){drawGrassBlade(GB[gi++],wind);}
 drawSquirrel();drawShots();drawParts();drawFloats();
 drawRadiusIndicator();
 ctx.restore();}
@@ -3645,7 +3691,6 @@ el.ur.addEventListener('click',()=>buy('rad',el.ur));
 el.uc.addEventListener('click',()=>buy('cc',el.uc));
 el.ux.addEventListener('click',()=>buy('cd',el.ux));
 el.uh.addEventListener('click',()=>buy('hp',el.uh));
-/* ── ТУТОРИАЛ: в boost доступны только ×10; ×1/×50/Макс заблокированы и приглушены ── */
 function syncMulRowUI(){
 const boost=S.tutPhase==='boost';
 $('#mulRow').querySelectorAll('.mul-btn').forEach(b=>{
@@ -3706,7 +3751,6 @@ container.addEventListener('pointerdown',startDrag);
 window.addEventListener('pointermove',onDrag);window.addEventListener('pointerup',endDrag);}
 const TW=540,TH=1520;
 const cw=container.clientWidth,ch2=container.clientHeight;
-/* центрируем вид на стволе (зона земли/корней) */
 treeDrag.x=clamp((cw-TW)/2,cw-TW,0);
 treeDrag.y=clamp(ch2/2-780,ch2-TH,0);
 tree.style.transform=`translate(${treeDrag.x}px,${treeDrag.y}px)`;}
